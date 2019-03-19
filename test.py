@@ -10,7 +10,7 @@ bot = tb.TeleBot("798083745:AAHqys98knTzCWp2_otxe4i9ex98HJx5JO4")
 
 # logs debug messages to console
 logger = tb.logger
-tb.logger.setLevel(logging.DEBUG)
+# tb.logger.setLevel(logging.DEBUG)
 
 # handlers (filters) definitions
 # these are checked IN ORDER
