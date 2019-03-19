@@ -16,7 +16,7 @@ tb.logger.setLevel(logging.DEBUG)
 # these are checked IN ORDER
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-	bot.reply_to(message, "Howdy, how are you doing?")
+    bot.reply_to(message, "Howdy" + message.from_user.first_name + ", how are you doing?")
 
 @bot.message_handler(commands=['help'])
 def send_help(msg):
@@ -29,7 +29,12 @@ def send_unix_epoch(msg):
 
 @bot.message_handler(commands=['status'])
 def send_raspi_status(msg):
+    bot.reply_to(msg, "Checking status...")
     bot.reply_to(msg, get_status())
+
+@bot.message_handler(commands=['whoami'])
+def send_whoyouare(msg):
+    bot.reply_to(msg, str(msg.from_user))
 
 @bot.message_handler(func=lambda msg: True)
 def echo_all(msg):
