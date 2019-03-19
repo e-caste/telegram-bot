@@ -16,7 +16,7 @@ tb.logger.setLevel(logging.DEBUG)
 # these are checked IN ORDER
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "Howdy" + message.from_user.first_name + ", how are you doing?")
+    bot.reply_to(message, "Howdy " + message.from_user.first_name + ", how are you doing?")
 
 @bot.message_handler(commands=['help'])
 def send_help(msg):
