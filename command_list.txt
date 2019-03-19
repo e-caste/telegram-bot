@@ -1,0 +1,6 @@
+start - starts the bot and greets you
+help - is absolutely useless, don't try this
+epoch - shows your message's Unix epoch
+status - sends a detailed status report from the host machine
+whoami - sends you details about yourself
+
