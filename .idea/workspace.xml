@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3832b645-c320-4e2a-aa9d-6e1434dca635" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/test/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test.py" afterDir="false" />
-    </list>
+    <list default="true" id="3832b645-c320-4e2a-aa9d-6e1434dca635" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,16 +11,16 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test/test.py">
+        <entry file="file://$PROJECT_DIR$/../telegram-bot/test.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
-              <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+              <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/pi_status.py">
+        <entry file="file://$PROJECT_DIR$/../telegram-bot/pi_status.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
               <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
@@ -49,6 +47,7 @@
         <option value="$PROJECT_DIR$/test/status.py" />
         <option value="$PROJECT_DIR$/test/pi_status.py" />
         <option value="$PROJECT_DIR$/test/test.py" />
+        <option value="$PROJECT_DIR$/../telegram-bot/test/test.py" />
       </list>
     </option>
   </component>
@@ -68,13 +67,8 @@
         <subPane>
           <expand>
             <path>
-              <item name="telegram-bots" type="b2602c69:ProjectViewProjectNode" />
-              <item name="telegram-bots" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="telegram-bots" type="b2602c69:ProjectViewProjectNode" />
-              <item name="telegram-bots" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="telegram-bot" type="b2602c69:ProjectViewProjectNode" />
+              <item name="telegram-bot" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -82,6 +76,16 @@
       </pane>
       <pane id="Scope" />
     </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../telegram-bot" />
+      <recent name="$PROJECT_DIR$/test" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -255,7 +259,7 @@
   <component name="ToolWindowManager">
     <frame x="479" y="36" width="923" height="841" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24944568" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24944568" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -266,7 +270,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32977304" />
-      <window_info anchor="bottom" id="Terminal" order="8" visible="true" weight="0.42723632" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.42723632" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -286,17 +290,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/pi_status.py">
+    <entry file="file://$PROJECT_DIR$/../telegram-bot/pi_status.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test.py">
+    <entry file="file://$PROJECT_DIR$/../telegram-bot/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
-          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
         </state>
       </provider>
     </entry>
