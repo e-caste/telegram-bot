@@ -82,7 +82,7 @@ def main():
     dp.add_handler(CommandHandler("status", status))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
-    dp.add_handler(CommandHandler("log"), tail_log)
+    dp.add_handler(CommandHandler("log", tail_log))
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))
