@@ -18,4 +18,4 @@ def get_status():
          "\n\nTwitter bot:\n" + ltl_out
 
 def get_log_tail():
-    return subprocess.run(['tail.sh'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    return subprocess.run(['/home/pi/castes-scripts/telegram-bot/tail.sh'], stdout=subprocess.PIPE).stdout.decode('utf-8')
