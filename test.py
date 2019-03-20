@@ -10,7 +10,7 @@ bot = tb.TeleBot("798083745:AAHqys98knTzCWp2_otxe4i9ex98HJx5JO4")
 
 # logs debug messages to console
 logger = tb.logger
-# tb.logger.setLevel(logging.DEBUG)
+tb.logger.setLevel(logging.DEBUG)
 
 # handlers (filters) definitions
 # these are checked IN ORDER
@@ -41,11 +41,11 @@ def echo_all(msg):
     bot.reply_to(msg, msg.text)
 
 # start the bot
-# bot.polling()
+bot.polling()
 # to prevent the bot dying because of Telegram servers stopping it:
-while True:
-    try:
-        bot.polling()
-    except Exception as e:
-        print(e)
-        sleep(10)
+# while True:
+#    try:
+#        bot.polling(timeout=300)
+#    except Exception as e:
+#        print(e)
+#        sleep(10)
