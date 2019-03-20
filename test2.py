@@ -21,7 +21,7 @@ bot.
 
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from pi_status import get_status
+from pi_status import get_status, get_log_tail
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -49,7 +49,7 @@ def echo(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
 
 def status(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text="This will take about 20 seconds. Checking status...")
+    bot.send_message(chat_id=update.message.chat_id, text="This will take about 30 seconds. Checking status...")
     bot.send_message(chat_id=update.message.chat_id, text=get_status())
 
 def epoch(bot, update):
@@ -57,6 +57,9 @@ def epoch(bot, update):
 
 def whoyouare(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(update.message.from_user))
+
+def tail_log(bot, update):
+    bot.send_message(chat_id=update.message.chat_id, text=get_log_tail())
 
 def error(bot, update):
     """Log Errors caused by Updates."""
@@ -79,6 +82,7 @@ def main():
     dp.add_handler(CommandHandler("status", status))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
+    dp.add_handler(CommandHandler("log"), tail_log)
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))

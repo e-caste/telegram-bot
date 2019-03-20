@@ -3,4 +3,5 @@ help - is absolutely useless, don't try this
 epoch - shows your message's Unix epoch
 status - sends a detailed status report from the host machine
 whoami - sends you details about yourself
+log - tails last 10 lines of log
 

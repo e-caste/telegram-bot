@@ -16,3 +16,6 @@ def get_status():
          "\n\nNetwork status:\n" + ifconfig_out + \
          "\n\nPython running:\n" + python_out + \
          "\n\nTwitter bot:\n" + ltl_out
+
+def get_log_tail():
+    return subprocess.run(['tail.sh'], stdout=subprocess.PIPE).stdout.decode('utf-8')
