@@ -19,3 +19,6 @@ def get_status():
 
 def get_log_tail():
     return subprocess.run(['/home/pi/castes-scripts/telegram-bot/tail.sh'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+
+def fortune():
+    return subprocess.run(['fortune'], stdout=subprocess.PIPE).stdout.decode('utf-8')

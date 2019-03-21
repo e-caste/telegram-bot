@@ -6,6 +6,8 @@
 # If you're still using version 11.1.0, please see the examples at
 # https://github.com/python-telegram-bot/python-telegram-bot/tree/v11.1.0/examples
 
+"https://it.wikiquote.org/w/api.php?action=featuredfeed&feed=qotd"
+
 """
 Simple Bot to reply to Telegram messages.
 
@@ -21,7 +23,8 @@ bot.
 
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from pi_status import get_status, get_log_tail
+from pi_status import get_status, get_log_tail, fortune
+from parser import get_wiki_daily_quote
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -61,10 +64,16 @@ def whoyouare(bot, update):
 def tail_log(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=get_log_tail())
 
+def quote(bot, update):
+    bot.send_message(chat_id=update.message.chat_id, text=fortune())
+
+def wiki_quote(bot, update):
+    bot.send_message(chat_id=update.message.chat_id, text=get_wiki_daily_quote())
+
+
 def error(bot, update):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', bot, update.error)
-
 
 def main():
     """Start the bot."""
@@ -83,6 +92,8 @@ def main():
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
     dp.add_handler(CommandHandler("log", tail_log))
+    dp.add_handler(CommandHandler("quote", quote))
+    dp.add_handler(CommandHandler("wikiquote", wiki_quote))
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))

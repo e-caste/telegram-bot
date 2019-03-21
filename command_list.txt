@@ -4,4 +4,6 @@ epoch - shows your message's Unix epoch
 status - sends a detailed status report from the host machine
 whoami - sends you details about yourself
 log - tails last 10 lines of log
+quote - shows random quote from fortune
+wikiquote - shows daily quote from Wikipedia
 
