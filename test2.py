@@ -22,8 +22,9 @@ bot.
 """
 
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from pi_status import get_status, get_log_tail, fortune
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from pi_status import *
 from parser import get_wiki_daily_quote
 
 # Enable logging
@@ -52,8 +53,40 @@ def echo(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
 
 def status(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text="This will take about 30 seconds. Checking status...")
-    bot.send_message(chat_id=update.message.chat_id, text=get_status())
+    # bot.send_message(chat_id=update.message.chat_id, text="This will take about 30 seconds. Checking status...")
+    # bot.send_message(chat_id=update.message.chat_id, text=get_status())
+    # each [] is a line
+    keyboard = [[InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
+                [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
+                [InlineKeyboardButton("python3 pi_status.py", callback_data='full')]]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
+
+def button(update, context):
+    query = context.callback_query
+    reply = ""
+    try:
+        if query.data == 'uptime':
+            reply = get_uptime()
+        elif query.data == 'twlog':
+            reply = get_ltl()
+        elif query.data == 'ppy':
+            reply = get_ppy()
+        elif query.data == 'st':
+            # bot.send_message(chat_id=update.message.chat_id, text="This will take about 30 seconds. Checking speed...")
+            query.edit_message_text(text="This will take about 30 seconds. Checking speed...")
+            reply = get_speedtest()
+        elif query.data == 'full':
+            # bot.send_message(chat_id=update.message.chat_id, text="This will take about 30 seconds. Checking status...")
+            query.edit_message_text(text="This will take about 30 seconds. Checking status...")
+            reply = get_status()
+        query.edit_message_text(text=reply)
+    except Exception as e:
+        query.edit_message_text(text=str(e))
+
+
 
 def epoch(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(update.message.date))
@@ -94,6 +127,9 @@ def main():
     dp.add_handler(CommandHandler("log", tail_log))
     dp.add_handler(CommandHandler("quote", quote))
     dp.add_handler(CommandHandler("wikiquote", wiki_quote))
+
+    # inline messages handler
+    updater.dispatcher.add_handler(CallbackQueryHandler(button))
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))
