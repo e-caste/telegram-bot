@@ -21,9 +21,12 @@ Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
 
+from uuid import uuid4
 import logging
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, \
+    InputTextMessageContent
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, \
+    InlineQueryHandler
 from pi_status import *
 from parser import get_wiki_daily_quote
 
@@ -75,17 +78,37 @@ def button(update, context):
         elif query.data == 'ppy':
             reply = get_ppy()
         elif query.data == 'st':
-            # bot.send_message(chat_id=update.message.chat_id, text="This will take about 30 seconds. Checking speed...")
             query.edit_message_text(text="This will take about 30 seconds. Checking speed...")
             reply = get_speedtest()
         elif query.data == 'full':
-            # bot.send_message(chat_id=update.message.chat_id, text="This will take about 30 seconds. Checking status...")
             query.edit_message_text(text="This will take about 30 seconds. Checking status...")
             reply = get_status()
         query.edit_message_text(text=reply)
     except Exception as e:
         query.edit_message_text(text=str(e))
 
+# THIS IS NOT FOR CONTEXTUAL BUTTONS: THIS IS FOR SUMMONING THE BOT BY @ING IT
+# def inlinequery(update, context):
+#     """Handle the inline query."""
+#     query = update.inline_query.query
+#     results = [
+#         InlineQueryResultArticle(
+#             id=uuid4(),
+#             title="Caps",
+#             input_message_content=InputTextMessageContent(
+#                 query.upper())),
+#         InlineQueryResultArticle(
+#             id=uuid4(),
+#             title="Bold",
+#             input_message_content=InputTextMessageContent(
+#                 "*{}*")),
+#         InlineQueryResultArticle(
+#             id=uuid4(),
+#             title="Italic",
+#             input_message_content=InputTextMessageContent(
+#                 "_{}_"))]
+#
+#     update.inline_query.answer(results)
 
 
 def epoch(bot, update):
@@ -130,6 +153,7 @@ def main():
 
     # inline messages handler
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
+    # dp.add_handler(InlineQueryHandler(inlinequery))
 
     # on noncommand i.e message - echo the message on Telegram
     dp.add_handler(MessageHandler(Filters.text, echo))
