@@ -43,3 +43,7 @@ def get_log_tail():
 
 def fortune():
     return subprocess.run(['fortune'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+
+def get_lasdl():
+    lasdl_out = run_shell_cmd('/home/pi/castes-scripts/lasdl.sh')
+    return lasdl_out

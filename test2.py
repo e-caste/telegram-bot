@@ -61,7 +61,7 @@ def status(bot, update):
     # each [] is a line
     keyboard = [[InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
                 [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
-                [InlineKeyboardButton("python3 pi_status.py", callback_data='full')]]
+                [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -80,6 +80,8 @@ def button(update, context):
         elif query.data == 'st':
             query.edit_message_text(text="This will take about 30 seconds. Checking speed...")
             reply = get_speedtest()
+        elif query.data == 'lasdl':
+            reply = get_lasdl()
         elif query.data == 'full':
             query.edit_message_text(text="This will take about 30 seconds. Checking status...")
             reply = get_status()
