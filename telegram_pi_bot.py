@@ -29,13 +29,13 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
     InlineQueryHandler
 from pi_status import *
 from parser import get_wiki_daily_quote
+from time import time
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
@@ -114,7 +114,7 @@ def button(update, context):
 
 
 def epoch(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=str(update.message.date))
+    bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
 
 def whoyouare(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(update.message.from_user))
