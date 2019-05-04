@@ -30,6 +30,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 from pi_status import *
 from parser import get_wiki_daily_quote
 from time import time
+from robbamia import *
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -55,17 +56,26 @@ def echo(bot, update):
     """Echo the user message."""
     bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
 
+
 def status(bot, update):
     # bot.send_message(chat_id=update.message.chat_id, text="This will take about 30 seconds. Checking status...")
     # bot.send_message(chat_id=update.message.chat_id, text=get_status())
-    # each [] is a line
-    keyboard = [[InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
-                [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
-                [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')]]
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    # only accept input if user is caste
+    if str(update.message.chat_id) == castes_chat_id:
+        # each [] is a line
+        keyboard = [
+                    [InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
+                    [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
+                    [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
+                    [InlineKeyboardButton("sudo apt update", callback_data="apt_update"), InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
 
-    update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
+        update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /status command.")
+
 
 def button(update, context):
     query = context.callback_query
@@ -85,6 +95,12 @@ def button(update, context):
         elif query.data == 'full':
             query.edit_message_text(text="This will take about 30 seconds. Checking status...")
             reply = get_status()
+        elif query.data == "apt_update":
+            query.edit_message_text(text="Updating...")
+            reply = sudo_apt_update()
+        elif query.data == "apt_upgrade":
+            query.edit_message_text(text="Upgrading...")
+            reply = sudo_apt_upgrade()
         query.edit_message_text(text=reply)
     except Exception as e:
         query.edit_message_text(text=str(e))
@@ -120,7 +136,10 @@ def whoyouare(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(update.message.from_user))
 
 def tail_log(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=get_log_tail())
+    if str(update.message.chat_id) == castes_chat_id:
+        bot.send_message(chat_id=update.message.chat_id, text=get_log_tail())
+    else:
+        bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /log command.")
 
 def quote(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=fortune())
@@ -138,7 +157,7 @@ def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
-    updater = Updater("798083745:AAHqys98knTzCWp2_otxe4i9ex98HJx5JO4")
+    updater = Updater(token)
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
