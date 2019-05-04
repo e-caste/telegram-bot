@@ -61,7 +61,7 @@ def apt_list_upgradable():
     return out
 
 def sudo_apt_upgrade():
-    with subprocess.Popen(["sudo", "apt", "upgrade"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+    with subprocess.Popen(["sudo", "apt", "upgrade", "-y"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
         process.wait(300)
         out = "stdout:\n" + process.stdout.read().decode("ascii") + "\nstderr:\n" + process.stderr.read().decode("ascii")
     return out
