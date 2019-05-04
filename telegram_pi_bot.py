@@ -68,7 +68,7 @@ def status(bot, update):
                     [InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
                     [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
                     [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
-                    [InlineKeyboardButton("sudo apt update", callback_data="apt_update"), InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
+                    [InlineKeyboardButton("sudo apt update", callback_data="apt_update"), InlineKeyboardButton("apt list -u", callback_data="apt_list_u"), InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -98,6 +98,8 @@ def button(update, context):
         elif query.data == "apt_update":
             query.edit_message_text(text="Updating...")
             reply = sudo_apt_update()
+        elif query.data == "apt_list_u":
+            reply = apt_list_upgradable()
         elif query.data == "apt_upgrade":
             query.edit_message_text(text="Upgrading...")
             reply = sudo_apt_upgrade()

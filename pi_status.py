@@ -54,6 +54,12 @@ def sudo_apt_update():
         out = "stdout:\n" + process.stdout.read().decode("ascii") + "\nstderr:\n" + process.stderr.read().decode("ascii")
     return out
 
+def apt_list_upgradable():
+    with subprocess.Popen(["apt", "list", "-u"], shell=False, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as process:
+        process.wait(10)
+        out = "stdout:\n" + process.stdout.read().decode("ascii") + "\nstderr:\n" + process.stderr.read().decode("ascii")
+    return out
+
 def sudo_apt_upgrade():
     with subprocess.Popen(["sudo", "apt", "upgrade"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
         process.wait(300)
