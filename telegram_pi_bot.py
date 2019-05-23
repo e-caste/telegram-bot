@@ -32,6 +32,10 @@ from parser import get_wiki_daily_quote
 from time import time
 from robbamia import *
 
+def split_msg_for_telegram(string: str):
+    chars_per_msg = 4096
+    return [string[i:i + chars_per_msg] for i in range(0, len(string), chars_per_msg)]
+
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -68,7 +72,8 @@ def status(bot, update):
                     [InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
                     [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
                     [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
-                    [InlineKeyboardButton("sudo apt update", callback_data="apt_update"), InlineKeyboardButton("apt list -u", callback_data="apt_list_u"), InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
+                    [InlineKeyboardButton("sudo apt update", callback_data="apt_update"), InlineKeyboardButton("apt list -u", callback_data="apt_list_u")],
+                    [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -77,7 +82,7 @@ def status(bot, update):
         bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /status command.")
 
 
-def button(update, context):
+def button(update, context, bot):
     query = context.callback_query
     reply = ""
     try:
@@ -103,7 +108,13 @@ def button(update, context):
         elif query.data == "apt_upgrade":
             query.edit_message_text(text="Upgrading...")
             reply = sudo_apt_upgrade()
-        query.edit_message_text(text=reply)
+
+        for i, split_msg in enumerate(split_msg_for_telegram(reply)):
+            if i == 0:
+                query.edit_message_text(text=reply)
+            else:
+                bot.send_message(chat_id=castes_chat_id, text=split_msg)
+
     except Exception as e:
         query.edit_message_text(text=str(e))
 
