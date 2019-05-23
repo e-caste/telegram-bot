@@ -23,7 +23,7 @@ bot.
 
 from uuid import uuid4
 import logging
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, \
+from telegram import bot, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, \
     InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, \
     InlineQueryHandler
@@ -82,7 +82,7 @@ def status(bot, update):
         bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /status command.")
 
 
-def button(update, context, bot):
+def button(update, context):
     query = context.callback_query
     reply = ""
     try:
@@ -109,14 +109,20 @@ def button(update, context, bot):
             query.edit_message_text(text="Upgrading...")
             reply = sudo_apt_upgrade()
 
-        for i, split_msg in enumerate(split_msg_for_telegram(reply)):
-            if i == 0:
-                query.edit_message_text(text=reply)
-            else:
-                bot.send_message(chat_id=castes_chat_id, text=split_msg)
+        split_reply = split_msg_for_telegram(reply)
+        query.edit_message_text(text=split_reply[0])
+        send_split_msgs(bot.Bot(token), split_reply[1:])
 
     except Exception as e:
         query.edit_message_text(text=str(e))
+
+def send_split_msgs(bot, string_list):
+    try:
+        for string in string_list:
+            bot.send_message(chat_id=castes_chat_id, text=string)
+
+    except Exception as e:
+        print(e)
 
 # THIS IS NOT FOR CONTEXTUAL BUTTONS: THIS IS FOR SUMMONING THE BOT BY @ING IT
 # def inlinequery(update, context):
