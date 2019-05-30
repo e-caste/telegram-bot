@@ -11,7 +11,9 @@ def get_status():
     st_out = run_shell_cmd('speedtest')
     python_out = subprocess.run(['pgrep', '-a', 'python'], stdout=subprocess.PIPE).stdout.decode('utf-8')
     ltl_out = run_shell_cmd('/home/pi/castes-scripts/ltl.sh')
+    cpu_gpu_temps_out = run_shell_cmd('/home/pi/castes-scripts/check_cpu_gpu_temps.sh')
     return "Uptime:\n" + uptime_out + \
+         "\n\n" + cpu_gpu_temps_out + \
          "\n\nSpeedtest:\n" + st_out + \
          "\n\nNetwork status:\n" + ifconfig_out + \
          "\n\nPython running:\n" + python_out + \
@@ -20,6 +22,9 @@ def get_status():
 def get_uptime():
     uptime_out = run_shell_cmd('uptime')
     return "Uptime:\n" + uptime_out
+
+def get_cpu_gpu_temps():
+    return run_shell_cmd('/home/pi/castes-scripts/check_cpu_gpu_temps.sh')
 
 def get_ifconfig():
     ifconfig_out = subprocess.run(['ifconfig', 'eth0'], stdout=subprocess.PIPE).stdout.decode('utf-8')

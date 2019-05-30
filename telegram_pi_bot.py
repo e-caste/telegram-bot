@@ -73,7 +73,7 @@ def status(bot, update):
                     [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
                     [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
                     [InlineKeyboardButton("sudo apt update", callback_data="apt_update"), InlineKeyboardButton("apt list -u", callback_data="apt_list_u")],
-                    [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
+                    [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade"), InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -108,6 +108,8 @@ def button(update, context):
         elif query.data == "apt_upgrade":
             query.edit_message_text(text="Upgrading...")
             reply = sudo_apt_upgrade()
+        elif query.data == "temps":
+            reply = get_cpu_gpu_temps()
 
         split_reply = split_msg_for_telegram(reply)
         query.edit_message_text(text=split_reply[0])
