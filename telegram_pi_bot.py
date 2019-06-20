@@ -29,8 +29,11 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
     InlineQueryHandler
 from pi_status import *
 from parser import get_wiki_daily_quote
-from time import time
+from time import time, sleep
 from robbamia import *
+import threading
+import cercle_evnt_ntfr
+from datetime import datetime, timedelta
 
 def split_msg_for_telegram(string: str):
     chars_per_msg = 4096
@@ -111,6 +114,29 @@ def button(update, context):
         elif query.data == "temps":
             reply = get_cpu_gpu_temps()
 
+        elif query.data == "sub":
+            with open('cercle_chat_ids.txt', 'r+') as db:
+                ids = db.read()
+                if str(update.message.chat_id) in ids:
+                    reply = "You have already subscribed to the new Cercle event notification!"
+                else:
+                    db.write(ids + "\n" + str(update.message.chat_id))
+                    reply = "You will now receive a notification when a new Cercle event is available!"
+        elif query.data == "unsub":
+            with open('cercle_chat_ids.txt', 'r+') as db:
+                ids = db.read()
+                if str(update.message.chat_id) not in ids:
+                    reply = "You are not yet subscribed to notifications."
+                else:
+                    for i, line in enumerate(ids.splitlines()):
+                        if update.message.chat_id not in line:
+                            i += 1
+                        else:
+                            break
+                    del ids.splitlines()[i]
+                    db.write(ids)
+                    reply = "You  won't receive any more notifications."
+
         split_reply = split_msg_for_telegram(reply)
         query.edit_message_text(text=split_reply[0])
         send_split_msgs(bot.Bot(token), split_reply[1:])
@@ -149,6 +175,33 @@ def send_split_msgs(bot, string_list):
 #
 #     update.inline_query.answer(results)
 
+def subscribe_to_cercle_notifications(bot, update):
+    keyboard = [[InlineKeyboardButton("subscribe", callback_data='sub'), InlineKeyboardButton("unsubscribe", callback_data='unsub')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
+
+def check_for_new_cercle_events(bot):
+    while True:
+        try:
+            if int(datetime.now().time().strftime('%k')) < 21:
+                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=21) - datetime.now()).total_seconds())
+                print(time_to_sleep)
+                sleep(time_to_sleep)
+            else:
+                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=21) - datetime.now()).total_seconds())
+                print(time_to_sleep)
+                sleep(time_to_sleep)
+
+            links, texts = cercle_evnt_ntfr.main()
+            if links is not None:
+                with open('cercle_chat_ids.txt', 'r') as ids:
+                    for id in ids.readlines():
+                        for link, text in zip(links, texts):
+                            bot.send_message(chat_id=id, text=text+"\n"+link)
+
+        except Exception as e:
+            print(e)
 
 def epoch(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
@@ -187,6 +240,7 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("status", status))
+    dp.add_handler(CommandHandler("cercle", subscribe_to_cercle_notifications))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
     dp.add_handler(CommandHandler("log", tail_log))
@@ -209,7 +263,13 @@ def main():
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
+    # updater.idle()
+
+    t1 = threading.Thread(target=updater.idle)
+    t2 = threading.Thread(target=notify_weekly(bot.Bot(token)))
+
+    t1.start()
+    t2.start()
 
 
 if __name__ == '__main__':

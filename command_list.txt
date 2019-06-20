@@ -2,6 +2,7 @@ start - starts the bot and greets you
 help - is absolutely useless, don't try this
 epoch - shows your message's Unix epoch
 status - sends a detailed status report from the host machine
+cercle - get/stop notifications for new Cercle events
 whoami - sends you details about yourself
 log - tails last 10 lines of log
 quote - shows random quote from fortune

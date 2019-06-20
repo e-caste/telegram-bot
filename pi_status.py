@@ -1,7 +1,7 @@
 import subprocess
 
 def run_shell_cmd(cmd):
-    # for multiple arguments parse cmd and pass different parts to run
+    # TODO: for multiple arguments parse cmd and pass different parts to run
     # cmd.split(' ')
     return subprocess.run([cmd], stdout=subprocess.PIPE).stdout.decode('utf-8')
 
@@ -41,7 +41,6 @@ def get_ppy():
 def get_ltl():
     ltl_out = run_shell_cmd('/home/pi/castes-scripts/ltl.sh')
     return "Twitter bot:\n" + ltl_out
-
 
 def get_log_tail():
     return subprocess.run(['/home/pi/castes-scripts/telegram-bot/tail.sh'], stdout=subprocess.PIPE).stdout.decode('utf-8')
