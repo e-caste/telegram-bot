@@ -128,9 +128,12 @@ def button(bot_obj, context):
                 if str(id) in ids:
                     reply = "You have already subscribed to the new Cercle event notification!"
                 else:
-                    db.write(ids + "\n" + str(id))
+                    if ids == "":
+                        db.write(id)
+                    else:
+                        db.write(ids + "\n" + str(id))
                     reply = "You will now receive a notification when a new Cercle event is available!"
-            print("SUB")
+                    print("SUBBED " + id)
 
         elif query.data == "unsub":
             with open('cercle_chat_ids.txt', 'r+') as db:
@@ -138,14 +141,13 @@ def button(bot_obj, context):
                 if str(id) not in ids:
                     reply = "You are not yet subscribed to notifications."
                 else:
-                    for i, line in enumerate(ids.splitlines()):
+                    db.seek(0)
+                    for line in ids.splitlines():
                         if id not in line:
-                            i += 1
-                        else:
-                            break
-                    del ids.splitlines()[i]
-                    db.write(ids)
+                            db.write(line)
+                    db.truncate()
                     reply = "You  won't receive any more notifications."
+                    print("UNSUBBED " + id)
 
         split_reply = split_msg_for_telegram(reply)
         query.edit_message_text(text=split_reply[0])
