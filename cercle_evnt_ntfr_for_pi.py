@@ -3,6 +3,7 @@
 from selenium import webdriver
 from pyvirtualdisplay import Display
 from time import sleep
+from subprocess import Popen
 
 def main():
     url = 'https://www.facebook.com/pg/cerclemusic/events/?ref=page_internal'
@@ -70,6 +71,8 @@ def main():
                 db.write(text_event + db_text)
                 db_text = db.read()
 
+    Popen(['killall', 'fiefox-esr'])
+    Popen(['killall', 'Xvfb'])
 
     return link_result, text_result
 
