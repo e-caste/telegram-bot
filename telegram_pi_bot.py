@@ -84,9 +84,16 @@ def status(bot, update):
     else:
         bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /status command.")
 
+def subscribe_to_cercle_notifications(bot, update):
+    keyboard = [[InlineKeyboardButton("subscribe", callback_data='sub'), InlineKeyboardButton("unsubscribe", callback_data='unsub')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
-def button(update, context):
+def button(bot_obj, context):
     query = context.callback_query
+    # id = context.callback_query.chat_instance
+    id = context.callback_query.from_user.id
+    # print(id)
     reply = ""
     try:
         if query.data == 'uptime':
@@ -117,19 +124,21 @@ def button(update, context):
         elif query.data == "sub":
             with open('cercle_chat_ids.txt', 'r+') as db:
                 ids = db.read()
-                if str(update.message.chat_id) in ids:
+                if str(id) in ids:
                     reply = "You have already subscribed to the new Cercle event notification!"
                 else:
-                    db.write(ids + "\n" + str(update.message.chat_id))
+                    db.write(ids + "\n" + str(id))
                     reply = "You will now receive a notification when a new Cercle event is available!"
+            print("SUB")
+
         elif query.data == "unsub":
             with open('cercle_chat_ids.txt', 'r+') as db:
                 ids = db.read()
-                if str(update.message.chat_id) not in ids:
+                if str(id) not in ids:
                     reply = "You are not yet subscribed to notifications."
                 else:
                     for i, line in enumerate(ids.splitlines()):
-                        if update.message.chat_id not in line:
+                        if id not in line:
                             i += 1
                         else:
                             break
@@ -143,6 +152,7 @@ def button(update, context):
 
     except Exception as e:
         query.edit_message_text(text=str(e))
+        print(e)
 
 def send_split_msgs(bot, string_list):
     try:
@@ -150,7 +160,32 @@ def send_split_msgs(bot, string_list):
             bot.send_message(chat_id=castes_chat_id, text=string)
 
     except Exception as e:
+        print("send_split_msgs")
         print(e)
+
+
+def check_for_new_cercle_events(bot):
+    while True:
+        try:
+            if int(datetime.now().time().strftime('%k')) < 21:
+                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=21) - datetime.now()).total_seconds())
+                # time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=9, minutes=21) - datetime.now()).total_seconds())
+                print(time_to_sleep)
+                sleep(time_to_sleep)
+            else:
+                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=21) - datetime.now()).total_seconds())
+                print(time_to_sleep)
+                sleep(time_to_sleep)
+
+            links, texts = cercle_evnt_ntfr.main()
+            if links is not None:
+                with open('cercle_chat_ids.txt', 'r') as ids:
+                    for id in ids.readlines():
+                        for link, text in zip(links, texts):
+                            bot.send_message(chat_id=id, text=text+"\n"+link)
+
+        except Exception as e:
+            print(e)
 
 # THIS IS NOT FOR CONTEXTUAL BUTTONS: THIS IS FOR SUMMONING THE BOT BY @ING IT
 # def inlinequery(update, context):
@@ -174,34 +209,6 @@ def send_split_msgs(bot, string_list):
 #                 "_{}_"))]
 #
 #     update.inline_query.answer(results)
-
-def subscribe_to_cercle_notifications(bot, update):
-    keyboard = [[InlineKeyboardButton("subscribe", callback_data='sub'), InlineKeyboardButton("unsubscribe", callback_data='unsub')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
-
-
-def check_for_new_cercle_events(bot):
-    while True:
-        try:
-            if int(datetime.now().time().strftime('%k')) < 21:
-                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=21) - datetime.now()).total_seconds())
-                print(time_to_sleep)
-                sleep(time_to_sleep)
-            else:
-                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=21) - datetime.now()).total_seconds())
-                print(time_to_sleep)
-                sleep(time_to_sleep)
-
-            links, texts = cercle_evnt_ntfr.main()
-            if links is not None:
-                with open('cercle_chat_ids.txt', 'r') as ids:
-                    for id in ids.readlines():
-                        for link, text in zip(links, texts):
-                            bot.send_message(chat_id=id, text=text+"\n"+link)
-
-        except Exception as e:
-            print(e)
 
 def epoch(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
@@ -266,7 +273,7 @@ def main():
     # updater.idle()
 
     t1 = threading.Thread(target=updater.idle)
-    t2 = threading.Thread(target=notify_weekly(bot.Bot(token)))
+    t2 = threading.Thread(target=check_for_new_cercle_events(bot.Bot(token)))
 
     t1.start()
     t2.start()
