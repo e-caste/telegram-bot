@@ -93,7 +93,7 @@ def subscribe_to_cercle_notifications(bot, update):
 def button(bot_obj, context):
     query = context.callback_query
     # id = context.callback_query.chat_instance
-    id = context.callback_query.from_user.id
+    id = str(context.callback_query.from_user.id)
     # print(id)
     reply = ""
     try:
@@ -125,20 +125,20 @@ def button(bot_obj, context):
         elif query.data == "sub":
             with open('cercle_chat_ids.txt', 'r+') as db:
                 ids = db.read()
-                if str(id) in ids:
+                if id in ids:
                     reply = "You have already subscribed to the new Cercle event notification!"
                 else:
                     if ids == "":
                         db.write(id)
                     else:
-                        db.write(ids + "\n" + str(id))
+                        db.write(ids + "\n" + id)
                     reply = "You will now receive a notification when a new Cercle event is available!"
                     print("SUBBED " + id)
 
         elif query.data == "unsub":
             with open('cercle_chat_ids.txt', 'r+') as db:
                 ids = db.read()
-                if str(id) not in ids:
+                if id not in ids:
                     reply = "You are not yet subscribed to notifications."
                 else:
                     db.seek(0)
