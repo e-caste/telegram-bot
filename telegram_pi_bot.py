@@ -131,7 +131,9 @@ def button(bot_obj, context):
                     if ids == "":
                         db.write(id)
                     else:
+                        db.seek(0)
                         db.write(ids + "\n" + id)
+                        db.truncate()
                     reply = "You will now receive a notification when a new Cercle event is available!"
                     print("SUBBED " + id)
 
