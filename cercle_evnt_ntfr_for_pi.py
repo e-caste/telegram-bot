@@ -46,20 +46,15 @@ def main():
 
 
     # ALSO UPDATE EVENT DETAILS FILE
+    text_list = []
     if upcoming_events_card.text.count("Get Tickets") == 1:
         full_text = upcoming_events_card.text.split("Share Events\n")[1].split("·")[0] + \
                     upcoming_events_card.text.split("guests")[1].split("Get Tickets")[0]
-        text_list = []
         text_list.append(full_text)
     else:
-        text_list = upcoming_events_card.text.split("Share Events\n")[1].split("Get Tickets")
-        full_text = ""
-        for item in text_list:
-            full_text += item.split("·")[0] + item.split("guests")[1]
-            full_text += "\n\n"
-        del full_text[:-2]
-
-    # print(full_text)
+        text_list_with_guest_numbers = upcoming_events_card.text.split("Share Events\n")[1].split("Get Tickets")
+        for item in text_list_with_guest_numbers:
+            text_list.append(item.split("·")[0] + item.split("guests")[1])
 
     with open('cercle_events.txt', 'r+') as db:
         db_text = db.read()
@@ -71,50 +66,17 @@ def main():
                 db.write(text_event + db_text)
                 db_text = db.read()
 
-    Popen(['killall', 'fiefox-esr'])
-    Popen(['killall', 'Xvfb'])
+    processes_to_kill = [
+        "firefox-esr",
+        "Xvfb"
+    ]
+    for process in processes_to_kill:
+        Popen(['killall', process])
 
-    return link_result, text_result
+    if len(link_result) == len(text_result):
+        return link_result, text_result
+    else:
+        return link_result, None
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-# import requests
-# from bs4 import BeautifulSoup
-# import re
-#
-#
-# def main():
-#     url = 'https://www.facebook.com/pg/cerclemusic/events/?ref=page_internal'
-#     events_fb_page = requests.get(url)
-#     # soup = BeautifulSoup(events_fb_page.text, 'html.parser')
-#     soup = BeautifulSoup(events_fb_page.text, 'html5lib')
-#
-#     # upcoming_events_card = soup.find_all()
-#     upcoming_events_card = soup.find_all(id="upcoming_events_card")
-#     # events = soup.find_all('a', attrs={'data-hovercard'})
-#     # events = soup.find_all(href=re.compile("/events/"))
-#     events = []
-#     for event in upcoming_events_card: # .find_all(href=re.compile("/events/"))
-#         print(event)
-#
-#     # if events is not None:
-#     #     for event in events.find_all('a'):
-#     #         print(event)
-#     #     exit(0)
-#     # else:
-#     #     exit(1)
-#
-# # upcoming_events_card = soup.find('div', {'id': 'upcoming_events_card'})
-# # upcoming_events = upcoming_events_card.find_all('a')
-#
-#
-# if __name__ == '__main__':
-#     main()
