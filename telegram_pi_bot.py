@@ -33,6 +33,7 @@ from time import time, sleep
 from robbamia import *
 import threading
 import cercle_evnt_ntfr
+import cercle_evnt_ntfr_for_pi
 from datetime import datetime, timedelta
 import os
 
@@ -182,7 +183,9 @@ def check_for_new_cercle_events(bot):
                 print(time_to_sleep)
                 sleep(time_to_sleep)
 
-            links, texts = cercle_evnt_ntfr.main()
+            # links, texts = cercle_evnt_ntfr.main()
+            # on Raspberry Pi:
+            links, texts = cercle_evnt_ntfr_for_pi.main()
             if links is not None:
                 with open('cercle_chat_ids.txt', 'r') as ids:
                     for id in ids.readlines():
