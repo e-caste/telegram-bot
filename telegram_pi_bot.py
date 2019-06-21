@@ -34,6 +34,7 @@ from robbamia import *
 import threading
 import cercle_evnt_ntfr
 from datetime import datetime, timedelta
+import os
 
 def split_msg_for_telegram(string: str):
     chars_per_msg = 4096
@@ -234,6 +235,9 @@ def error(bot, update):
     logger.warning('Update "%s" caused error "%s"', bot, update.error)
 
 def main():
+    # if on Raspberry Pi:
+    os.chdir('/home/pi/castes-scripts/telegram-bot')
+
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
