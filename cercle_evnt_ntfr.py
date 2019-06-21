@@ -46,14 +46,15 @@ def main():
 
     # ALSO UPDATE EVENT DETAILS FILE
     if upcoming_events_card.text.count("Get Tickets") == 1:
-        full_text = upcoming_events_card.text.split("Share Events\n")[1].split("Get Tickets")[0]
+        full_text = upcoming_events_card.text.split("Share Events\n")[1].split("·")[0] + \
+                    upcoming_events_card.text.split("guests")[1].split("Get Tickets")[0]
         text_list = []
         text_list.append(full_text)
     else:
         text_list = upcoming_events_card.text.split("Share Events\n")[1].split("Get Tickets")
         full_text = ""
         for item in text_list:
-            full_text += item
+            full_text += item.split("·")[0] + item.split("guests")[1]
             full_text += "\n\n"
         del full_text[:-2]
 
