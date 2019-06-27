@@ -87,7 +87,10 @@ def status(bot, update):
         bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /status command.")
 
 def subscribe_to_cercle_notifications(bot, update):
-    keyboard = [[InlineKeyboardButton("subscribe", callback_data='sub'), InlineKeyboardButton("unsubscribe", callback_data='unsub')]]
+    keyboard = [
+        [InlineKeyboardButton("Subscribe", callback_data='sub'), InlineKeyboardButton("Unsubscribe", callback_data='unsub')],
+        [InlineKeyboardButton("Link to Facebook page of Cercle", callback_data='fblink')]
+    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
@@ -123,7 +126,7 @@ def button(bot_obj, context):
         elif query.data == "temps":
             reply = get_cpu_gpu_temps()
 
-        elif query.data == "sub":
+        elif query.data == 'sub':
             with open('cercle_chat_ids.txt', 'r+') as db:
                 ids = db.read()
                 if id in ids:
@@ -138,7 +141,7 @@ def button(bot_obj, context):
                     reply = "You will now receive a notification when a new Cercle event is available!"
                     print("SUBBED " + id)
 
-        elif query.data == "unsub":
+        elif query.data == 'unsub':
             with open('cercle_chat_ids.txt', 'r+') as db:
                 ids = db.read()
                 if id not in ids:
@@ -151,6 +154,9 @@ def button(bot_obj, context):
                     db.truncate()
                     reply = "You  won't receive any more notifications."
                     print("UNSUBBED " + id)
+
+        elif query.data == 'fblink':
+            reply = "Here is the link to the events page of Cercle:\nhttps://www.facebook.com/pg/cerclemusic/events/"
 
         split_reply = split_msg_for_telegram(reply)
         query.edit_message_text(text=split_reply[0])
