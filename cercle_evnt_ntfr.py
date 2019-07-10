@@ -2,6 +2,9 @@
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.common.by import By
 from time import sleep
 
 def main():
@@ -15,6 +18,11 @@ def main():
 
     while True:
         try:
+            WebDriverWait(driver, timeout=120).until(
+                expected_conditions.presence_of_element_located(
+                    (By.XPATH, "//div[@id='upcoming_events_card']//a")
+                )
+            )
             upcoming_events_card = driver.find_element_by_id('upcoming_events_card')
             events = upcoming_events_card.find_element_by_xpath('descendant::a')
             break
@@ -71,7 +79,8 @@ def main():
                 db_text = db.read()
 
 
-    return link_result, text_result
+    # return link_result, text_result
+    print(link_result + text_result)
 
 if __name__ == '__main__':
     main()

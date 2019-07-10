@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.common.by import By
 from pyvirtualdisplay import Display
 from time import sleep
 from subprocess import Popen
@@ -13,9 +16,15 @@ def main():
     driver.get(url)
     link_result = []
     text_result = []
+    retry_times = 30
 
-    while True:
+    for _ in range(retry_times):
         try:
+            WebDriverWait(driver, timeout=120).until(
+                expected_conditions.presence_of_element_located(
+                    (By.XPATH, "//div[@id='upcoming_events_card']//a")
+                )
+            )
             upcoming_events_card = driver.find_element_by_id('upcoming_events_card')
             events = upcoming_events_card.find_element_by_xpath('descendant::a')
             break
@@ -27,18 +36,15 @@ def main():
         links_to_events = []
         for event in events:
             links_to_events.append(event.get_attribute('href').split("?")[0])
-            # print(event.get_attribute('href'))
     else:
         links_to_events = []
         links_to_events.append(events.get_attribute('href').split("?")[0])
-        # print(link_to_event)
 
     # UPDATE EVENT LINKS FILE
     with open('cercle_events_links.txt', 'r+') as db:
         db_links = db.read()
         for link in links_to_events:
             if link not in db_links:
-                # notify user via Telegram
                 link_result.append(link)
                 db.seek(0)
                 db.write(link + "\n" + db_links)
@@ -60,7 +66,6 @@ def main():
         db_text = db.read()
         for text_event in text_list:
             if text_event not in db_text:
-                # notify user via Telegram
                 text_result.append(text_event)
                 db.seek(0)
                 db.write(text_event + db_text)
