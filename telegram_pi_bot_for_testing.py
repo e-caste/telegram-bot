@@ -33,7 +33,7 @@ from time import time, sleep
 from robbamia import *
 import threading
 import cercle_evnt_ntfr
-import cercle_evnt_ntfr_for_pi
+# import cercle_evnt_ntfr_for_pi # TODO: uncomment
 from datetime import datetime, timedelta
 import os
 from nmt_chatbot.inference import inference
@@ -259,7 +259,7 @@ def error(bot, update):
 
 def main():
     # if on Raspberry Pi:
-    os.chdir('/home/pi/castes-scripts/telegram-bot')
+    # os.chdir('/home/pi/castes-scripts/telegram-bot') # TODO: uncomment
 
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
