@@ -67,8 +67,10 @@ def help(bot, update):
 #     bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
 
 def chatbot(bot, update):
-    nmt_result = inference(update.message.text)
-    bot.send_message(chat_id=update.message.chat_id, text=nmt_result['answers'][nmt_result['best_index']])
+    # to reduce CPU strain and limit usage to known people
+    if update.message.chat_id == castes_chat_id or update.message.chat_id == gabbias_chat_id:
+        nmt_result = inference(update.message.text)
+        bot.send_message(chat_id=update.message.chat_id, text=nmt_result['answers'][nmt_result['best_index']])
 
 
 def status(bot, update):
