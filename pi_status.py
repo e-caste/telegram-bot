@@ -22,7 +22,8 @@ def get_status():
 def get_uptime():
     uptime_out = run_shell_cmd('uptime')
     free_h_out = subprocess.run(["free","-h"], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    return "Uptime:\n" + uptime_out + "\nMemory:\n" + free_h_out
+    df_h_root_out = subprocess.run(["df","-h", "/"], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    return uptime_out + "\n\n" + free_h_out + "\n\n" + df_h_root_out
 
 def get_cpu_gpu_temps():
     return run_shell_cmd('/home/pi/castes-scripts/check_cpu_gpu_temps.sh')
