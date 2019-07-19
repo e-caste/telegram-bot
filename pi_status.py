@@ -70,3 +70,6 @@ def sudo_apt_upgrade():
         process.wait(600)
         out = "stdout:\n" + process.stdout.read().decode("ascii") + "\nstderr:\n" + process.stderr.read().decode("ascii")
     return out
+
+def get_disk_usage():
+    return subprocess.run(["df", "-h"], stdout=subprocess.PIPE).stdout.decode('utf-8')

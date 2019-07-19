@@ -85,7 +85,8 @@ def status(bot, update):
                     [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
                     [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
                     [InlineKeyboardButton("sudo apt update", callback_data="apt_update"), InlineKeyboardButton("apt list -u", callback_data="apt_list_u")],
-                    [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade"), InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps")]
+                    [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade"), InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps")],
+                    [InlineKeyboardButton("df -h", callback_data="df_h")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -132,6 +133,8 @@ def button(bot_obj, context):
             reply = sudo_apt_upgrade()
         elif query.data == "temps":
             reply = get_cpu_gpu_temps()
+        elif query.data == "df_h":
+            reply = get_disk_usage()
 
         elif query.data == 'sub':
             with open('cercle_chat_ids.txt', 'r+') as db:
