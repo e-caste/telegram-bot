@@ -84,15 +84,28 @@ def status(bot, update):
                     [InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
                     [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
                     [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
-                    [InlineKeyboardButton("sudo apt update", callback_data="apt_update"), InlineKeyboardButton("apt list -u", callback_data="apt_list_u")],
-                    [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade"), InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps")],
-                    [InlineKeyboardButton("df -h", callback_data="df_h")]
+                    [InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps"), InlineKeyboardButton("df -h", callback_data="df_h")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
         update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
     else:
-        bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /status command.")
+        bot.send_message(chat_id=update.message.chat_id,
+                         text="⚠️ You don't have permission to use the /status command.")
+
+def apt(bot, update):
+    if str(update.message.chat_id) == castes_chat_id:
+        keyboard = [
+            [InlineKeyboardButton("sudo apt update", callback_data="apt_update")],
+            [InlineKeyboardButton("apt list -u", callback_data="apt_list_u")],
+            [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
+    else:
+        bot.send_message(chat_id=update.message.chat_id,
+                         text="⚠️ You don't have permission to use the /apt command.")
 
 def subscribe_to_cercle_notifications(bot, update):
     keyboard = [
@@ -264,7 +277,7 @@ def error(bot, update):
 
 def main():
     # if on Raspberry Pi:
-    os.chdir('/home/pi/castes-scripts/telegram-bot')
+    os.chdir(raspi_wd)
 
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
@@ -280,6 +293,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("status", status))
     dp.add_handler(CommandHandler("cercle", subscribe_to_cercle_notifications))
+    dp.add_handler(CommandHandler("apt", apt))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
     dp.add_handler(CommandHandler("log", tail_log))
