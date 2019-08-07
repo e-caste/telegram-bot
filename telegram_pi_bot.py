@@ -32,8 +32,8 @@ from parser import get_wiki_daily_quote
 from time import time, sleep
 from robbamia import *
 import threading
-import cercle_evnt_ntfr
-import cercle_evnt_ntfr_for_pi
+import evnt_ntfr
+import evnt_ntfr_for_pi
 from datetime import datetime, timedelta
 import os
 from nmt_chatbot.inference import inference
@@ -109,8 +109,16 @@ def apt(bot, update):
 
 def subscribe_to_cercle_notifications(bot, update):
     keyboard = [
-        [InlineKeyboardButton("Subscribe", callback_data='sub'), InlineKeyboardButton("Unsubscribe", callback_data='unsub')],
-        [InlineKeyboardButton("Link to Facebook page of Cercle", callback_data='fblink')]
+        [InlineKeyboardButton("Subscribe", callback_data='sub_cercle'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_cercle')],
+        [InlineKeyboardButton("Link to Facebook page of Cercle", callback_data='fblink_cercle')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
+def subscribe_to_thedreamers_notifications(bot, update):
+    keyboard = [
+        [InlineKeyboardButton("Subscribe", callback_data='sub_thedreamers'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_thedreamers')],
+        [InlineKeyboardButton("Link to Facebook page of TheDreamers", callback_data='fblink_thedreamers')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Choose an option:', reply_markup=reply_markup)
@@ -149,11 +157,19 @@ def button(bot_obj, context):
         elif query.data == "df_h":
             reply = get_disk_usage()
 
-        elif query.data == 'sub':
-            with open('cercle_chat_ids.txt', 'r+') as db:
+
+        elif query.data.startswith("sub"):
+            if "cercle" in query.data:
+                filenamestart = "cercle"
+            elif "thedreamers" in query.data:
+                filenamestart = "thedreamers"
+            else:
+                print("No corresponding chat_ids file found")
+                return
+            with open(filenamestart + '_chat_ids.txt', 'r+') as db:
                 ids = db.read()
                 if id in ids:
-                    reply = "You have already subscribed to the new Cercle event notification!"
+                    reply = "You have already subscribed to the new " + filenamestart.capitalize() + " event notification!"
                 else:
                     if ids == "":
                         db.write(id)
@@ -161,11 +177,18 @@ def button(bot_obj, context):
                         db.seek(0)
                         db.write(ids + "\n" + id)
                         db.truncate()
-                    reply = "You will now receive a notification when a new Cercle event is available!"
-                    print("SUBBED " + id)
+                    reply = "You will now receive a notification when a new " + filenamestart.capitalize() + " event is available!"
+                    print("SUBBED " + filenamestart + " " + id)
 
-        elif query.data == 'unsub':
-            with open('cercle_chat_ids.txt', 'r+') as db:
+        elif query.data.startswith("unsub"):
+            if "cercle" in query.data:
+                filenamestart = "cercle"
+            elif "thedreamers" in query.data:
+                filenamestart = "thedreamers"
+            else:
+                print("No corresponding chat_ids file found")
+                return
+            with open(filenamestart + '_chat_ids.txt', 'r+') as db:
                 ids = db.read()
                 if id not in ids:
                     reply = "You are not yet subscribed to notifications."
@@ -176,10 +199,14 @@ def button(bot_obj, context):
                             db.write(line)
                     db.truncate()
                     reply = "You  won't receive any more notifications."
-                    print("UNSUBBED " + id)
+                    print("UNSUBBED " + filenamestart + " " + id)
 
-        elif query.data == 'fblink':
+
+        elif query.data == 'fblink_cercle':
             reply = "Here is the link to the events page of Cercle:\nhttps://www.facebook.com/pg/cerclemusic/events/"
+
+        elif query.data == 'fblink_thedreamers':
+            reply = "Here is the link to the events page of TheDreamers:\nhttps://www.facebook.com/thedreamersrec/events/"
 
         split_reply = split_msg_for_telegram(reply)
         query.edit_message_text(text=split_reply[0])
@@ -199,7 +226,7 @@ def send_split_msgs(bot, string_list):
         print(e)
 
 
-def check_for_new_cercle_events(bot):
+def check_for_new_events(bot):
     while True:
         try:
             if int(datetime.now().time().strftime('%k')) < 21:
@@ -214,17 +241,23 @@ def check_for_new_cercle_events(bot):
 
             # links, texts = cercle_evnt_ntfr.main()
             # on Raspberry Pi:
-            links, texts = cercle_evnt_ntfr_for_pi.main()
+            chat_ids_list = [
+                'cercle_chat_ids.txt',
+                'thedreamers_chat_ids.txt'
+            ]
+            links, texts = evnt_ntfr_for_pi.main()
             if links is not None and texts is not None:
-                with open('cercle_chat_ids.txt', 'r') as ids:
-                    for id in ids.readlines():
-                        for link, text in zip(links, texts):
-                            bot.send_message(chat_id=id, text=text+"\n"+link)
+                for links_list, text_list, chat_ids in zip(links, texts, chat_ids_list):
+                    with open(chat_ids, 'r') as ids:
+                        for id in ids.readlines():
+                            for link, text in zip(links_list, text_list):
+                                bot.send_message(chat_id=id, text=text+"\n"+link)
             elif links is not None and texts is None:
-                with open('cercle_chat_ids.txt', 'r') as ids:
-                    for id in ids.readlines():
-                        for link in links:
-                            bot.send_message(chat_id=id, text=link)
+                for links_list, chat_ids in zip(links, chat_ids_list):
+                    with open(chat_ids, 'r') as ids:
+                        for id in ids.readlines():
+                            for link in links_list:
+                                bot.send_message(chat_id=id, text=link)
 
         except Exception as e:
             print(e)
@@ -293,6 +326,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("status", status))
     dp.add_handler(CommandHandler("cercle", subscribe_to_cercle_notifications))
+    dp.add_handler(CommandHandler("thedreamers", subscribe_to_thedreamers_notifications))
     dp.add_handler(CommandHandler("apt", apt))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
@@ -320,7 +354,7 @@ def main():
     # updater.idle()
 
     t1 = threading.Thread(target=updater.idle)
-    t2 = threading.Thread(target=check_for_new_cercle_events(bot.Bot(token)))
+    t2 = threading.Thread(target=check_for_new_events(bot.Bot(token)))
 
     t1.start()
     t2.start()
