@@ -248,7 +248,7 @@ def button(bot_obj, context):
         elif query.data == 'fblink_thedreamers':
             reply = "Here is the link to the events page of TheDreamers:\nhttps://www.facebook.com/thedreamersrec/events/"
 
-        elif query.data == 'fblink_supermarket':
+        elif query.data == 'fblink_super':
             reply = "Here is the link to the events page of Supermarket:\nhttps://www.facebook.com/pg/SupermarketTorino/events/"
 
         if reply != "":
