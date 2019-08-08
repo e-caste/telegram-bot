@@ -32,7 +32,7 @@ from parser import get_wiki_daily_quote
 from time import time, sleep
 from robbamia import *
 import threading
-import evnt_ntfr
+# import evnt_ntfr
 import evnt_ntfr_for_pi
 from datetime import datetime, timedelta
 import os
@@ -107,7 +107,7 @@ def apt(bot, update):
         bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /apt command.")
 
-def events_menu(bot, update):
+def events_menu(bot, update, use_callback : bool = False):
     keyboard = [
         [InlineKeyboardButton("Cercle", callback_data='cercle')],
         [InlineKeyboardButton("TheDreamers", callback_data='thedreamers')],
@@ -115,7 +115,10 @@ def events_menu(bot, update):
         [InlineKeyboardButton("Close ❌", callback_data='close_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
+    if use_callback:
+        update.callback_query.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
+    else:
+        update.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
 
 def subscribe_to_cercle_notifications(bot, update):
     keyboard = [
@@ -124,7 +127,7 @@ def subscribe_to_cercle_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 def subscribe_to_thedreamers_notifications(bot, update):
     keyboard = [
@@ -133,7 +136,7 @@ def subscribe_to_thedreamers_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 def subscribe_to_supermarket_notifications(bot, update):
     keyboard = [
@@ -142,7 +145,7 @@ def subscribe_to_supermarket_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 # context is an Update object
 def button(bot_obj, context):
@@ -187,7 +190,7 @@ def button(bot_obj, context):
         elif query.data == 'supermarket':
             subscribe_to_supermarket_notifications(bot_obj, context)
         elif query.data == 'back_to_events_menu':
-            events_menu(bot_obj, context)
+            events_menu(bot_obj, context, use_callback=True)
         elif query.data == 'close_events_menu':
             reply = "Closed. ☠️"
 
