@@ -116,7 +116,7 @@ def events_menu(bot, update, use_callback : bool = False):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     if use_callback:
-        update.callback_query.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
+        update.callback_query.edit_message_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
     else:
         update.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
 
@@ -127,7 +127,7 @@ def subscribe_to_cercle_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.edit_message_text('Choose an option:', reply_markup=reply_markup)
 
 def subscribe_to_thedreamers_notifications(bot, update):
     keyboard = [
@@ -136,7 +136,7 @@ def subscribe_to_thedreamers_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.edit_message_text('Choose an option:', reply_markup=reply_markup)
 
 def subscribe_to_supermarket_notifications(bot, update):
     keyboard = [
@@ -145,7 +145,7 @@ def subscribe_to_supermarket_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.edit_message_text('Choose an option:', reply_markup=reply_markup)
 
 # context is an Update object
 def button(bot_obj, context):
