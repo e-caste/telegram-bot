@@ -14,17 +14,20 @@ def main():
 
     urls = [
         'https://www.facebook.com/pg/cerclemusic/events/?ref=page_internal',
-        'https://www.facebook.com/pg/thedreamersrec/events/?ref=page_internal'
+        'https://www.facebook.com/pg/thedreamersrec/events/?ref=page_internal',
+        'https://www.facebook.com/pg/SupermarketTorino/events/?ref=page_internal'
     ]
 
     links = [
         'cercle_events_links.txt',
-        'thedreamers_events_links.txt'
+        'thedreamers_events_links.txt',
+        'supermarket_events_links.txt'
     ]
 
     texts = [
         'cercle_events.txt',
-        'thedreamers_events.txt'
+        'thedreamers_events.txt',
+        'supermarket_events.txt'
     ]
 
     # make list of dicts

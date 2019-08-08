@@ -107,10 +107,21 @@ def apt(bot, update):
         bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /apt command.")
 
+def events_menu(bot, update):
+    keyboard = [
+        [InlineKeyboardButton("Cercle", callback_data='cercle')],
+        [InlineKeyboardButton("TheDreamers", callback_data='thedreamers')],
+        [InlineKeyboardButton("Supermarket", callback_data='supermarket')],
+        [InlineKeyboardButton("Close ❌", callback_data='close_events_menu')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
+
 def subscribe_to_cercle_notifications(bot, update):
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='sub_cercle'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_cercle')],
-        [InlineKeyboardButton("Link to Facebook page of Cercle", callback_data='fblink_cercle')]
+        [InlineKeyboardButton("Link to Facebook page of Cercle", callback_data='fblink_cercle')],
+        [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Choose an option:', reply_markup=reply_markup)
@@ -118,11 +129,22 @@ def subscribe_to_cercle_notifications(bot, update):
 def subscribe_to_thedreamers_notifications(bot, update):
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='sub_thedreamers'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_thedreamers')],
-        [InlineKeyboardButton("Link to Facebook page of TheDreamers", callback_data='fblink_thedreamers')]
+        [InlineKeyboardButton("Link to Facebook page of TheDreamers", callback_data='fblink_thedreamers')],
+        [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
+def subscribe_to_supermarket_notifications(bot, update):
+    keyboard = [
+        [InlineKeyboardButton("Subscribe", callback_data='sub_super'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_super')],
+        [InlineKeyboardButton("Link to Facebook page of Supermarket", callback_data='fblink_super')],
+        [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
+# context is an Update object
 def button(bot_obj, context):
     query = context.callback_query
     # id = context.callback_query.chat_instance
@@ -158,11 +180,24 @@ def button(bot_obj, context):
             reply = get_disk_usage()
 
 
+        elif query.data == 'cercle':
+            subscribe_to_cercle_notifications(bot_obj, context)
+        elif query.data == 'thedreamers':
+            subscribe_to_thedreamers_notifications(bot_obj, context)
+        elif query.data == 'supermarket':
+            subscribe_to_supermarket_notifications(bot_obj, context)
+        elif query.data == 'back_to_events_menu':
+            events_menu(bot_obj, context)
+        elif query.data == 'close_events_menu':
+            reply = "Closed. ☠️"
+
         elif query.data.startswith("sub"):
             if "cercle" in query.data:
                 filenamestart = "cercle"
             elif "thedreamers" in query.data:
                 filenamestart = "thedreamers"
+            elif "super" in query.data:
+                filenamestart = "supermarket"
             else:
                 print("No corresponding chat_ids file found")
                 return
@@ -185,6 +220,8 @@ def button(bot_obj, context):
                 filenamestart = "cercle"
             elif "thedreamers" in query.data:
                 filenamestart = "thedreamers"
+            elif "super" in query.data:
+                filenamestart = "supermarket"
             else:
                 print("No corresponding chat_ids file found")
                 return
@@ -207,6 +244,9 @@ def button(bot_obj, context):
 
         elif query.data == 'fblink_thedreamers':
             reply = "Here is the link to the events page of TheDreamers:\nhttps://www.facebook.com/thedreamersrec/events/"
+
+        elif query.data == 'fblink_supermarket':
+            reply = "Here is the link to the events page of Supermarket:\nhttps://www.facebook.com/pg/SupermarketTorino/events/"
 
         split_reply = split_msg_for_telegram(reply)
         query.edit_message_text(text=split_reply[0])
@@ -243,7 +283,8 @@ def check_for_new_events(bot):
             # on Raspberry Pi:
             chat_ids_list = [
                 'cercle_chat_ids.txt',
-                'thedreamers_chat_ids.txt'
+                'thedreamers_chat_ids.txt',
+                'supermarket_chat_ids.txt'
             ]
             links, texts = evnt_ntfr_for_pi.main()
             if links is not None and texts is not None:
@@ -325,8 +366,9 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("status", status))
-    dp.add_handler(CommandHandler("cercle", subscribe_to_cercle_notifications))
-    dp.add_handler(CommandHandler("thedreamers", subscribe_to_thedreamers_notifications))
+    # dp.add_handler(CommandHandler("cercle", subscribe_to_cercle_notifications))
+    # dp.add_handler(CommandHandler("thedreamers", subscribe_to_thedreamers_notifications))
+    dp.add_handler(CommandHandler("events", events_menu))
     dp.add_handler(CommandHandler("apt", apt))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
