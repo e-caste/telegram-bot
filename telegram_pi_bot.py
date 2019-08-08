@@ -32,8 +32,8 @@ from parser import get_wiki_daily_quote
 from time import time, sleep
 from robbamia import *
 import threading
-# import evnt_ntfr
-import evnt_ntfr_for_pi
+import evnt_ntfr
+import evnt_ntfr_for_pi     # TODO: change to debug locally
 from datetime import datetime, timedelta
 import os
 from nmt_chatbot.inference import inference
@@ -116,7 +116,7 @@ def events_menu(bot, update, use_callback : bool = False):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     if use_callback:
-        update.callback_query.edit_message_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
+        update.callback_query.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
     else:
         update.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
 
@@ -127,7 +127,7 @@ def subscribe_to_cercle_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.edit_message_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 def subscribe_to_thedreamers_notifications(bot, update):
     keyboard = [
@@ -136,7 +136,7 @@ def subscribe_to_thedreamers_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.edit_message_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 def subscribe_to_supermarket_notifications(bot, update):
     keyboard = [
@@ -145,9 +145,9 @@ def subscribe_to_supermarket_notifications(bot, update):
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.edit_message_text('Choose an option:', reply_markup=reply_markup)
+    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
-# context is an Update object
+# context is an Update object!
 def button(bot_obj, context):
     query = context.callback_query
     # id = context.callback_query.chat_instance
@@ -251,9 +251,12 @@ def button(bot_obj, context):
         elif query.data == 'fblink_supermarket':
             reply = "Here is the link to the events page of Supermarket:\nhttps://www.facebook.com/pg/SupermarketTorino/events/"
 
-        split_reply = split_msg_for_telegram(reply)
-        query.edit_message_text(text=split_reply[0])
-        send_split_msgs(bot.Bot(token), split_reply[1:])
+        if reply != "":
+            split_reply = split_msg_for_telegram(reply)
+            query.edit_message_text(text=split_reply[0])
+            send_split_msgs(bot.Bot(token), split_reply[1:])
+        else:
+            query.message.delete() # TODO: should use query.edit_message_reply_markup() but "too many chat_ids were given"
 
     except Exception as e:
         query.edit_message_text(text=str(e))
@@ -282,7 +285,6 @@ def check_for_new_events(bot):
                 print(time_to_sleep)
                 sleep(time_to_sleep)
 
-            # links, texts = cercle_evnt_ntfr.main()
             # on Raspberry Pi:
             chat_ids_list = [
                 'cercle_chat_ids.txt',
@@ -290,6 +292,7 @@ def check_for_new_events(bot):
                 'supermarket_chat_ids.txt'
             ]
             links, texts = evnt_ntfr_for_pi.main()
+            # links, texts = evnt_ntfr.main()     # TODO: change to debug locally
             if links is not None and texts is not None:
                 for links_list, text_list, chat_ids in zip(links, texts, chat_ids_list):
                     with open(chat_ids, 'r') as ids:
@@ -354,7 +357,7 @@ def error(bot, update):
 
 def main():
     # if on Raspberry Pi:
-    os.chdir(raspi_wd)
+    os.chdir(raspi_wd) # TODO: change to debug locally
 
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
