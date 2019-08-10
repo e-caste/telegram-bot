@@ -84,7 +84,8 @@ def status(bot, update):
                     [InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
                     [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
                     [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
-                    [InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps"), InlineKeyboardButton("df -h", callback_data="df_h")]
+                    [InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps"), InlineKeyboardButton("df -h", callback_data="df_h")],
+                    [InlineKeyboardButton("full tg bot log", callback_data='full_tg_log')]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -181,6 +182,9 @@ def button(bot_obj, context):
             reply = get_cpu_gpu_temps()
         elif query.data == "df_h":
             reply = get_disk_usage()
+        elif query.data == 'full_tg_log':
+            log_path = tg_log_path + os.listdir(tg_log_path)[-1] # TODO: sync robbamia.py
+            bot_obj.send_document(chat_id=id, document=open(log_path, 'rb'))
 
 
         elif query.data == 'cercle':
