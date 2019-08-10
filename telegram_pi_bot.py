@@ -33,7 +33,6 @@ from time import time, sleep
 from robbamia import *
 import threading
 import evnt_ntfr
-import evnt_ntfr_for_pi     # TODO: change to debug locally
 from datetime import datetime, timedelta
 import os
 from nmt_chatbot.inference import inference
@@ -183,7 +182,7 @@ def button(bot_obj, context):
         elif query.data == "df_h":
             reply = get_disk_usage()
         elif query.data == 'full_tg_log':
-            log_path = tg_log_path + os.listdir(tg_log_path)[-1] # TODO: sync robbamia.py
+            log_path = tg_log_path + os.listdir(tg_log_path).sort()[-1]
             bot_obj.send_document(chat_id=id, document=open(log_path, 'rb'))
 
 
@@ -196,7 +195,8 @@ def button(bot_obj, context):
         elif query.data == 'back_to_events_menu':
             events_menu(bot_obj, context, use_callback=True)
         elif query.data == 'close_events_menu':
-            reply = "Closed. ☠️"
+            # reply = "Closed. ☠️"
+            pass
 
         elif query.data.startswith("sub"):
             if "cercle" in query.data:
@@ -289,14 +289,12 @@ def check_for_new_events(bot):
                 print(time_to_sleep)
                 sleep(time_to_sleep)
 
-            # on Raspberry Pi:
             chat_ids_list = [
                 'cercle_chat_ids.txt',
                 'thedreamers_chat_ids.txt',
                 'supermarket_chat_ids.txt'
             ]
-            links, texts = evnt_ntfr_for_pi.main()
-            # links, texts = evnt_ntfr.main()     # TODO: change to debug locally
+            links, texts = evnt_ntfr.main()
             if links is not None and texts is not None:
                 for links_list, text_list, chat_ids in zip(links, texts, chat_ids_list):
                     with open(chat_ids, 'r') as ids:
