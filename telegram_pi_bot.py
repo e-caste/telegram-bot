@@ -182,8 +182,10 @@ def button(bot_obj, context):
         elif query.data == "df_h":
             reply = get_disk_usage()
         elif query.data == 'full_tg_log':
-            log_path = tg_log_path + os.listdir(tg_log_path).sort()[-1]
-            bot_obj.send_document(chat_id=id, document=open(log_path, 'rb'))
+            tmp = os.listdir(tg_log_path)
+            tmp.sort(key=str.casefold)
+            log_path = tg_log_path + tmp[-1]
+            bot_obj.send_document(chat_id=int(id), document=open(log_path, 'rb'))
 
 
         elif query.data == 'cercle':
