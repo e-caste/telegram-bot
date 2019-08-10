@@ -37,6 +37,8 @@ from datetime import datetime, timedelta
 import os
 from nmt_chatbot.inference import inference
 
+DEBUG = False
+
 def split_msg_for_telegram(string: str):
     chars_per_msg = 4096
     return [string[i:i + chars_per_msg] for i in range(0, len(string), chars_per_msg)]
@@ -197,8 +199,7 @@ def button(bot_obj, context):
         elif query.data == 'back_to_events_menu':
             events_menu(bot_obj, context, use_callback=True)
         elif query.data == 'close_events_menu':
-            # reply = "Closed. ☠️"
-            pass
+            reply = "Closed. ☠️"
 
         elif query.data.startswith("sub"):
             if "cercle" in query.data:
@@ -360,8 +361,9 @@ def error(bot, update):
     logger.warning('Update "%s" caused error "%s"', bot, update.error)
 
 def main():
-    # if on Raspberry Pi:
-    os.chdir(raspi_wd) # TODO: change to debug locally
+    if not DEBUG:
+        # if on Raspberry Pi:
+        os.chdir(raspi_wd)
 
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
