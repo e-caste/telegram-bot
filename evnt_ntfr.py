@@ -6,9 +6,12 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
 from time import sleep
 from subprocess import Popen
-from sys import stderr
+from sys import stderr, platform
 
-DEBUG = False
+if platform.startswith('darwin'):
+    DEBUG = True
+else:
+    DEBUG = False
 
 if DEBUG:
     from selenium.webdriver.firefox.options import Options
@@ -21,15 +24,15 @@ def main():
     text_result = []
 
     urls = [
+        'SupermarketTorino',
         'cerclemusic',
-        'thedreamersrec',
-        'SupermarketTorino'
+        'thedreamersrec'
     ]
 
     prefixes = [
+        'supermarket',
         'cercle',
-        'thedreamers',
-        'supermarket'
+        'thedreamers'
     ]
 
     if len(urls) != len(prefixes):
@@ -63,7 +66,7 @@ def main():
             try:
                 WebDriverWait(driver, timeout=120).until(
                     expected_conditions.presence_of_element_located(
-                        # (By.XPATH, "//div[@id='upcoming_events_card']//a")  # TODO: fix this section hangs
+                        # (By.XPATH, "//div[@id='upcoming_events_card']//a")
                         (By.XPATH, "//div[@id='upcoming_events_card']")
                     )
                 )
@@ -78,9 +81,15 @@ def main():
             links_to_events = []
             if isinstance(events, list):
                 for event in events:
-                    links_to_events.append(event.get_attribute('href').split("?")[0])
+                    link = event.get_attribute('href').split("?")[0]
+                    # a facebook event link is only made of digits, discard any link with letters
+                    if not any(c.isalpha() for c in link[:-1].split("/")[-1]):
+                        links_to_events.append(link)
             else:
-                links_to_events.append(events.get_attribute('href').split("?")[0])
+                link = events.get_attribute('href').split("?")[0]
+                # a facebook event link is only made of digits, discard any link with letters
+                if not any(c.isalpha() for c in link[:-1].split("/")[-1]):
+                    links_to_events.append(link)
 
         # no new events were found at a url, try with next one
         except UnboundLocalError as ule:
@@ -138,7 +147,8 @@ def main():
             for process in processes_to_kill:
                 Popen(['killall', process])
 
-        sleep(10) # after each event url
+        if not DEBUG:
+            sleep(10) # after each event url
 
     return_text = True
     for links_tmp, text_tmp in zip(link_result, text_result):
@@ -146,10 +156,10 @@ def main():
             return_text = False
             break
 
-    # return list of lists (one for each event type)
     if DEBUG:
         print(link_result)
         print(text_result)
+    # return list of lists (one for each event type)
     else:
         if return_text:
             return link_result, text_result
