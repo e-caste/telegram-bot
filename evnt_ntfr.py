@@ -105,9 +105,13 @@ def main():
                         upcoming_events_card.text.split("guests")[1].split("Get Tickets")[0]
             text_list.append(full_text)
         else:
-            text_list_with_guest_numbers = upcoming_events_card.text.split("Share Events\n")[1].split("Get Tickets")
-            for item in text_list_with_guest_numbers:
-                text_list.append(item.split("·")[0] + item.split("guests")[1])
+            try:
+                text_list_with_guest_numbers = upcoming_events_card.text.split("Share Events\n")[1].split("Get Tickets")
+                for item in text_list_with_guest_numbers:
+                    text_list.append(item.split("·")[0] + item.split("guests")[1])
+            except IndexError as ie:
+                print(ie, file=stderr)
+                print("Only sending links because there is no Get Tickets button...", file=stderr)
 
         with open(url_filenames['text_file'], 'r+') as db:
             db_text = db.read()
