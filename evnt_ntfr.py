@@ -68,7 +68,7 @@ def main():
                     )
                 )
                 upcoming_events_card = driver.find_element_by_id('upcoming_events_card')
-                events = upcoming_events_card.find_element_by_xpath('descendant::a')
+                events = upcoming_events_card.find_elements_by_xpath('descendant::a')
                 break
             except Exception as e:
                 # print(e)  # printing 30 times is too verbose
