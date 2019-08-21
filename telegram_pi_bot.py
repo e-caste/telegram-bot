@@ -283,16 +283,16 @@ def send_split_msgs(bot, string_list):
         print(e)
 
 
-def check_for_new_events(bot):
+def check_for_new_events(bot, hour: int):
     while True:
         try:
-            if int(datetime.now().time().strftime('%k')) < 21:
-                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=21) - datetime.now()).total_seconds())
+            if int(datetime.now().time().strftime('%k')) < hour:
+                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=hour) - datetime.now()).total_seconds())
                 # time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=9, minutes=21) - datetime.now()).total_seconds())
                 print(time_to_sleep)
                 sleep(time_to_sleep)
             else:
-                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=21) - datetime.now()).total_seconds())
+                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour) - datetime.now()).total_seconds())
                 print(time_to_sleep)
                 sleep(time_to_sleep)
 
@@ -410,7 +410,7 @@ def main():
     # updater.idle()
 
     t1 = threading.Thread(target=updater.idle)
-    t2 = threading.Thread(target=check_for_new_events(bot.Bot(token)))
+    t2 = threading.Thread(target=check_for_new_events(bot.Bot(token), hour=0))
 
     t1.start()
     t2.start()
