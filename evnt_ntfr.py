@@ -98,14 +98,14 @@ def main():
             continue
 
         # UPDATE EVENT LINKS FILE
-        with open(url_filenames['links_file'], 'r+') as db:
+        with open(url_filenames['links_file'], 'r') as db:
             db_links = db.read()
+        with open(url_filenames['links_file'], 'a') as db:
             for link in links_to_events:
                 if link not in db_links:
                     link_result_tmp.append(link)
-                    db.seek(0)
-                    db.write(link + "\n" + db_links)
-                    db_links = db.read()
+                    db.write(link + "\n")
+
 
         # ALSO UPDATE EVENT DETAILS FILE
         text_list = []
@@ -119,17 +119,16 @@ def main():
                 for item in text_list_with_guest_numbers:
                     text_list.append(item.split("·")[0] + item.split("guests")[1])
             except IndexError as ie:
-                print(ie, file=stderr)
+                # print(ie, file=stderr)
                 print("Only sending links because there is no Get Tickets button...", file=stderr)
 
-        with open(url_filenames['text_file'], 'r+') as db:
+        with open(url_filenames['text_file'], 'r') as db:
             db_text = db.read()
+        with open(url_filenames['text_file'], 'a') as db:
             for text_event in text_list:
                 if text_event not in db_text:
                     text_result_tmp.append(text_event)
-                    db.seek(0)
-                    db.write(text_event + db_text)
-                    db_text = db.read()
+                    db.write(text_event + "\n")
 
         link_result.append(link_result_tmp)
         text_result.append(text_result_tmp)
