@@ -410,7 +410,7 @@ def main():
     # updater.idle()
 
     t1 = threading.Thread(target=updater.idle)
-    t2 = threading.Thread(target=check_for_new_events(bot.Bot(token), hour=0))
+    t2 = threading.Thread(target=check_for_new_events(bot.Bot(token), hour=21))
 
     t1.start()
     t2.start()
