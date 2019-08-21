@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from time import sleep
 from subprocess import Popen
 from sys import stderr, platform
+import os
+from robbamia import *
 
 if platform.startswith('darwin'):
     DEBUG = True
@@ -20,6 +22,9 @@ else:
 
 
 def main():
+    print("Current wd: " + os.getcwd())
+    os.chdir(raspi_wd)
+    print("Current wd: " + os.getcwd())
     link_result = []
     text_result = []
 
@@ -108,6 +113,7 @@ def main():
 
 
         # ALSO UPDATE EVENT DETAILS FILE
+        # TODO: add separation of events by recognizing dates with a regex
         text_list = []
         if upcoming_events_card.text.count("Get Tickets") == 1:
             full_text = upcoming_events_card.text.split("Share Events\n")[1].split("·")[0] + \
