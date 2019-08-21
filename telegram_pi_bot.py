@@ -36,8 +36,12 @@ import evnt_ntfr
 from datetime import datetime, timedelta
 import os
 from nmt_chatbot.inference import inference
+import sys
 
-DEBUG = False
+if sys.platform.startswith('darwin'):
+    DEBUG = True
+else:
+    DEBUG = False
 
 def split_msg_for_telegram(string: str):
     chars_per_msg = 4096
@@ -378,8 +382,6 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("status", status))
-    # dp.add_handler(CommandHandler("cercle", subscribe_to_cercle_notifications))
-    # dp.add_handler(CommandHandler("thedreamers", subscribe_to_thedreamers_notifications))
     dp.add_handler(CommandHandler("events", events_menu))
     dp.add_handler(CommandHandler("apt", apt))
     dp.add_handler(CommandHandler("epoch", epoch))
@@ -392,7 +394,7 @@ def main():
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     # dp.add_handler(InlineQueryHandler(inlinequery))
 
-    # on noncommand i.e message - echo the message on Telegram
+    # on noncommand i.e message - reply to the message on Telegram with a ML algorithm
     # dp.add_handler(MessageHandler(Filters.text, echo))
     dp.add_handler(MessageHandler(Filters.text, chatbot))
 
