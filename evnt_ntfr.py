@@ -22,9 +22,9 @@ else:
 
 
 def main():
-    print("Current wd: " + os.getcwd())
+    # print("Current wd: " + os.getcwd())
     os.chdir(raspi_wd)
-    print("Current wd: " + os.getcwd())
+    # print("Current wd: " + os.getcwd())
     link_result = []
     text_result = []
 
@@ -110,6 +110,7 @@ def main():
                 if link not in db_links:
                     link_result_tmp.append(link)
                     db.write(link + "\n")
+                    print("Found new event at " + url_filenames['url'])
 
 
         # ALSO UPDATE EVENT DETAILS FILE
