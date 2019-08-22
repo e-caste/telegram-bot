@@ -307,13 +307,21 @@ def check_for_new_events(bot, hour: int):
                     with open(chat_ids, 'r') as ids:
                         for id in ids.readlines():
                             for link, text in zip(links_list, text_list):
-                                bot.send_message(chat_id=id, text=text+"\n"+link)
+                                try:
+                                    bot.send_message(chat_id=id, text=text+"\n"+link)
+                                    print("Sent " + link + " to " + id)
+                                except Exception as e:
+                                    print(e, file=sys.stderr)
             elif links is not None and texts is None:
                 for links_list, chat_ids in zip(links, chat_ids_list):
                     with open(chat_ids, 'r') as ids:
                         for id in ids.readlines():
                             for link in links_list:
-                                bot.send_message(chat_id=id, text=link)
+                                try:
+                                    bot.send_message(chat_id=id, text=link)
+                                    print("Sent " + link + " to " + id)
+                                except Exception as e:
+                                    print(e, file=sys.stderr)
 
         except Exception as e:
             print(e)
