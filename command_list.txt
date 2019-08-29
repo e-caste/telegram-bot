@@ -1,12 +1,13 @@
 start - starts the bot and greets you
-help - is absolutely useless, don't try this
 status - sends a detailed status report from the host machine
 events - get/stop notifications about events
+rivoli - snaps a picture of piazza Rivoli in real time
 epoch - shows your message's Unix epoch
 whoami - sends you details about yourself
 log - tails last 10 lines of log
 quote - shows random quote from fortune
 wikiquote - shows daily quote from Wikipedia
+help - is absolutely useless, don't try this
 
 # deprecated
 cercle - get/stop notifications for new Cercle events
