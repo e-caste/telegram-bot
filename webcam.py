@@ -23,9 +23,10 @@ def get_yesterday_timelapse_video_name():
     if os.path.isdir(webcam_path + yesterday):
         return yesterday
     os.mkdir(webcam_path + yesterday)
-    for i, pic in enumerate(os.listdir(webcam_path)):
+    # for i, pic in enumerate(os.listdir(webcam_path)):
+    for pic in os.listdir(webcam_path):
         if pic.startswith(yesterday):
-            os.rename(src=webcam_path + pic, dst=webcam_path + yesterday + pic)  # move to dir
+            os.rename(src=webcam_path + pic, dst=webcam_path + yesterday_s + pic)  # move to dir
             # add sequential number at the end for use with ffmpeg
             # os.rename(src=webcam_path + yesterday + pic, dst=webcam_path + yesterday + pic + "_" + str(i).zfill(6))
     # this outputs a 96 fps 30 sec timelapse of yesterday (if pics are taken at 30s intervals = 2880 per day)
