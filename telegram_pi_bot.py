@@ -119,7 +119,7 @@ def events_menu(bot, update, use_callback : bool = False):
         [InlineKeyboardButton("Cercle", callback_data='cercle')],
         [InlineKeyboardButton("TheDreamers", callback_data='thedreamers')],
         [InlineKeyboardButton("Supermarket", callback_data='supermarket')],
-        [InlineKeyboardButton("Close ❌", callback_data='close_events_menu')]
+        [InlineKeyboardButton("Close ❌", callback_data='close_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     if use_callback:
@@ -153,6 +153,15 @@ def subscribe_to_supermarket_notifications(bot, update):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
+def webcam_menu(bot, update):
+    keyboard = [
+        [InlineKeyboardButton("📷 Right Now", callback_data='webcam_now')],
+        [InlineKeyboardButton("📽 Timelapse of yesterday", callback_data='webcam_timelapse')],
+        [InlineKeyboardButton("❌ Close", callback_data='close_menu')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.message.reply_text("Choose an option:", reply_markup=reply_markup)
 
 # context is an Update object!
 def button(bot_obj, context):
@@ -203,7 +212,7 @@ def button(bot_obj, context):
             subscribe_to_supermarket_notifications(bot_obj, context)
         elif query.data == 'back_to_events_menu':
             events_menu(bot_obj, context, use_callback=True)
-        elif query.data == 'close_events_menu':
+        elif query.data == 'close_menu':
             reply = "Closed. ☠️"
 
         elif query.data.startswith("sub"):
@@ -262,6 +271,13 @@ def button(bot_obj, context):
 
         elif query.data == 'fblink_super':
             reply = "Here is the link to the events page of Supermarket:\nhttps://www.facebook.com/pg/SupermarketTorino/events/"
+
+
+        elif query.data == 'webcam_now':
+            get_webcam_img(bot_obj, context)
+
+        elif query.data == 'webcam_timelapse':
+            get_webcam_timelapse(bot_obj, context)
 
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
@@ -355,6 +371,11 @@ def get_webcam_img(bot, update):
     bot.send_photo(chat_id=update.message.chat_id, photo=open(webcam_path + img_name, 'rb'),
                    caption=img_name)
 
+def get_webcam_timelapse(bot, update):
+    yesterday = webcam.get_yesterday_timelapse_video_name()
+    bot.send_video(chat_id=update.message.chat_id, video=open(webcam_path + yesterday + "/" + yesterday + ".mp4", 'rb'),
+                   caption=yesterday)
+
 def epoch(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
 
@@ -396,7 +417,7 @@ def main():
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("status", status))
     dp.add_handler(CommandHandler("events", events_menu))
-    dp.add_handler(CommandHandler("rivoli", get_webcam_img))
+    dp.add_handler(CommandHandler("rivoli", webcam_menu))
     dp.add_handler(CommandHandler("apt", apt))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
