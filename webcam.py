@@ -12,13 +12,15 @@ def get_last_img_name():
         else:
             break
 
+    folder = False
     tmp = os.listdir(webcam_path)
     tmp.sort(key=str.casefold)
     # if there are only folders
     if os.path.isdir(webcam_path + tmp[-1]):
-        tmp = os.listdir(webcam_path + tmp[-1])
+        folder = tmp[-1]
+        tmp = os.listdir(webcam_path + folder)
         tmp.sort(key=str.casefold)
-    return tmp[-1]
+    return tmp[-1], folder
 
 def get_yesterday_timelapse_video_name():
     yesterday = datetime.today() - timedelta(days=1)

@@ -367,9 +367,13 @@ def check_for_new_events(bot, hour: int):
 #     update.inline_query.answer(results)
 
 def get_webcam_img(bot, update):
-    img_name = webcam.get_last_img_name()
+    img_name, folder = webcam.get_last_img_name()
+    if folder:
+        path_name = folder + "/" + img_name
+    else:
+        path_name = img_name
     bot.send_photo(chat_id=update.callback_query.message.chat_id,
-                   photo=open(webcam_path + img_name, 'rb'),
+                   photo=open(webcam_path + path_name, 'rb'),
                    caption=img_name)
 
 def get_webcam_timelapse(bot, update):
