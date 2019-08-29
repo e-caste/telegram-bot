@@ -368,12 +368,14 @@ def check_for_new_events(bot, hour: int):
 
 def get_webcam_img(bot, update):
     img_name = webcam.get_last_img_name()
-    bot.send_photo(chat_id=update.message.chat_id, photo=open(webcam_path + img_name, 'rb'),
+    bot.send_photo(chat_id=update.callback_query.message.chat_id,
+                   photo=open(webcam_path + img_name, 'rb'),
                    caption=img_name)
 
 def get_webcam_timelapse(bot, update):
     yesterday = webcam.get_yesterday_timelapse_video_name()
-    bot.send_video(chat_id=update.message.chat_id, video=open(webcam_path + yesterday + "/" + yesterday + ".mp4", 'rb'),
+    bot.send_video(chat_id=update.callback_query.message.chat_id,
+                   video=open(webcam_path + yesterday + "/" + yesterday + ".mp4", 'rb'),
                    caption=yesterday)
 
 def epoch(bot, update):
