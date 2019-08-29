@@ -13,6 +13,10 @@ def get_last_img_name():
 
     tmp = os.listdir(webcam_path)
     tmp.sort(key=str.casefold)
+    # if there are only folders
+    if os.path.isdir(webcam_path + tmp[-1]):
+        tmp = os.listdir(webcam_path + tmp[-1])
+        tmp.sort(key=str.casefold)
     return tmp[-1]
 
 def get_yesterday_timelapse_video_name():
