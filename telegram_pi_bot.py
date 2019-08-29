@@ -161,7 +161,7 @@ def webcam_menu(bot, update):
         [InlineKeyboardButton("❌ Close", callback_data='close_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.callback_query.message.reply_text("Choose an option:", reply_markup=reply_markup)
+    update.message.reply_text("Choose an option:", reply_markup=reply_markup)
 
 # context is an Update object!
 def button(bot_obj, context):
