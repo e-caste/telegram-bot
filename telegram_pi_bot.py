@@ -37,6 +37,7 @@ from datetime import datetime, timedelta
 import os
 from nmt_chatbot.inference import inference
 import sys
+import webcam
 
 if sys.platform.startswith('darwin'):
     DEBUG = True
@@ -349,6 +350,11 @@ def check_for_new_events(bot, hour: int):
 #
 #     update.inline_query.answer(results)
 
+def get_webcam_img(bot, update):
+    img_name = webcam.get_last_img_name()
+    bot.send_photo(chat_id=update.message.chat_id, photo=open(webcam_path + img_name, 'rb'),
+                   caption=img_name)
+
 def epoch(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
 
@@ -388,15 +394,16 @@ def main():
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("status", status))
     dp.add_handler(CommandHandler("events", events_menu))
+    dp.add_handler(CommandHandler("rivoli", get_webcam_img))
     dp.add_handler(CommandHandler("apt", apt))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
     dp.add_handler(CommandHandler("log", tail_log))
     dp.add_handler(CommandHandler("quote", quote))
     dp.add_handler(CommandHandler("wikiquote", wiki_quote))
+    dp.add_handler(CommandHandler("help", help))
 
     # inline messages handler
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
