@@ -2,7 +2,6 @@ import os
 from robbamia import *
 from subprocess import Popen
 from datetime import datetime, timedelta
-# import cv2
 
 
 def get_last_img_name():
@@ -38,26 +37,10 @@ def get_yesterday_timelapse_video_name():
                 os.rename(src=webcam_path + yesterday_s + pic, dst=webcam_path + yesterday_s + pic.split(".")[0]
                                                                  + "_" + str(i).zfill(6) + ".jpg")
 
-    # image_folder = webcam_path + yesterday
-    # video_name = yesterday + ".mp4"
-    #
-    # images = [img for img in os.listdir(image_folder) if img.endswith(".jpg")]
-    # frame = cv2.imread(os.path.join(image_folder, images[0]))
-    # height, width, layers = frame.shape
-    #
-    # video = cv2.VideoWriter(video_name, 0, 1, (width, height))
-    #
-    # for image in images:
-    #     video.write(cv2.imread(os.path.join(image_folder, image)))
-    #
-    # cv2.destroyAllWindows()
-    # video.release()
-
+    # IMPORTANT: ffmpeg only works with real .jpg and not .png converted into .jpg by changing extension
     # this outputs a 96 fps 30 sec timelapse of yesterday (if pics are taken at 30s intervals = 2880 per day)
     os.system("ffmpeg -r 96 -f image2 -pattern_type glob -i '" + webcam_path + yesterday_s + "*.jpg' -vcodec mpeg4 -y "
               + webcam_path + yesterday_s + yesterday + ".mp4")
-    # os.system("ffmpeg -r 96 -i '" + yesterday + "_%%%%%%%%%%%%_%6d.jpg' -vcodec mpeg4 -y "
-    #           + webcam_path + yesterday_s + yesterday + ".mp4" )
     return yesterday
 
 
