@@ -54,7 +54,7 @@ def get_yesterday_timelapse_video_name():
     # video.release()
 
     # this outputs a 96 fps 30 sec timelapse of yesterday (if pics are taken at 30s intervals = 2880 per day)
-    os.system("ffmpeg -r 96 -f image2 -pattern_type glob -i '*.jpg' -vcodec mpeg4 -y "
+    os.system("ffmpeg -r 96 -f image2 -pattern_type glob -i '" + webcam_path + yesterday_s + "*.jpg' -vcodec mpeg4 -y "
               + webcam_path + yesterday_s + yesterday + ".mp4")
     # os.system("ffmpeg -r 96 -i '" + yesterday + "_%%%%%%%%%%%%_%6d.jpg' -vcodec mpeg4 -y "
     #           + webcam_path + yesterday_s + yesterday + ".mp4" )
