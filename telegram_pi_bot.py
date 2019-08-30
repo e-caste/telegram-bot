@@ -313,30 +313,31 @@ def check_for_new_events(bot, hour: int):
                 print(time_to_sleep)
                 sleep(time_to_sleep)
 
+            # the order must be the same as in evnt_ntfr.py
             chat_ids_list = [
+                'supermarket_chat_ids.txt',
                 'cercle_chat_ids.txt',
-                'thedreamers_chat_ids.txt',
-                'supermarket_chat_ids.txt'
+                'thedreamers_chat_ids.txt'
             ]
-            links, texts = evnt_ntfr.main()
+            links, texts, event_names = evnt_ntfr.main()
             if links is not None and texts is not None:
-                for links_list, text_list, chat_ids in zip(links, texts, chat_ids_list):
+                for links_list, text_list, chat_ids, event_name in zip(links, texts, chat_ids_list, event_names):
                     with open(chat_ids, 'r') as ids:
                         for id in ids.readlines():
                             for link, text in zip(links_list, text_list):
                                 try:
-                                    bot.send_message(chat_id=id, text=text+"\n"+link)
-                                    print("Sent " + link + " to " + id)
+                                    bot.send_message(chat_id=id, text="New "+event_name.capitalize()+" event:\n"+text+"\n"+link)
+                                    print("Sent " + event_name + " " + link + " to " + id)
                                 except Exception as e:
                                     print(e, file=sys.stderr)
             elif links is not None and texts is None:
-                for links_list, chat_ids in zip(links, chat_ids_list):
+                for links_list, chat_ids, event_name in zip(links, chat_ids_list, event_names):
                     with open(chat_ids, 'r') as ids:
                         for id in ids.readlines():
                             for link in links_list:
                                 try:
-                                    bot.send_message(chat_id=id, text=link)
-                                    print("Sent " + link + " to " + id)
+                                    bot.send_message(chat_id=id, text="New "+event_name.capitalize()+" event:\n"+link)
+                                    print("Sent " + event_name + " " + link + " to " + id)
                                 except Exception as e:
                                     print(e, file=sys.stderr)
 

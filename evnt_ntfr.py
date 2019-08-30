@@ -168,9 +168,9 @@ def main():
     # return list of lists (one for each event type)
     else:
         if return_text:
-            return link_result, text_result
+            return link_result, text_result, prefixes
         else:
-            return link_result, None
+            return link_result, None, prefixes
 
 if __name__ == '__main__':
     main()
