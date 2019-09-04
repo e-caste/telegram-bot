@@ -154,10 +154,20 @@ def subscribe_to_supermarket_notifications(bot, update):
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
+def subscribe_to_webcam_notifications(bot, update):
+    keyboard = [
+        [InlineKeyboardButton("Subscribe", callback_data='webcam_sub')],
+        [InlineKeyboardButton("Unsubscribe", callback_data='webcam_unsub')],
+        [InlineKeyboardButton("Back", callback_data='back_to_webcam_menu')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
 def webcam_menu(bot, update):
     keyboard = [
         [InlineKeyboardButton("📷 Right Now", callback_data='webcam_now')],
         [InlineKeyboardButton("📽 Timelapse of yesterday", callback_data='webcam_timelapse')],
+        [InlineKeyboardButton("✅ Get/Stop Notification", callback_data="webcam_notification")],
         [InlineKeyboardButton("❌ Close", callback_data='close_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -279,6 +289,39 @@ def button(bot_obj, context):
         elif query.data == 'webcam_timelapse':
             get_webcam_timelapse(bot_obj, context)
 
+        elif query.data == 'webcam_notification':
+            subscribe_to_webcam_notifications(bot_obj, context)
+        elif query.data == 'back_to_webcam_menu':
+            webcam_menu(bot_obj, context, use_callback=True)
+        elif query.data == 'webcam_sub':
+            with open('webcam_chat_ids.txt', 'r+') as db:
+                ids = db.read()
+                if id in ids:
+                    reply = "You have already subscribed to the 8.30a.m. timelapse notification!"
+                else:
+                    if ids == "":
+                        db.write(id)
+                    else:
+                        db.seek(0)
+                        db.write(ids + "\n" + id)
+                        db.truncate()
+                    reply = "You will now receive the timelapse of the day before every day at 8.30a.m."
+                    print("SUBBED webcam " + id)
+
+        elif query.data == 'webcam_unsub':
+            with open('webcam_chat_ids.txt', 'r+') as db:
+                ids = db.read()
+                if id not in ids:
+                    reply = "You are not yet subscribed to notifications."
+                else:
+                    db.seek(0)
+                    for line in ids.splitlines():
+                        if id not in line:
+                            db.write(line)
+                    db.truncate()
+                    reply = "You  won't receive any more notifications."
+                    print("UNSUBBED webcam " + id)
+
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
             query.edit_message_text(text=split_reply[0])
@@ -343,7 +386,7 @@ def check_for_new_events(bot, hour: int):
                                     print(e, file=sys.stderr)
 
         except Exception as e:
-            print(e)
+            print(e, file=sys.stderr)
 
 # THIS IS NOT FOR CONTEXTUAL BUTTONS: THIS IS FOR SUMMONING THE BOT BY @ING IT
 # def inlinequery(update, context):
@@ -382,7 +425,57 @@ def get_webcam_timelapse(bot, update):
     yesterday = webcam.get_yesterday_timelapse_video_name()
     bot.send_video(chat_id=update.callback_query.message.chat_id,
                    video=open(webcam_path + yesterday + "/" + yesterday + ".mp4", 'rb'),
-                   caption=yesterday)
+                   caption=yesterday,
+                   timeout=6000)
+
+def make_new_webcam_timelapse(hour: int, minute: int):
+    while True:
+        try:
+            if int(datetime.now().time().strftime('%k')) < hour:
+                if int(datetime.now().time().strftime('%M')) < minute:
+                    time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=hour, minutes=minute) - datetime.now()).total_seconds())
+                else:
+                    time_to_sleep = int((datetime.today().replace(hour=hour, minute=0, second=0) + timedelta(minutes=minute) - datetime.now()).total_seconds())
+            else:
+                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour, minutes=minute) - datetime.now()).total_seconds())
+
+            print(time_to_sleep)
+            sleep(time_to_sleep)
+
+            # this function also makes the new video from the images
+            yesterday = webcam.get_yesterday_timelapse_video_name()
+            print("\nMade new timelapse of " + yesterday + "\n")
+
+        except Exception as e:
+            print(e, file=sys.stderr)
+
+def send_timelapse_notification(bot, hour: int, minute: int):
+    while True:
+        try:
+            if int(datetime.now().time().strftime('%k')) < hour:
+                if int(datetime.now().time().strftime('%M')) < minute:
+                    time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=hour, minutes=minute) - datetime.now()).total_seconds())
+                else:
+                    time_to_sleep = int((datetime.today().replace(hour=hour, minute=0, second=0) + timedelta(minutes=minute) - datetime.now()).total_seconds())
+            else:
+                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour, minutes=minute) - datetime.now()).total_seconds())
+
+            print(time_to_sleep)
+            sleep(time_to_sleep)
+
+            os.chdir(raspi_wd)
+            # the video should have already been made by the function above, so it immediately returns yesterday
+            yesterday = webcam.get_yesterday_timelapse_video_name()
+            with open('webcam_chat_ids.txt', 'r') as ids:
+                for id in ids.readlines():
+                    bot.send_video(chat_id=id,
+                                   video=open(webcam_path + yesterday + "/" + yesterday + ".mp4", 'rb'),
+                                   caption=yesterday,
+                                   timeout=6000)
+                    print("Sent timelapse to " + id)
+
+        except Exception as e:
+            print(e, file=sys.stderr)
 
 def epoch(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
@@ -455,9 +548,13 @@ def main():
 
     t1 = threading.Thread(target=updater.idle)
     t2 = threading.Thread(target=check_for_new_events(bot.Bot(token), hour=21))
+    t3 = threading.Thread(target=make_new_webcam_timelapse(hour=0, minute=5))
+    t4 = threading.Thread(target=send_timelapse_notification(hour=8, minute=30))
 
     t1.start()
     t2.start()
+    t3.start()
+    t4.start()
 
 
 if __name__ == '__main__':
