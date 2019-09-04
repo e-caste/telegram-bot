@@ -319,6 +319,7 @@ def check_for_new_events(bot, hour: int):
                 'cercle_chat_ids.txt',
                 'thedreamers_chat_ids.txt'
             ]
+            os.chdir(raspi_wd)
             links, texts, event_names = evnt_ntfr.main()
             if links is not None and texts is not None:
                 for links_list, text_list, chat_ids, event_name in zip(links, texts, chat_ids_list, event_names):
