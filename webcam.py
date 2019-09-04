@@ -2,15 +2,19 @@ import os
 from robbamia import *
 from subprocess import Popen
 from datetime import datetime, timedelta
+from sys import stderr
 
-
-def get_last_img_name():
+def _check_NAS_mounted():
     while True:
         if not os.path.isdir(webcam_path): # ismount()
+            print("NAS folder not mounted. Mounting...", file=stderr)
             with Popen(['sudo', 'mount', '-a']) as mount_process:
                 mount_process.wait(10)
         else:
             break
+
+def get_last_img_name():
+    _check_NAS_mounted()
 
     folder = False
     tmp = os.listdir(webcam_path)
@@ -23,6 +27,8 @@ def get_last_img_name():
     return tmp[-1], folder
 
 def get_yesterday_timelapse_video_name():
+    _check_NAS_mounted()
+
     yesterday = datetime.today() - timedelta(days=1)
     yesterday = str(yesterday)[:10]  # only take date part
     yesterday_s = yesterday + "/"
