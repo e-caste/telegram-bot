@@ -49,8 +49,12 @@ def get_yesterday_timelapse_video_name():
     # this outputs a 96 fps 30 sec timelapse of yesterday (if pics are taken at 30s intervals = 2880 per day)
     ffmpeg_exit_code = os.system("ffmpeg -r 96 -f image2 -pattern_type glob -i '" + webcam_path + yesterday_s + "*.jpg' -vcodec mpeg4 -y "
               + webcam_path + yesterday_s + yesterday + ".mp4")
-    # delete all .jpg to save space
+
     if ffmpeg_exit_code == 0:
+        # make tar.gz archive in folder with pictures
+        os.system("tar cfz " + webcam_path + yesterday_s + yesterday + ".tar.gz "
+                  + webcam_path + yesterday_s + "*.jpg")
+        # delete all .jpg to save space
         for pic in os.listdir(webcam_path + yesterday_s):
             if pic.endswith(".jpg"):
                 os.remove(webcam_path + yesterday_s + pic)
