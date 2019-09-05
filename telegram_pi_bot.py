@@ -38,6 +38,7 @@ import os
 from nmt_chatbot.inference import inference
 import sys
 import webcam
+from multiprocessing import Process
 
 if sys.platform.startswith('darwin'):
     DEBUG = True
@@ -544,15 +545,29 @@ def main():
     # start_polling() is non-blocking and will stop the bot gracefully.
     # updater.idle()
 
-    t1 = threading.Thread(target=updater.idle)
-    t2 = threading.Thread(target=check_for_new_events(bot.Bot(token), hour=21))
-    t3 = threading.Thread(target=make_new_webcam_timelapse(hour=0, minute=5))
-    t4 = threading.Thread(target=send_timelapse_notification(hour=8, minute=30))
+    # threading limits the number of concurrent threads to 2
+    # t1 = threading.Thread(target=updater.idle)
+    # t2 = threading.Thread(target=check_for_new_events(bot.Bot(token), hour=21))
+    # t3 = threading.Thread(target=make_new_webcam_timelapse(hour=0, minute=5))
+    # t4 = threading.Thread(target=send_timelapse_notification(hour=8, minute=30))
+    #
+    # t1.start()
+    # t2.start()
+    # t3.start()
+    # t4.start()
 
-    t1.start()
-    t2.start()
-    t3.start()
-    t4.start()
+    # using multiprocessing
+    processes = [
+        Process(target=updater.idle),
+        Process(target=check_for_new_events, args=(bot.Bot(token), 21)),  # hour
+        Process(target=make_new_webcam_timelapse, args=(0, 5)),  # hour, minute
+        Process(target=send_timelapse_notification, args=(8, 30))  # hour, minute
+    ]
+    for p in processes:
+        p.start()
+    for p in processes:
+        p.join()
+
 
 
 if __name__ == '__main__':
