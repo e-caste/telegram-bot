@@ -178,7 +178,7 @@ def subscribe_to_webcam_notifications(bot, update):
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
-def webcam_menu(bot, update):
+def webcam_menu(bot, update, use_callback : bool = False):
     keyboard = [
         [InlineKeyboardButton("📷 Right Now", callback_data='webcam_now')],
         [InlineKeyboardButton("📽 Timelapse of yesterday", callback_data='webcam_timelapse')],
@@ -186,7 +186,10 @@ def webcam_menu(bot, update):
         [InlineKeyboardButton("❌ Close", callback_data='close_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text("Choose an option:", reply_markup=reply_markup)
+    if use_callback:
+        update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
+    else:
+        update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 # context is an Update object!
 def button(bot_obj, context):
