@@ -182,7 +182,7 @@ def webcam_menu(bot, update, use_callback : bool = False):
     keyboard = [
         [InlineKeyboardButton("📷 Right Now", callback_data='webcam_now')],
         [InlineKeyboardButton("📽 Timelapse of yesterday", callback_data='webcam_timelapse')],
-        [InlineKeyboardButton("✅ Get/Stop Notification", callback_data="webcam_notification")],
+        [InlineKeyboardButton("✅ Enable/Disable Notifications", callback_data="webcam_notification")],
         [InlineKeyboardButton("❌ Close", callback_data='close_menu')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
