@@ -50,17 +50,26 @@ def split_msg_for_telegram(string: str):
     return [string[i:i + chars_per_msg] for i in range(0, len(string), chars_per_msg)]
 
 def calculate_time_to_sleep(hour: int, minute: int = 0):
+    # hour is before given hour -> wait until today at given hour and minute
     if int(datetime.now().time().strftime('%k')) < hour:
         time_to_sleep = int(
             (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
-    else:
+    # hour is equal to given hour
+    elif int(datetime.now().time().strftime('%k')) == hour:
+        # minute is before given minute -> wait until today at given time
         if int(datetime.now().time().strftime('%M')) < minute:
             time_to_sleep = int(
                 (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
+        # minute is after given minute -> wait until tomorrow at given time
         else:
             time_to_sleep = int(
-                (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(
-                    days=1) - datetime.now()).total_seconds())
+                (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(days=1)
+                 - datetime.now()).total_seconds())
+    # hour is after given hour -> wait until tomorrow at given time
+    else:
+        time_to_sleep = int(
+            (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(days=1)
+             - datetime.now()).total_seconds())
     return time_to_sleep
 
 # Enable logging
