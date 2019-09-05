@@ -48,6 +48,20 @@ def split_msg_for_telegram(string: str):
     chars_per_msg = 4096
     return [string[i:i + chars_per_msg] for i in range(0, len(string), chars_per_msg)]
 
+def calculate_time_to_sleep(hour: int, minute: int = 0):
+    if int(datetime.now().time().strftime('%k')) < hour:
+        time_to_sleep = int(
+            (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
+    else:
+        if int(datetime.now().time().strftime('%M')) < minute:
+            time_to_sleep = int(
+                (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
+        else:
+            time_to_sleep = int(
+                (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(
+                    days=1) - datetime.now()).total_seconds())
+    return time_to_sleep
+
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -346,11 +360,7 @@ def send_split_msgs(bot, string_list):
 def check_for_new_events(bot, hour: int):
     while True:
         try:
-            if int(datetime.now().time().strftime('%k')) < hour:
-                time_to_sleep = int((datetime.today().replace(hour=hour, minute=0, second=0) - datetime.now()).total_seconds())
-                # time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=9, minutes=21) - datetime.now()).total_seconds())
-            else:
-                time_to_sleep = int((datetime.today().replace(hour=1, minute=0, second=0) + timedelta(days=1) - datetime.now()).total_seconds())
+            time_to_sleep = calculate_time_to_sleep(hour=hour)
 
             print("Waiting to check for new events... " + str(time_to_sleep))
             sleep(time_to_sleep)
@@ -430,17 +440,7 @@ def get_webcam_timelapse(bot, update):
 def make_new_webcam_timelapse(hour: int, minute: int):
     while True:
         try:
-            if int(datetime.now().time().strftime('%k')) < hour:
-                time_to_sleep = int(
-                    (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
-            else:
-                if int(datetime.now().time().strftime('%M')) < minute:
-                    time_to_sleep = int(
-                        (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
-                else:
-                    time_to_sleep = int(
-                        (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(
-                            days=1) - datetime.now()).total_seconds())
+            time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
 
             print("Waiting to make timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
@@ -455,17 +455,7 @@ def make_new_webcam_timelapse(hour: int, minute: int):
 def send_timelapse_notification(bot, hour: int, minute: int):
     while True:
         try:
-            if int(datetime.now().time().strftime('%k')) < hour:
-                time_to_sleep = int(
-                    (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
-            else:
-                if int(datetime.now().time().strftime('%M')) < minute:
-                    time_to_sleep = int(
-                        (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
-                else:
-                    time_to_sleep = int(
-                        (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(
-                            days=1) - datetime.now()).total_seconds())
+            time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
 
             print("Waiting to send timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
