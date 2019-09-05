@@ -561,7 +561,7 @@ def main():
         Process(target=updater.idle),
         Process(target=check_for_new_events, args=(bot.Bot(token), 21)),  # hour
         Process(target=make_new_webcam_timelapse, args=(0, 5)),  # hour, minute
-        Process(target=send_timelapse_notification, args=(8, 30))  # hour, minute
+        Process(target=send_timelapse_notification, args=(bot.Bot(token), 8, 33))  # hour, minute
     ]
     for p in processes:
         p.start()
