@@ -349,12 +349,11 @@ def check_for_new_events(bot, hour: int):
             if int(datetime.now().time().strftime('%k')) < hour:
                 time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=hour) - datetime.now()).total_seconds())
                 # time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=9, minutes=21) - datetime.now()).total_seconds())
-                print(time_to_sleep)
-                sleep(time_to_sleep)
             else:
                 time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour) - datetime.now()).total_seconds())
-                print(time_to_sleep)
-                sleep(time_to_sleep)
+
+            print("Waiting to check for new events... " + str(time_to_sleep))
+            sleep(time_to_sleep)
 
             # the order must be the same as in evnt_ntfr.py
             chat_ids_list = [
@@ -439,7 +438,7 @@ def make_new_webcam_timelapse(hour: int, minute: int):
             else:
                 time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour, minutes=minute) - datetime.now()).total_seconds())
 
-            print(time_to_sleep)
+            print("Waiting to make timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
 
             # this function also makes the new video from the images
@@ -460,7 +459,7 @@ def send_timelapse_notification(bot, hour: int, minute: int):
             else:
                 time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour, minutes=minute) - datetime.now()).total_seconds())
 
-            print(time_to_sleep)
+            print("Waiting to send timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
 
             os.chdir(raspi_wd)
