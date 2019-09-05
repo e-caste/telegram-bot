@@ -347,10 +347,10 @@ def check_for_new_events(bot, hour: int):
     while True:
         try:
             if int(datetime.now().time().strftime('%k')) < hour:
-                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=hour) - datetime.now()).total_seconds())
+                time_to_sleep = int((datetime.today().replace(hour=hour, minute=0, second=0) - datetime.now()).total_seconds())
                 # time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=9, minutes=21) - datetime.now()).total_seconds())
             else:
-                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour) - datetime.now()).total_seconds())
+                time_to_sleep = int((datetime.today().replace(hour=1, minute=0, second=0) + timedelta(days=1) - datetime.now()).total_seconds())
 
             print("Waiting to check for new events... " + str(time_to_sleep))
             sleep(time_to_sleep)
@@ -431,12 +431,16 @@ def make_new_webcam_timelapse(hour: int, minute: int):
     while True:
         try:
             if int(datetime.now().time().strftime('%k')) < hour:
-                if int(datetime.now().time().strftime('%M')) < minute:
-                    time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=hour, minutes=minute) - datetime.now()).total_seconds())
-                else:
-                    time_to_sleep = int((datetime.today().replace(hour=hour, minute=0, second=0) + timedelta(minutes=minute) - datetime.now()).total_seconds())
+                time_to_sleep = int(
+                    (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
             else:
-                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour, minutes=minute) - datetime.now()).total_seconds())
+                if int(datetime.now().time().strftime('%M')) < minute:
+                    time_to_sleep = int(
+                        (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
+                else:
+                    time_to_sleep = int(
+                        (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(
+                            days=1) - datetime.now()).total_seconds())
 
             print("Waiting to make timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
@@ -452,17 +456,22 @@ def send_timelapse_notification(bot, hour: int, minute: int):
     while True:
         try:
             if int(datetime.now().time().strftime('%k')) < hour:
-                if int(datetime.now().time().strftime('%M')) < minute:
-                    time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(hours=hour, minutes=minute) - datetime.now()).total_seconds())
-                else:
-                    time_to_sleep = int((datetime.today().replace(hour=hour, minute=0, second=0) + timedelta(minutes=minute) - datetime.now()).total_seconds())
+                time_to_sleep = int(
+                    (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
             else:
-                time_to_sleep = int((datetime.today().replace(hour=0, minute=0, second=0) + timedelta(days=1, hours=hour, minutes=minute) - datetime.now()).total_seconds())
+                if int(datetime.now().time().strftime('%M')) < minute:
+                    time_to_sleep = int(
+                        (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
+                else:
+                    time_to_sleep = int(
+                        (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(
+                            days=1) - datetime.now()).total_seconds())
 
             print("Waiting to send timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
 
-            os.chdir(raspi_wd)
+            if not DEBUG:
+                os.chdir(raspi_wd)
             # the video should have already been made by the function above, so it immediately returns yesterday
             yesterday = webcam.get_yesterday_timelapse_video_name()
             with open('webcam_chat_ids.txt', 'r') as ids:
