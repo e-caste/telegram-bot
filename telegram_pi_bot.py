@@ -40,10 +40,7 @@ import sys
 import webcam
 from multiprocessing import Process
 
-if sys.platform.startswith('darwin'):
-    DEBUG = True
-else:
-    DEBUG = False
+DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 
 def split_msg_for_telegram(string: str):
     chars_per_msg = 4096
@@ -468,22 +465,22 @@ def make_new_webcam_timelapse(hour: int, minute: int):
 def send_timelapse_notification(bot, hour: int, minute: int):
     while True:
         try:
-            time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
+                time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
+                print("Waiting to send timelapse... " + str(time_to_sleep))
+                sleep(time_to_sleep)
 
-            print("Waiting to send timelapse... " + str(time_to_sleep))
-            sleep(time_to_sleep)
-
-            if not DEBUG:
-                os.chdir(raspi_wd)
-            # the video should have already been made by the function above, so it immediately returns yesterday
-            yesterday = webcam.get_yesterday_timelapse_video_name()
-            with open('webcam_chat_ids.txt', 'r') as ids:
-                for id in ids.readlines():
-                    bot.send_video(chat_id=id,
-                                   video=open(webcam_path + yesterday + "/" + yesterday + ".mp4", 'rb'),
-                                   caption=yesterday,
-                                   timeout=6000)
-                    print("Sent timelapse to " + id)
+                if not DEBUG:
+                    os.chdir(raspi_wd)
+                # the video should have already been made by the function above, so it immediately returns yesterday
+                yesterday = webcam.get_yesterday_timelapse_video_name()
+                with open('webcam_chat_ids.txt', 'r') as ids:
+                    for id in ids.readlines():
+                        bot.send_video(chat_id=id,
+                                       video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
+                                       caption=yesterday,
+                                       timeout=6000,
+                                       supports_streaming=True)
+                        print("Sent timelapse to " + id)
 
         except Exception as e:
             print(e, file=sys.stderr)
