@@ -477,7 +477,7 @@ def send_timelapse_notification(bot, hour: int, minute: int):
                     for id in ids.readlines():
                         bot.send_video(chat_id=id,
                                        video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
-                                       caption=yesterday,
+                                       caption="Here's the timelapse of yesterday! - " + yesterday,
                                        timeout=6000,
                                        supports_streaming=True)
                         print("Sent timelapse to " + id)
