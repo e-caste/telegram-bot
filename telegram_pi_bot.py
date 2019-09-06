@@ -443,7 +443,7 @@ def get_webcam_img(bot, update):
 def get_webcam_timelapse(bot, update):
     yesterday = webcam.get_yesterday_timelapse_video_name()
     bot.send_video(chat_id=update.callback_query.message.chat_id,
-                   video=open(webcam_path + yesterday + "/" + yesterday + ".mp4", 'rb'),
+                   video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
                    caption=yesterday,
                    timeout=6000)
 
