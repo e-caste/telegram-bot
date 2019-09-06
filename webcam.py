@@ -41,29 +41,41 @@ def get_yesterday_timelapse_video_name():
         if pic != yesterday:  # ignore the folder
             if pic.startswith(yesterday):
                 os.rename(src=webcam_path + pic, dst=webcam_path + yesterday_s + pic)  # move to dir
-                # add sequential number at the end for use with ffmpeg
-                os.rename(src=webcam_path + yesterday_s + pic, dst=webcam_path + yesterday_s + pic.split(".")[0]
-                                                                 + "_" + str(i).zfill(6) + ".jpg")
+                # add sequential number at the end for use with ffmpeg - not needed
+                # os.rename(src=webcam_path + yesterday_s + pic, dst=webcam_path + yesterday_s + pic.split(".")[0]
+                #                                                  + "_" + str(i).zfill(6) + ".jpg")
 
     # IMPORTANT: ffmpeg only works with real .jpg and not .png converted into .jpg by changing extension
     # this outputs a 96 fps 30 sec timelapse of yesterday (if pics are taken at 30s intervals = 2880 per day)
-    ffmpeg_exit_code = os.system("ffmpeg -r 96 -f image2 -pattern_type glob -i '" + webcam_path + yesterday_s + "*.jpg' -vcodec mpeg4 -y "
-              + webcam_path + yesterday_s + yesterday + ".mp4")
+    # the b=number parameter specifies the bitrate (31457280 = 30Mbit/s)
+    ffmpeg_exit_code = os.system("ffmpeg -r 96 -f image2 -pattern_type glob -i '" + webcam_path + yesterday_s + "*.jpg'"
+                                 " -c:v libx264 -x264-params b=31457280 -y "
+                                 + webcam_path + yesterday_s + yesterday + "_full_quality.mp4")
+    # convert video for telegram
+    # size < 10 MB - 4:2:0 color profile - 60 fps
+    if ffmpeg_exit_code == 0:
+        ffmpeg_exit_code = os.system("ffmpeg -i " + webcam_path + yesterday_s + yesterday +
+                                     "_full_quality.mp4 -r 60 -b:v 2500000 -c:v libx264 "
+                                     "-profile:v high -pix_fmt yuv420p " +
+                                     webcam_path + yesterday_s + yesterday + "_for_tg.mp4")
+    else:
+        print("Error within ffmpeg (full quality video)", file=stderr)
 
     if ffmpeg_exit_code == 0:
+        # don't (to preserve hard disk space on NAS)
         # make tar.gz archive in folder with pictures - pigz for multicore speed
-        os.system("tar c " + webcam_path + yesterday_s + "*.jpg | pigz --best > "
-                  + webcam_path + yesterday_s + yesterday + ".tar.gz")
-        # os.system("tar cfz " + webcam_path + yesterday_s + yesterday + ".tar.gz "
-        #           + webcam_path + yesterday_s + "*.jpg")
+        # os.system("tar c " + webcam_path + yesterday_s + "*.jpg | pigz --best > "
+        #           + webcam_path + yesterday_s + yesterday + ".tar.gz")
+        # print("Made tarball with all pictures from " + yesterday)
 
         # delete all .jpgs to save space
         os.system("rm " + webcam_path + yesterday_s + "*.jpg")
+        print("Removed all .jpgs from " + yesterday + " directory")
         # for pic in os.listdir(webcam_path + yesterday_s):
         #     if pic.endswith(".jpg"):
         #         os.remove(webcam_path + yesterday_s + pic)
     else:
-        print("Error within ffmpeg", file=stderr)
+        print("Error within ffmpeg (video conversion for telegram)", file=stderr)
 
     return yesterday
 
