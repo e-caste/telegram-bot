@@ -3,6 +3,7 @@ from robbamia import *
 from subprocess import Popen
 from datetime import datetime, timedelta
 from sys import stderr
+from time import sleep
 
 def _check_NAS_mounted():
     while True:
@@ -16,15 +17,19 @@ def _check_NAS_mounted():
 def get_last_img_name():
     _check_NAS_mounted()
 
-    folder = False
-    tmp = os.listdir(webcam_path)
-    tmp.sort(key=str.casefold)
-    # if there are only folders
-    if os.path.isdir(webcam_path + tmp[-1]):
-        folder = tmp[-1]
-        tmp = os.listdir(webcam_path + folder)
+    while True:
+        folder = False
+        tmp = os.listdir(webcam_path)
         tmp.sort(key=str.casefold)
-    return tmp[-1], folder
+        # if there are only folders
+        if os.path.isdir(webcam_path + tmp[-1]):
+            folder = tmp[-1]
+            tmp = os.listdir(webcam_path + folder)
+            tmp.sort(key=str.casefold)
+        if tmp[-1].endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
+            return tmp[-1], folder
+        else:
+            sleep(0.3)
 
 def get_yesterday_timelapse_video_name():
     _check_NAS_mounted()
