@@ -17,19 +17,19 @@ def _check_NAS_mounted():
 def get_last_img_name():
     _check_NAS_mounted()
 
-    while True:
-        folder = False
-        tmp = os.listdir(webcam_path)
+    folder = False
+    tmp = os.listdir(webcam_path)
+    tmp.sort(key=str.casefold)
+    # if there are only folders
+    if os.path.isdir(webcam_path + tmp[-1]):
+        folder = tmp[-1]
+        tmp = os.listdir(webcam_path + folder)
         tmp.sort(key=str.casefold)
-        # if there are only folders
-        if os.path.isdir(webcam_path + tmp[-1]):
-            folder = tmp[-1]
-            tmp = os.listdir(webcam_path + folder)
-            tmp.sort(key=str.casefold)
-        if tmp[-1].endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
-            return tmp[-1], folder
-        else:
-            sleep(0.3)
+    # send first image that is completely saved
+    for img in sorted(tmp, key=str.casefold, reverse=True):
+        if img.endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
+            return img, folder
+
 
 def get_yesterday_timelapse_video_name():
     _check_NAS_mounted()
