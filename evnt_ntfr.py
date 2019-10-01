@@ -10,10 +10,8 @@ from sys import stderr, platform
 import os
 from robbamia import *
 
-if platform.startswith('darwin'):
-    DEBUG = True
-else:
-    DEBUG = False
+# macOS is DEBUG, Linux is not DEBUG
+DEBUG = platform.startswith('darwin')
 
 if DEBUG:
     from selenium.webdriver.firefox.options import Options
@@ -120,14 +118,17 @@ def main():
             full_text = upcoming_events_card.text.split("Share Events\n")[1].split("·")[0] + \
                         upcoming_events_card.text.split("guests")[1].split("Get Tickets")[0]
             text_list.append(full_text)
+        elif upcoming_events_card.text.count("Get Tickets") > 1:
+            # try:
+            text_list_with_guest_numbers = upcoming_events_card.text.split("Share Events\n")[1].split("Get Tickets")
+            for item in text_list_with_guest_numbers:
+                text_list.append(item.split("·")[0] + item.split("guests")[1])
+            # except IndexError as ie:
+            #     # print(ie, file=stderr)
+            #     print("Only sending links because there is no Get Tickets button...", file=stderr)
         else:
-            try:
-                text_list_with_guest_numbers = upcoming_events_card.text.split("Share Events\n")[1].split("Get Tickets")
-                for item in text_list_with_guest_numbers:
-                    text_list.append(item.split("·")[0] + item.split("guests")[1])
-            except IndexError as ie:
-                # print(ie, file=stderr)
-                print("Only sending links because there is no Get Tickets button...", file=stderr)
+            # ignore text, only send links
+            pass
 
         with open(url_filenames['text_file'], 'r') as db:
             db_text = db.read()
@@ -152,8 +153,6 @@ def main():
         if not DEBUG:
             for process in processes_to_kill:
                 Popen(['killall', process])
-
-        if not DEBUG:
             sleep(10) # after each event url
 
     return_text = True
