@@ -88,12 +88,12 @@ def main():
                 for event in events:
                     link = event.get_attribute('href').split("?")[0]
                     # a facebook event link is only made of digits, discard any link with letters
-                    if not any(c.isalpha() for c in link[:-1].split("/")[-1]):
+                    if not any(c.isalpha() for c in link[:-1].split("/")[-1]) and "pages" not in link:
                         links_to_events.append(link)
             else:
                 link = events.get_attribute('href').split("?")[0]
                 # a facebook event link is only made of digits, discard any link with letters
-                if not any(c.isalpha() for c in link[:-1].split("/")[-1]):
+                if not any(c.isalpha() for c in link[:-1].split("/")[-1]) and "pages" not in link:
                     links_to_events.append(link)
 
         # no new events were found at a url, try with next one
