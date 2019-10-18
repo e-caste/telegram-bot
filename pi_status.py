@@ -1,17 +1,18 @@
 import subprocess
+from robbamia import raspi_script_dir
 
-def run_shell_cmd(cmd):
-    # TODO: for multiple arguments parse cmd and pass different parts to run
-    # cmd.split(' ')
-    return subprocess.run([cmd], stdout=subprocess.PIPE).stdout.decode('utf-8')
+def run_shell_cmd(cmd: str) -> str:
+    cmd = cmd.strip().replace('  ', ' ').split(' ')  # is now a list of strings
+    return subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8')
+
 
 def get_status():
     uptime_out = run_shell_cmd('uptime')
-    ifconfig_out = subprocess.run(['ifconfig', 'eth0'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    ifconfig_out = run_shell_cmd("ifconfig eth0")
     st_out = run_shell_cmd('speedtest')
-    python_out = subprocess.run(['pgrep', '-a', 'python'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    ltl_out = run_shell_cmd('/home/pi/castes-scripts/ltl.sh')
-    cpu_gpu_temps_out = run_shell_cmd('/home/pi/castes-scripts/check_cpu_gpu_temps.sh')
+    python_out = run_shell_cmd("pgrep -a python")
+    ltl_out = run_shell_cmd(raspi_script_dir + 'ltl.sh')
+    cpu_gpu_temps_out = run_shell_cmd(raspi_script_dir + 'check_cpu_gpu_temps.sh')
     return "Uptime:\n" + uptime_out + \
          "\n\n" + cpu_gpu_temps_out + \
          "\n\nSpeedtest:\n" + st_out + \
@@ -21,15 +22,15 @@ def get_status():
 
 def get_uptime():
     uptime_out = run_shell_cmd('uptime')
-    free_h_out = subprocess.run(["free","-h"], stdout=subprocess.PIPE).stdout.decode('utf-8')
-    df_h_root_out = subprocess.run(["df","-h", "/"], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    free_h_out = run_shell_cmd("free -h")
+    df_h_root_out = run_shell_cmd("df -h /")
     return uptime_out + "\n\n" + free_h_out + "\n\n" + df_h_root_out
 
 def get_cpu_gpu_temps():
-    return run_shell_cmd('/home/pi/castes-scripts/check_cpu_gpu_temps.sh')
+    return run_shell_cmd(raspi_script_dir + 'check_cpu_gpu_temps.sh')
 
 def get_ifconfig():
-    ifconfig_out = subprocess.run(['ifconfig', 'eth0'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    ifconfig_out = run_shell_cmd("ifconfig eth0")
     return "Network status:\n" + ifconfig_out
 
 def get_speedtest():
@@ -37,25 +38,25 @@ def get_speedtest():
     return "Speedtest:\n" + st_out
 
 def get_ppy():
-    python_out = subprocess.run(['pgrep', '-a', 'python'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    python_out = run_shell_cmd("pgrep -a python")
     return "Python running:\n" + python_out
 
 def get_ltl():
-    ltl_out = run_shell_cmd('/home/pi/castes-scripts/ltl.sh')
+    ltl_out = run_shell_cmd(raspi_script_dir + 'ltl.sh')
     return "Twitter bot:\n" + ltl_out
 
 def get_log_tail():
-    return subprocess.run(['/home/pi/castes-scripts/telegram-bot/tail.sh'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    return run_shell_cmd(raspi_script_dir + 'telegram-bot/tail.sh')
 
 def fortune():
-    return subprocess.run(['fortune'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    return run_shell_cmd("fortune")
 
 def get_lasdl():
-    lasdl_out = run_shell_cmd('/home/pi/castes-scripts/lasdl.sh')
+    lasdl_out = run_shell_cmd(raspi_script_dir + 'lasdl.sh')
     return lasdl_out
 
 def sudo_apt_update():
-    with subprocess.Popen(["sudo", "apt", "update"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+    with subprocess.Popen(["sudo", "apt-get", "update"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
         process.wait(60)
         out = "stdout:\n" + process.stdout.read().decode("ascii") + "\nstderr:\n" + process.stderr.read().decode("ascii")
     return out
@@ -67,10 +68,10 @@ def apt_list_upgradable():
     return out
 
 def sudo_apt_upgrade():
-    with subprocess.Popen(["sudo", "apt", "upgrade", "-y"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+    with subprocess.Popen(["sudo", "apt-get", "upgrade", "-y"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
         process.wait(600)
         out = "stdout:\n" + process.stdout.read().decode("ascii") + "\nstderr:\n" + process.stderr.read().decode("ascii")
     return out
 
 def get_disk_usage():
-    return subprocess.run(["df", "-h"], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    return run_shell_cmd("df -h /")
