@@ -1,6 +1,7 @@
 .idea
 __pycache__/
 robbamia.py
+robbamia_mbp2014.py
 geckodriver.log
 nmt_chatbot
 pi0w_webcam.py
