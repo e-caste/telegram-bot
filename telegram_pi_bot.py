@@ -1,27 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# This program is dedicated to the public domain under the CC0 license.
-#
-# THIS EXAMPLE HAS BEEN UPDATED TO WORK WITH THE BETA VERSION 12 OF PYTHON-TELEGRAM-BOT.
-# If you're still using version 11.1.0, please see the examples at
+# python-telegram-bot API examples at:
 # https://github.com/python-telegram-bot/python-telegram-bot/tree/v11.1.0/examples
 
-"https://it.wikiquote.org/w/api.php?action=featuredfeed&feed=qotd"
-
-"""
-Simple Bot to reply to Telegram messages.
-
-First, a few handler functions are defined. Then, those functions are passed to
-the Dispatcher and registered at their respective places.
-Then, the bot is started and runs until we press Ctrl-C on the command line.
-
-Usage:
-Basic Echobot example, repeats messages.
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
-"""
-
-from uuid import uuid4
 import logging
 from telegram import bot, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, \
     InputTextMessageContent
@@ -31,7 +12,6 @@ from pi_status import *
 from parser import get_wiki_daily_quote
 from time import time, sleep
 from robbamia import *
-import threading
 import evnt_ntfr
 from datetime import datetime, timedelta
 import os
@@ -89,10 +69,6 @@ def help(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text='https://youtu.be/cueulBxn1Fw')
 
 
-# def echo(bot, update):
-#     """Echo the user message."""
-#     bot.send_message(chat_id=update.message.chat_id, text=update.message.text)
-
 def chatbot(bot, update):
     # to reduce CPU strain and limit usage to known people
     if update.message.chat_id == int(castes_chat_id) or update.message.chat_id == int(gabbias_chat_id):
@@ -121,6 +97,7 @@ def status(bot, update):
         bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /status command.")
 
+
 def apt(bot, update):
     if str(update.message.chat_id) == castes_chat_id:
         keyboard = [
@@ -135,6 +112,7 @@ def apt(bot, update):
         bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /apt command.")
 
+
 def events_menu(bot, update, use_callback : bool = False):
     keyboard = [
         [InlineKeyboardButton("Cercle", callback_data='cercle')],
@@ -148,6 +126,7 @@ def events_menu(bot, update, use_callback : bool = False):
     else:
         update.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
 
+
 def subscribe_to_cercle_notifications(bot, update):
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='sub_cercle'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_cercle')],
@@ -156,6 +135,7 @@ def subscribe_to_cercle_notifications(bot, update):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
 
 def subscribe_to_thedreamers_notifications(bot, update):
     keyboard = [
@@ -166,6 +146,7 @@ def subscribe_to_thedreamers_notifications(bot, update):
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
+
 def subscribe_to_supermarket_notifications(bot, update):
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='sub_super'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_super')],
@@ -175,6 +156,7 @@ def subscribe_to_supermarket_notifications(bot, update):
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
+
 def subscribe_to_webcam_notifications(bot, update):
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='webcam_sub')],
@@ -183,6 +165,7 @@ def subscribe_to_webcam_notifications(bot, update):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
 
 def webcam_menu(bot, update, use_callback : bool = False):
     keyboard = [
@@ -196,6 +179,7 @@ def webcam_menu(bot, update, use_callback : bool = False):
         update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
     else:
         update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
 
 # context is an Update object!
 def button(bot_obj, context):
@@ -357,6 +341,7 @@ def button(bot_obj, context):
         query.edit_message_text(text=str(e))
         print(e)
 
+
 def send_split_msgs(bot, string_list):
     try:
         for string in string_list:
@@ -407,28 +392,6 @@ def check_for_new_events(bot, hour: int):
         except Exception as e:
             print(e, file=sys.stderr)
 
-# THIS IS NOT FOR CONTEXTUAL BUTTONS: THIS IS FOR SUMMONING THE BOT BY @ING IT
-# def inlinequery(update, context):
-#     """Handle the inline query."""
-#     query = update.inline_query.query
-#     results = [
-#         InlineQueryResultArticle(
-#             id=uuid4(),
-#             title="Caps",
-#             input_message_content=InputTextMessageContent(
-#                 query.upper())),
-#         InlineQueryResultArticle(
-#             id=uuid4(),
-#             title="Bold",
-#             input_message_content=InputTextMessageContent(
-#                 "*{}*")),
-#         InlineQueryResultArticle(
-#             id=uuid4(),
-#             title="Italic",
-#             input_message_content=InputTextMessageContent(
-#                 "_{}_"))]
-#
-#     update.inline_query.answer(results)
 
 def get_webcam_img(bot, update):
     img_name, folder = webcam.get_last_img_name()
@@ -440,12 +403,14 @@ def get_webcam_img(bot, update):
                    photo=open(webcam_path + path_name, 'rb'),
                    caption=img_name)
 
+
 def get_webcam_timelapse(bot, update):
     yesterday = webcam.get_yesterday_timelapse_video_name()
     bot.send_video(chat_id=update.callback_query.message.chat_id,
                    video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
                    caption=yesterday,
                    timeout=6000)
+
 
 def make_new_webcam_timelapse(hour: int, minute: int):
     while True:
@@ -461,6 +426,7 @@ def make_new_webcam_timelapse(hour: int, minute: int):
 
         except Exception as e:
             print(e, file=sys.stderr)
+
 
 def send_timelapse_notification(bot, hour: int, minute: int):
     while True:
@@ -485,11 +451,14 @@ def send_timelapse_notification(bot, hour: int, minute: int):
         except Exception as e:
             print(e, file=sys.stderr)
 
+
 def epoch(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
 
+
 def whoyouare(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(update.message.from_user))
+
 
 def tail_log(bot, update):
     if str(update.message.chat_id) == castes_chat_id:
@@ -497,8 +466,10 @@ def tail_log(bot, update):
     else:
         bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /log command.")
 
+
 def quote(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=fortune())
+
 
 def wiki_quote(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=get_wiki_daily_quote())
@@ -507,6 +478,7 @@ def wiki_quote(bot, update):
 def error(bot, update):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', bot, update.error)
+
 
 def main():
     if not DEBUG:
@@ -539,7 +511,7 @@ def main():
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     # dp.add_handler(InlineQueryHandler(inlinequery))
 
-    # on noncommand i.e message - reply to the message on Telegram with a ML algorithm
+    # on noncommand i.e. any text message: reply to the message on Telegram with a ML algorithm
     # dp.add_handler(MessageHandler(Filters.text, echo))
     dp.add_handler(MessageHandler(Filters.text, chatbot))
 
@@ -552,19 +524,8 @@ def main():
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
-    # updater.idle()
 
     # threading limits the number of concurrent threads to 2
-    # t1 = threading.Thread(target=updater.idle)
-    # t2 = threading.Thread(target=check_for_new_events(bot.Bot(token), hour=21))
-    # t3 = threading.Thread(target=make_new_webcam_timelapse(hour=0, minute=5))
-    # t4 = threading.Thread(target=send_timelapse_notification(hour=8, minute=30))
-    #
-    # t1.start()
-    # t2.start()
-    # t3.start()
-    # t4.start()
-
     # using multiprocessing
     processes = [
         Process(target=updater.idle),
@@ -576,7 +537,6 @@ def main():
         p.start()
     for p in processes:
         p.join()
-
 
 
 if __name__ == '__main__':
