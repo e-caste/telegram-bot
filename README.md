@@ -10,7 +10,7 @@ Its main features are:
 - chatbot based on [this ML repository](https://github.com/daniel-kukiela/nmt-chatbot) and [this tutorial](https://pythonprogramming.net/chatbot-deep-learning-python-tensorflow/) (only available to select users since the host machine is currently a Raspberry Pi 3B+)
 - other functions like random quotes, data about the user, and the current UNIX epoch
 
-A screenshot | Another screenshot
+ML Chatbot + Webcam | /status command + event notifications
 -------------|--------------
 ![alt text](https://imgur.com/ibT5xCV.png) | ![alt text](https://imgur.com/XvAiT4H.png)
 
