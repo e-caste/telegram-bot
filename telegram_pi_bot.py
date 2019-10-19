@@ -88,7 +88,7 @@ def status(bot, update):
                     [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
                     [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
                     [InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps"), InlineKeyboardButton("df -h", callback_data="df_h")],
-                    [InlineKeyboardButton("full tg bot log", callback_data='full_tg_log')]
+                    [InlineKeyboardButton("full tg bot log", callback_data='full_tg_log'), InlineKeyboardButton("tg bot log tail", callback_data="tail_log")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -220,6 +220,8 @@ def button(bot_obj, context):
             tmp.sort(key=str.casefold)
             log_path = tg_log_path + tmp[-1]
             bot_obj.send_document(chat_id=int(id), document=open(log_path, 'rb'))
+        elif query.data == 'tail_log':
+            reply = get_log_tail()
 
 
         elif query.data == 'cercle':
@@ -460,13 +462,6 @@ def whoyouare(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=str(update.message.from_user))
 
 
-def tail_log(bot, update):
-    if str(update.message.chat_id) == castes_chat_id:
-        bot.send_message(chat_id=update.message.chat_id, text=get_log_tail())
-    else:
-        bot.send_message(chat_id=update.message.chat_id, text="⚠️ You don't have permission to use the /log command.")
-
-
 def quote(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=fortune())
 
@@ -502,7 +497,6 @@ def main():
     dp.add_handler(CommandHandler("apt", apt))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
-    dp.add_handler(CommandHandler("log", tail_log))
     dp.add_handler(CommandHandler("quote", quote))
     dp.add_handler(CommandHandler("wikiquote", wiki_quote))
     dp.add_handler(CommandHandler("help", help))
