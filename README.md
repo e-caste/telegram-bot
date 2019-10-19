@@ -6,7 +6,7 @@ Its main features are:
 - get detailed status of bot host machine
 - get picture and timelapse from a Raspberry Pi0W with a Raspberry Camera (files stored on NAS)
 - subscribe/unsubscribe to timelapse notification every day at 8.30AM
-- subscribe/unsubscribe independently to different Facebook pages events
+- subscribe/unsubscribe independently to different Facebook pages events notifications at 9PM
 - chatbot based on [this ML repository](https://github.com/daniel-kukiela/nmt-chatbot) and [this tutorial](https://pythonprogramming.net/chatbot-deep-learning-python-tensorflow/) (only available to select users since the host machine is currently a Raspberry Pi 3B+)
 - other functions like random quotes, data about the user, and the current UNIX epoch
 
