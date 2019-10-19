@@ -5,4 +5,4 @@ robbamia_mbp2014.py
 geckodriver.log
 pi0w_webcam.py
 # 745MB ML model checkpoint - Github single file size limit is 100MB
- nmt_chatbot/model/translate.ckpt-78125.data-00000-of-00001
+nmt_chatbot/model/translate.ckpt-78125.data-00000-of-00001
