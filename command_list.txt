@@ -4,7 +4,7 @@ events - get/stop notifications about events
 rivoli - snaps a picture of Rivoli in real time
 epoch - shows your message's Unix epoch
 whoami - sends you details about yourself
-log - tails last 10 lines of log
+apt - aptitude
 quote - shows random quote from fortune
 wikiquote - shows daily quote from Wikipedia
 help - is absolutely useless, don't try this
