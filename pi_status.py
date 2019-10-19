@@ -46,7 +46,7 @@ def get_ltl():
     return "Twitter bot:\n" + ltl_out
 
 def get_log_tail():
-    return run_shell_cmd(raspi_script_dir + 'telegram-bot/tail.sh')
+    return run_shell_cmd('cd ' + raspi_script_dir + 'telegram-bot/logs && tail -10 "$(ls | tail -1)" && cd -')
 
 def fortune():
     return run_shell_cmd("fortune")
