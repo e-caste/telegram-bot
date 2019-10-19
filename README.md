@@ -35,3 +35,9 @@ This file contains some system-level functions to monitor and exercise some cont
 
 ### parser.py
 A not working version of the /wikiquote command, which usually produces funny outcomes. If fixed in the future, I think I'll keep this version for laughs.
+
+## How to run
+Install requirements:  
+`pip3 install -r requirements.txt`  
+Launch script:  
+`python3 telegram_pi_bot.py`
