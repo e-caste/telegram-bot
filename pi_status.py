@@ -1,4 +1,5 @@
 import subprocess
+import os
 from robbamia import raspi_script_dir
 
 def run_shell_cmd(cmd: str) -> str:
@@ -46,7 +47,7 @@ def get_ltl():
     return "Twitter bot:\n" + ltl_out
 
 def get_log_tail():
-    return run_shell_cmd('cd ' + raspi_script_dir + 'telegram-bot/logs && tail -10 "$(ls | tail -1)" && cd -')
+    return os.popen('cd ' + raspi_script_dir + 'telegram-bot/logs && tail -10 "$(ls | tail -1)" && cd -').read()
 
 def fortune():
     return run_shell_cmd("fortune")
