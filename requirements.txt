@@ -1,0 +1,4 @@
+python-telegram-bot==11.1.0
+selenium==3.141.0
+PyVirtualDisplay==0.2.4
+BeautifulSoup==3.2.2
