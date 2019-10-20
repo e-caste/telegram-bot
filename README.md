@@ -10,7 +10,7 @@ Its main features are:
 - chatbot based on [this ML repository](https://github.com/daniel-kukiela/nmt-chatbot) and [this tutorial](https://pythonprogramming.net/chatbot-deep-learning-python-tensorflow/) (only available to select users since the host machine is currently a Raspberry Pi 3B+)
 - other functions like random quotes, data about the user, and the current UNIX epoch
 
-A screenshot | Another screenshot
+ML Chatbot + Webcam | /status command + event notifications
 -------------|--------------
 ![alt text](https://imgur.com/ibT5xCV.png) | ![alt text](https://imgur.com/XvAiT4H.png)
 
@@ -37,7 +37,17 @@ This file contains some system-level functions to monitor and exercise some cont
 A not working version of the /wikiquote command, which usually produces funny outcomes. If fixed in the future, I think I'll keep this version for laughs.
 
 ## How to run
+(Optional) Make virtual environment and activate it:  
+`python3 -m venv venv`  
+`source venv/bin/activate`  
 Install requirements:  
 `pip3 install -r requirements.txt`  
 Launch script:  
-`python3 telegram_pi_bot.py`
+`python3 telegram_pi_bot.py`  
+(Optional) Deactivate venv once done:  
+`deactivate`  
+
+Also optional but useful are the 3 steps below:
+- make a bash script (e.g. `launch_bot.sh`) with logging and nohup so that the bot can easily be launched from ssh
+- make a bash script (e.g. `relaunch_bot.sh`) which stops the bot, updates the local repo with `git pull`, and calls the script above
+- make a cron job which starts the launcher script @reboot
