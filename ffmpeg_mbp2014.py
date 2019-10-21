@@ -14,6 +14,8 @@ def _check_NAS_mounted():
         else:
             break
 
+# since this script gets called via ssh, the function below only makes sense when executing it directly from the host machine
+# the cmd_connect_to_wifi is also called via a cron job at the appropriate time
 def _check_WiFi_connected():
     for _ in range(_retry_times):
         if "ping: cannot resolve google.com: Unknown host" in os.popen("ping -c 3 google.com").read():
