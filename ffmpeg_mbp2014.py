@@ -3,11 +3,22 @@ from datetime import datetime, timedelta
 from sys import stderr
 from robbamia_mbp2014 import *
 
+_retry_times = 10
+
 def _check_NAS_mounted():
-    while True:
-        if not os.path.isdir(webcam_path): # ismount()
+    for _ in range(_retry_times):
+        if not os.path.isdir(webcam_path):
+            _check_WiFi_connected()
             print("NAS folder not mounted. Mounting...", file=stderr)
             os.system(path_to_script_to_mount_NAS)
+        else:
+            break
+
+def _check_WiFi_connected():
+    for _ in range(_retry_times):
+        if "ping: cannot resolve google.com: Unknown host" in os.popen("ping -c 3 google.com").read():
+            print("Not connected to WiFi. Reconnecting...", file=stderr)
+            os.system(cmd_connect_to_wifi)
         else:
             break
 
@@ -56,8 +67,10 @@ def make_yesterday_timelapse_video_name():
         # print("Made tarball with all pictures from " + yesterday)
 
         # delete all .jpgs to save space
-        os.system("rm " + webcam_path + yesterday_s + "*.jpg")
-        print("Removed all .jpgs from " + yesterday + " directory")
+        # TODO: uncomment lines once figured out why the timelapse stops after around 1600 pictures
+        # os.system("rm " + webcam_path + yesterday_s + "*.jpg")
+        # print("Removed all .jpgs from " + yesterday + " directory")
+        pass
         # for pic in os.listdir(webcam_path + yesterday_s):
         #     if pic.endswith(".jpg"):
         #         os.remove(webcam_path + yesterday_s + pic)
