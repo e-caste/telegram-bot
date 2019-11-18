@@ -51,3 +51,19 @@ Also optional but useful are the 3 steps below:
 - make a bash script (e.g. `launch_bot.sh`) with logging and nohup so that the bot can easily be launched from ssh
 - make a bash script (e.g. `relaunch_bot.sh`) which stops the bot, updates the local repo with `git pull`, and calls the script above
 - make a cron job which starts the launcher script @reboot
+
+## List of needed files
+For every event, in the root directory of the repo:
+- `<event>_chat_ids.txt`
+- `<event>_events.txt`
+- `<event>_events_links.txt`
+  
+For the timelapse notification, in the root directory of the repo:
+- `webcam_chat_ids.txt`
+  
+In nmt_chatbot/model:
+- `translate.ckpt-78125.data-00000-of-00001`
+
+On remote machines:
+- `ffmpeg_mbp2014.py`
+- `pi0w_webcam.py`
