@@ -10,17 +10,17 @@ from pi_status import *
 from parser import get_wiki_daily_quote
 from time import time
 from robbamia import *
-from datetime import datetime
 import os
 from nmt_chatbot.inference import inference
 import sys
-import webcam
 from multiprocessing import Process
 from button_commands import status, events_menu, webcam_menu, apt
 from button_commands import subscribe_to_cercle_notifications, subscribe_to_supermarket_notifications, \
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
 from bot_utils import send_split_msgs, split_msg_for_telegram
+from bot_utils import get_webcam_img, get_webcam_timelapse, secs_per_picture
 from periodic_jobs import check_for_new_events, make_new_webcam_timelapse, send_timelapse_notification
+
 
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 # Enable logging
@@ -243,43 +243,6 @@ def button(bot, update):
     except Exception as e:
         query.edit_message_text(text=str(e))
         print(e)
-
-
-def get_webcam_img(bot, update):
-    img_name, folder = webcam.get_last_img_name()
-    if folder:
-        path_name = folder + "/" + img_name
-    else:
-        path_name = img_name
-    bot.send_photo(chat_id=update.callback_query.message.chat_id,
-                   photo=open(webcam_path + path_name, 'rb'),
-                   caption=img_name)
-
-
-def get_webcam_timelapse(bot, update):
-    yesterday = webcam.get_yesterday_timelapse_video_name()
-    bot.send_video(chat_id=update.callback_query.message.chat_id,
-                   video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
-                   caption=yesterday,
-                   timeout=6000)
-
-
-def secs_per_picture() -> str:
-    """
-    Return the average of seconds per picture taken by Raspberry Pi Zero W
-    """
-    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")])
-    pics_times = [datetime(year=int(pic[0:4]),
-                           month=int(pic[5:7]),
-                           day=int(pic[8:10]),
-                           hour=int(pic[11:13]),
-                           minute=int(pic[13:15]),
-                           second=int(pic[15:17]))
-                  for pic in pics]
-    pics_timedeltas = [(pics_times[i + 1] - pics_times[i]).total_seconds()
-                       for i in range(pics_times[:-1].__len__())]
-    average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
-    return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
 
 
 # END BUTTON HANDLER w/ FUNCTIONS
