@@ -122,7 +122,7 @@ def secs_per_picture() -> str:
     """
     Return the average of seconds per picture taken by Raspberry Pi Zero W
     """
-    pics = [pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")].sort()
+    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")])
     pics_times = [datetime(year=int(pic[0:4]),
                            month=int(pic[5:7]),
                            day=int(pic[8:10]),
