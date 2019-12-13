@@ -58,7 +58,6 @@ def calculate_time_to_sleep(hour: int, minute: int = 0):
     return time_to_sleep
 
 
-
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
 def start(bot, update):
@@ -98,14 +97,10 @@ def secs_per_picture() -> str:
     return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
 
 
-
-
-
-# context is an Update object!
-def button(bot_obj, context):
-    query = context.callback_query
+def button(bot, update):
+    query = update.callback_query
     # id = context.callback_query.chat_instance
-    id = str(context.callback_query.from_user.id)
+    id = str(update.callback_query.from_user.id)
     # print(id)
     reply = ""
     try:
@@ -139,19 +134,19 @@ def button(bot_obj, context):
             tmp = os.listdir(tg_log_path)
             tmp.sort(key=str.casefold)
             log_path = tg_log_path + tmp[-1]
-            bot_obj.send_document(chat_id=int(id), document=open(log_path, 'rb'))
+            bot.send_document(chat_id=int(id), document=open(log_path, 'rb'))
         elif query.data == 'tail_log':
             reply = get_log_tail()
 
 
         elif query.data == 'cercle':
-            subscribe_to_cercle_notifications(bot_obj, context)
+            subscribe_to_cercle_notifications(bot, update)
         elif query.data == 'thedreamers':
-            subscribe_to_thedreamers_notifications(bot_obj, context)
+            subscribe_to_thedreamers_notifications(bot, update)
         elif query.data == 'supermarket':
-            subscribe_to_supermarket_notifications(bot_obj, context)
+            subscribe_to_supermarket_notifications(bot, update)
         elif query.data == 'back_to_events_menu':
-            events_menu(bot_obj, context, use_callback=True)
+            events_menu(bot, update, use_callback=True)
         elif query.data == 'close_menu':
             reply = "Closed. ☠️"
 
@@ -214,15 +209,15 @@ def button(bot_obj, context):
 
 
         elif query.data == 'webcam_now':
-            get_webcam_img(bot_obj, context)
+            get_webcam_img(bot, update)
 
         elif query.data == 'webcam_timelapse':
-            get_webcam_timelapse(bot_obj, context)
+            get_webcam_timelapse(bot, update)
 
         elif query.data == 'webcam_notification':
-            subscribe_to_webcam_notifications(bot_obj, context)
+            subscribe_to_webcam_notifications(bot, update)
         elif query.data == 'back_to_webcam_menu':
-            webcam_menu(bot_obj, context, use_callback=True)
+            webcam_menu(bot, update, use_callback=True)
         elif query.data == 'webcam_sub':
             with open('webcam_chat_ids.txt', 'r+') as db:
                 ids = db.read()
