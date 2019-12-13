@@ -92,6 +92,7 @@ def status(bot, update):
             [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
             [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
             [InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps"), InlineKeyboardButton("df -h", callback_data="df_h")],
+            [InlineKeyboardButton("time per pic", callback_data="time_per_pic")],
             [InlineKeyboardButton("full tg bot log", callback_data='full_tg_log'), InlineKeyboardButton("tg bot log tail", callback_data="tail_log")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -117,7 +118,7 @@ def apt(bot, update):
                          text="⚠️ You don't have permission to use the /apt command.")
 
 
-def secs_per_picture(bot, update):
+def secs_per_picture() -> str:
     """
     Return the average of seconds per picture taken by Raspberry Pi Zero W
     """
@@ -132,8 +133,7 @@ def secs_per_picture(bot, update):
     pics_timedeltas = [(pics_times[i + 1] - pics_times[i]).total_seconds()
                        for i in range(pics_times[:-1].__len__())]
     average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
-    bot.send_message(chat_id=update.message.chat_id,
-                     text=f"The average time taken per picture is {average_time_per_pic} seconds.")
+    return f"The average time taken per picture is {average_time_per_pic} seconds."
 
 
 def events_menu(bot, update, use_callback: bool = False):
@@ -359,6 +359,9 @@ def button(bot_obj, context):
                     db.truncate()
                     reply = "You  won't receive any more notifications."
                     print("UNSUBBED webcam " + id)
+
+        elif query.data == 'time_per_pic':
+            reply = secs_per_picture()
 
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
