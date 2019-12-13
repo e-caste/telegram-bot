@@ -20,6 +20,8 @@ import sys
 import webcam
 from multiprocessing import Process
 from button_commands import status, events_menu, webcam_menu, apt
+from button_commands import subscribe_to_cercle_notifications, subscribe_to_supermarket_notifications, \
+    subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
 
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 # Enable logging
