@@ -97,3 +97,18 @@ def webcam_menu(bot, update, use_callback: bool = False):
         update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
     else:
         update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
+
+def apt(bot, update):
+    if str(update.message.chat_id) == castes_chat_id:
+        keyboard = [
+            [InlineKeyboardButton("sudo apt update", callback_data="apt_update")],
+            [InlineKeyboardButton("apt list -u", callback_data="apt_list_u")],
+            [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
+    else:
+        bot.send_message(chat_id=update.message.chat_id,
+                         text="⚠️ You don't have permission to use the /apt command.")

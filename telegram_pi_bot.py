@@ -19,7 +19,7 @@ from nmt_chatbot.inference import inference
 import sys
 import webcam
 from multiprocessing import Process
-from button_commands import status, events_menu, webcam_menu
+from button_commands import status, events_menu, webcam_menu, apt
 
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 # Enable logging
@@ -78,21 +78,6 @@ def chatbot(bot, update):
     if update.message.chat_id == int(castes_chat_id) or update.message.chat_id == int(gabbias_chat_id):
         nmt_result = inference(update.message.text)
         bot.send_message(chat_id=update.message.chat_id, text=nmt_result['answers'][nmt_result['best_index']])
-
-
-def apt(bot, update):
-    if str(update.message.chat_id) == castes_chat_id:
-        keyboard = [
-            [InlineKeyboardButton("sudo apt update", callback_data="apt_update")],
-            [InlineKeyboardButton("apt list -u", callback_data="apt_list_u")],
-            [InlineKeyboardButton("sudo apt upgrade", callback_data="apt_upgrade")]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-
-        update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
-    else:
-        bot.send_message(chat_id=update.message.chat_id,
-                         text="⚠️ You don't have permission to use the /apt command.")
 
 
 def secs_per_picture() -> str:
