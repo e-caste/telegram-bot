@@ -4,16 +4,18 @@
 # https://github.com/python-telegram-bot/python-telegram-bot/tree/v11.1.0/examples
 
 import logging
+import os
+import sys
+from time import time
+from multiprocessing import Process
+
 from telegram import bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from nmt_chatbot.inference import inference
+
 from pi_status import *
 from parser import get_wiki_daily_quote
-from time import time
 from robbamia import *
-import os
-from nmt_chatbot.inference import inference
-import sys
-from multiprocessing import Process
 from button_commands import status, events_menu, webcam_menu, apt
 from button_commands import subscribe_to_cercle_notifications, subscribe_to_supermarket_notifications, \
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
