@@ -8,10 +8,9 @@ from telegram import bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from pi_status import *
 from parser import get_wiki_daily_quote
-from time import time, sleep
+from time import time
 from robbamia import *
-import evnt_ntfr
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 from nmt_chatbot.inference import inference
 import sys
@@ -27,48 +26,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-
-# BEGIN UTILS
-
-def split_msg_for_telegram(string: str):
-    chars_per_msg = 4096
-    return [string[i:i + chars_per_msg] for i in range(0, len(string), chars_per_msg)]
-
-
-def send_split_msgs(bot, string_list):
-    try:
-        for string in string_list:
-            bot.send_message(chat_id=castes_chat_id, text=string)
-
-    except Exception as e:
-        print("send_split_msgs")
-        print(e)
-
-
-def calculate_time_to_sleep(hour: int, minute: int = 0):
-    # hour is before given hour -> wait until today at given hour and minute
-    if int(datetime.now().time().strftime('%k')) < hour:
-        time_to_sleep = int(
-            (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
-    # hour is equal to given hour
-    elif int(datetime.now().time().strftime('%k')) == hour:
-        # minute is before given minute -> wait until today at given time
-        if int(datetime.now().time().strftime('%M')) < minute:
-            time_to_sleep = int(
-                (datetime.today().replace(hour=hour, minute=minute, second=0) - datetime.now()).total_seconds())
-        # minute is after given minute -> wait until tomorrow at given time
-        else:
-            time_to_sleep = int(
-                (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(days=1)
-                 - datetime.now()).total_seconds())
-    # hour is after given hour -> wait until tomorrow at given time
-    else:
-        time_to_sleep = int(
-            (datetime.today().replace(hour=hour, minute=minute, second=0) + timedelta(days=1)
-             - datetime.now()).total_seconds())
-    return time_to_sleep
-
-# END UTILS
 
 
 # BEGIN COMMAND HANDLERS
@@ -324,95 +281,6 @@ def secs_per_picture() -> str:
 
 
 # END BUTTON HANDLER w/ FUNCTIONS
-
-
-# BEGIN PERIODIC JOBS
-
-
-def check_for_new_events(bot, hour: int):
-    while True:
-        try:
-            time_to_sleep = calculate_time_to_sleep(hour=hour)
-
-            print("Waiting to check for new events... " + str(time_to_sleep))
-            sleep(time_to_sleep)
-
-            # the order must be the same as in evnt_ntfr.py
-            chat_ids_list = [
-                'supermarket_chat_ids.txt',
-                'cercle_chat_ids.txt',
-                'thedreamers_chat_ids.txt'
-            ]
-            os.chdir(raspi_wd)
-            links, texts, event_names = evnt_ntfr.main()
-            if links is not None and texts is not None:
-                for links_list, text_list, chat_ids, event_name in zip(links, texts, chat_ids_list, event_names):
-                    with open(chat_ids, 'r') as ids:
-                        for id in ids.readlines():
-                            for link, text in zip(links_list, text_list):
-                                try:
-                                    bot.send_message(chat_id=id,
-                                                     text="New " + event_name.capitalize() + " event:\n" + text + "\n" + link)
-                                    print("Sent " + event_name + " " + link + " to " + id)
-                                except Exception as e:
-                                    print(e, file=sys.stderr)
-            elif links is not None and texts is None:
-                for links_list, chat_ids, event_name in zip(links, chat_ids_list, event_names):
-                    with open(chat_ids, 'r') as ids:
-                        for id in ids.readlines():
-                            for link in links_list:
-                                try:
-                                    bot.send_message(chat_id=id,
-                                                     text="New " + event_name.capitalize() + " event:\n" + link)
-                                    print("Sent " + event_name + " " + link + " to " + id)
-                                except Exception as e:
-                                    print(e, file=sys.stderr)
-
-        except Exception as e:
-            print(e, file=sys.stderr)
-
-
-def make_new_webcam_timelapse(hour: int, minute: int):
-    while True:
-        try:
-            time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
-
-            print("Waiting to make timelapse... " + str(time_to_sleep))
-            sleep(time_to_sleep)
-
-            # this function also makes the new video from the images
-            yesterday = webcam.get_yesterday_timelapse_video_name()
-            print("\nMade new timelapse of " + yesterday + "\n")
-
-        except Exception as e:
-            print(e, file=sys.stderr)
-
-
-def send_timelapse_notification(bot, hour: int, minute: int):
-    while True:
-        try:
-            time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
-            print("Waiting to send timelapse... " + str(time_to_sleep))
-            sleep(time_to_sleep)
-
-            if not DEBUG:
-                os.chdir(raspi_wd)
-            # the video should have already been made by the function above, so it immediately returns yesterday
-            yesterday = webcam.get_yesterday_timelapse_video_name()
-            with open('webcam_chat_ids.txt', 'r') as ids:
-                for id in ids.readlines():
-                    bot.send_video(chat_id=id,
-                                   video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
-                                   caption="Here's the timelapse of yesterday! - " + yesterday,
-                                   timeout=6000,
-                                   supports_streaming=True)
-                    print("Sent timelapse to " + id)
-
-        except Exception as e:
-            print(e, file=sys.stderr)
-
-
-# END PERIODIC JOBS
 
 
 def main():
