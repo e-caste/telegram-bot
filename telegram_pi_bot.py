@@ -4,10 +4,8 @@
 # https://github.com/python-telegram-bot/python-telegram-bot/tree/v11.1.0/examples
 
 import logging
-from telegram import bot, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, \
-    InputTextMessageContent
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, \
-    InlineQueryHandler
+from telegram import bot
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from pi_status import *
 from parser import get_wiki_daily_quote
 from time import time, sleep
