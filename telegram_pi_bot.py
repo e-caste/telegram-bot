@@ -28,7 +28,7 @@ from periodic_jobs import check_for_new_events, make_new_webcam_timelapse, send_
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+                    level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
@@ -192,7 +192,7 @@ def button(bot_obj, update):
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
             query.edit_message_text(text=split_reply[0])
-            send_split_msgs(bot_obj.Bot(token), split_reply[1:])
+            send_split_msgs(bot.Bot(token), split_reply[1:])
         else:
             query.message.delete()  # TODO: should use query.edit_message_reply_markup() but "too many chat_ids were given"
 
