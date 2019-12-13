@@ -133,7 +133,7 @@ def secs_per_picture() -> str:
     pics_timedeltas = [(pics_times[i + 1] - pics_times[i]).total_seconds()
                        for i in range(pics_times[:-1].__len__())]
     average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
-    return f"The average time taken per picture is {average_time_per_pic} seconds."
+    return "The average time taken per picture is " + str(average_time_per_pic) + " seconds."
 
 
 def events_menu(bot, update, use_callback: bool = False):
