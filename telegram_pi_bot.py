@@ -22,6 +22,11 @@ from multiprocessing import Process
 from button_commands import status, events_menu, webcam_menu
 
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
+# Enable logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 
 def split_msg_for_telegram(string: str):
@@ -52,12 +57,6 @@ def calculate_time_to_sleep(hour: int, minute: int = 0):
              - datetime.now()).total_seconds())
     return time_to_sleep
 
-
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-
-logger = logging.getLogger(__name__)
 
 
 # Define a few command handlers. These usually take the two arguments bot and
