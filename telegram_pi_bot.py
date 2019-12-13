@@ -83,7 +83,7 @@ def error(bot, update):
 # BEGIN BUTTON HANDLER w/ FUNCTIONS
 
 
-def button(bot, update):
+def button(bot_obj, update):
     query = update.callback_query
     # id = context.callback_query.chat_instance
     id = str(update.callback_query.from_user.id)
@@ -120,19 +120,19 @@ def button(bot, update):
             tmp = os.listdir(tg_log_path)
             tmp.sort(key=str.casefold)
             log_path = tg_log_path + tmp[-1]
-            bot.send_document(chat_id=int(id), document=open(log_path, 'rb'))
+            bot_obj.send_document(chat_id=int(id), document=open(log_path, 'rb'))
         elif query.data == 'tail_log':
             reply = get_log_tail()
 
 
         elif query.data == 'cercle':
-            subscribe_to_cercle_notifications(bot, update)
+            subscribe_to_cercle_notifications(bot_obj, update)
         elif query.data == 'thedreamers':
-            subscribe_to_thedreamers_notifications(bot, update)
+            subscribe_to_thedreamers_notifications(bot_obj, update)
         elif query.data == 'supermarket':
-            subscribe_to_supermarket_notifications(bot, update)
+            subscribe_to_supermarket_notifications(bot_obj, update)
         elif query.data == 'back_to_events_menu':
-            events_menu(bot, update, use_callback=True)
+            events_menu(bot_obj, update, use_callback=True)
         elif query.data == 'close_menu':
             reply = "Closed. ☠️"
 
@@ -172,15 +172,15 @@ def button(bot, update):
 
 
         elif query.data == 'webcam_now':
-            get_webcam_img(bot, update)
+            get_webcam_img(bot_obj, update)
 
         elif query.data == 'webcam_timelapse':
-            get_webcam_timelapse(bot, update)
+            get_webcam_timelapse(bot_obj, update)
 
         elif query.data == 'webcam_notification':
-            subscribe_to_webcam_notifications(bot, update)
+            subscribe_to_webcam_notifications(bot_obj, update)
         elif query.data == 'back_to_webcam_menu':
-            webcam_menu(bot, update, use_callback=True)
+            webcam_menu(bot_obj, update, use_callback=True)
         elif query.data == 'webcam_sub':
             webcam_sub(id)
         elif query.data == 'webcam_unsub':
@@ -192,7 +192,7 @@ def button(bot, update):
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
             query.edit_message_text(text=split_reply[0])
-            send_split_msgs(bot.Bot(token), split_reply[1:])
+            send_split_msgs(bot_obj.Bot(token), split_reply[1:])
         else:
             query.message.delete()  # TODO: should use query.edit_message_reply_markup() but "too many chat_ids were given"
 
