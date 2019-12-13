@@ -5,7 +5,6 @@ from robbamia import *
 from bot_utils import calculate_time_to_sleep
 import evnt_ntfr
 import webcam
-from telegram_pi_bot import DEBUG
 
 
 def check_for_new_events(bot, hour: int):
@@ -67,7 +66,7 @@ def make_new_webcam_timelapse(hour: int, minute: int):
             print(e, file=sys.stderr)
 
 
-def send_timelapse_notification(bot, hour: int, minute: int):
+def send_timelapse_notification(bot, hour: int, minute: int, DEBUG: bool):
     while True:
         try:
             time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
