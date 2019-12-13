@@ -82,3 +82,66 @@ def secs_per_picture() -> str:
                        for i in range(pics_times[:-1].__len__())]
     average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
     return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
+
+
+def webcam_sub(id: str):
+    with open('webcam_chat_ids.txt', 'r+') as db:
+        ids = db.read()
+        if id in ids:
+            reply = "You have already subscribed to the 8.30a.m. timelapse notification!"
+        else:
+            if ids == "":
+                db.write(id)
+            else:
+                db.seek(0)
+                db.write(ids + "\n" + id)
+                db.truncate()
+            reply = "You will now receive the timelapse of the day before every day at 8.30a.m."
+            print("SUBBED webcam " + id)
+        return reply
+
+
+def webcam_unsub(id: str):
+    with open('webcam_chat_ids.txt', 'r+') as db:
+        ids = db.read()
+        if id not in ids:
+            reply = "You are not yet subscribed to notifications."
+        else:
+            db.seek(0)
+            for line in ids.splitlines():
+                if id not in line:
+                    db.write(line)
+            db.truncate()
+            reply = "You  won't receive any more notifications."
+            print("UNSUBBED webcam " + id)
+
+
+def events_sub(filenamestart: str, id: str):
+    with open(filenamestart + '_chat_ids.txt', 'r+') as db:
+        ids = db.read()
+        if id in ids:
+            reply = "You have already subscribed to the new " + filenamestart.capitalize() + " event notification!"
+        else:
+            if ids == "":
+                db.write(id)
+            else:
+                db.seek(0)
+                db.write(ids + "\n" + id)
+                db.truncate()
+            reply = "You will now receive a notification when a new " + filenamestart.capitalize() + " event is available!"
+            print("SUBBED " + filenamestart + " " + id)
+
+
+def events_unsub(filenamestart: str, id: str):
+    with open(filenamestart + '_chat_ids.txt', 'r+') as db:
+        ids = db.read()
+        if id not in ids:
+            reply = "You are not yet subscribed to notifications."
+        else:
+            db.seek(0)
+            for line in ids.splitlines():
+                if id not in line:
+                    db.write(line)
+            db.truncate()
+            reply = "You  won't receive any more notifications."
+            print("UNSUBBED " + filenamestart + " " + id)

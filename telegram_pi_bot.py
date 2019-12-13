@@ -20,7 +20,8 @@ from button_commands import status, events_menu, webcam_menu, apt
 from button_commands import subscribe_to_cercle_notifications, subscribe_to_supermarket_notifications, \
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
 from bot_utils import send_split_msgs, split_msg_for_telegram
-from bot_utils import get_webcam_img, get_webcam_timelapse, secs_per_picture
+from bot_utils import get_webcam_img, get_webcam_timelapse, secs_per_picture, webcam_sub, webcam_unsub, events_sub, \
+    events_unsub
 from periodic_jobs import check_for_new_events, make_new_webcam_timelapse, send_timelapse_notification
 
 
@@ -145,19 +146,7 @@ def button(bot, update):
             else:
                 print("No corresponding chat_ids file found")
                 return
-            with open(filenamestart + '_chat_ids.txt', 'r+') as db:
-                ids = db.read()
-                if id in ids:
-                    reply = "You have already subscribed to the new " + filenamestart.capitalize() + " event notification!"
-                else:
-                    if ids == "":
-                        db.write(id)
-                    else:
-                        db.seek(0)
-                        db.write(ids + "\n" + id)
-                        db.truncate()
-                    reply = "You will now receive a notification when a new " + filenamestart.capitalize() + " event is available!"
-                    print("SUBBED " + filenamestart + " " + id)
+            events_sub(filenamestart, id)
 
         elif query.data.startswith("unsub"):
             if "cercle" in query.data:
@@ -169,18 +158,7 @@ def button(bot, update):
             else:
                 print("No corresponding chat_ids file found")
                 return
-            with open(filenamestart + '_chat_ids.txt', 'r+') as db:
-                ids = db.read()
-                if id not in ids:
-                    reply = "You are not yet subscribed to notifications."
-                else:
-                    db.seek(0)
-                    for line in ids.splitlines():
-                        if id not in line:
-                            db.write(line)
-                    db.truncate()
-                    reply = "You  won't receive any more notifications."
-                    print("UNSUBBED " + filenamestart + " " + id)
+            events_unsub(filenamestart, id)
 
 
         elif query.data == 'fblink_cercle':
@@ -204,33 +182,9 @@ def button(bot, update):
         elif query.data == 'back_to_webcam_menu':
             webcam_menu(bot, update, use_callback=True)
         elif query.data == 'webcam_sub':
-            with open('webcam_chat_ids.txt', 'r+') as db:
-                ids = db.read()
-                if id in ids:
-                    reply = "You have already subscribed to the 8.30a.m. timelapse notification!"
-                else:
-                    if ids == "":
-                        db.write(id)
-                    else:
-                        db.seek(0)
-                        db.write(ids + "\n" + id)
-                        db.truncate()
-                    reply = "You will now receive the timelapse of the day before every day at 8.30a.m."
-                    print("SUBBED webcam " + id)
-
+            webcam_sub(id)
         elif query.data == 'webcam_unsub':
-            with open('webcam_chat_ids.txt', 'r+') as db:
-                ids = db.read()
-                if id not in ids:
-                    reply = "You are not yet subscribed to notifications."
-                else:
-                    db.seek(0)
-                    for line in ids.splitlines():
-                        if id not in line:
-                            db.write(line)
-                    db.truncate()
-                    reply = "You  won't receive any more notifications."
-                    print("UNSUBBED webcam " + id)
+            webcam_unsub(id)
 
         elif query.data == 'time_per_pic':
             reply = secs_per_picture()
