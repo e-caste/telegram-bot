@@ -22,9 +22,11 @@ from multiprocessing import Process
 
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 
+
 def split_msg_for_telegram(string: str):
     chars_per_msg = 4096
     return [string[i:i + chars_per_msg] for i in range(0, len(string), chars_per_msg)]
+
 
 def calculate_time_to_sleep(hour: int, minute: int = 0):
     # hour is before given hour -> wait until today at given hour and minute
@@ -49,11 +51,13 @@ def calculate_time_to_sleep(hour: int, minute: int = 0):
              - datetime.now()).total_seconds())
     return time_to_sleep
 
+
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
@@ -61,7 +65,7 @@ def start(bot, update):
     """Send a message when the command /start is issued."""
     bot.send_message(chat_id=update.message.chat_id, text='Hi ' + update.message.from_user.first_name +
                                                           ', welcome to SuperUselessBot 2.0, now '
-                                                            'based on the python-telegram-bot API!')
+                                                          'based on the python-telegram-bot API!')
 
 
 def help(bot, update):
@@ -84,11 +88,11 @@ def status(bot, update):
     if str(update.message.chat_id) == castes_chat_id:
         # each [] is a line
         keyboard = [
-                    [InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
-                    [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
-                    [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
-                    [InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps"), InlineKeyboardButton("df -h", callback_data="df_h")],
-                    [InlineKeyboardButton("full tg bot log", callback_data='full_tg_log'), InlineKeyboardButton("tg bot log tail", callback_data="tail_log")]
+            [InlineKeyboardButton("uptime", callback_data='uptime'), InlineKeyboardButton("ltl", callback_data='twlog')],
+            [InlineKeyboardButton("ppy", callback_data='ppy'), InlineKeyboardButton("speedtest", callback_data='st')],
+            [InlineKeyboardButton("lasdl", callback_data='lasdl'), InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
+            [InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps"), InlineKeyboardButton("df -h", callback_data="df_h")],
+            [InlineKeyboardButton("full tg bot log", callback_data='full_tg_log'), InlineKeyboardButton("tg bot log tail", callback_data="tail_log")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -113,7 +117,26 @@ def apt(bot, update):
                          text="⚠️ You don't have permission to use the /apt command.")
 
 
-def events_menu(bot, update, use_callback : bool = False):
+def secs_per_picture(bot, update):
+    """
+    Return the average of seconds per picture taken by Raspberry Pi Zero W
+    """
+    pics = [pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")].sort()
+    pics_times = [datetime(year=int(pic[0:4]),
+                           month=int(pic[5:7]),
+                           day=int(pic[8:10]),
+                           hour=int(pic[11:13]),
+                           minute=int(pic[13:15]),
+                           second=int(pic[15:17]))
+                  for pic in pics]
+    pics_timedeltas = [(pics_times[i + 1] - pics_times[i]).total_seconds()
+                       for i in range(pics_times[:-1].__len__())]
+    average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
+    bot.send_message(chat_id=update.message.chat_id,
+                     text=f"The average time taken per picture is {average_time_per_pic} seconds.")
+
+
+def events_menu(bot, update, use_callback: bool = False):
     keyboard = [
         [InlineKeyboardButton("Cercle", callback_data='cercle')],
         [InlineKeyboardButton("TheDreamers", callback_data='thedreamers')],
@@ -122,14 +145,17 @@ def events_menu(bot, update, use_callback : bool = False):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     if use_callback:
-        update.callback_query.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
+        update.callback_query.message.reply_text('Choose which event you want to receive notifications about:',
+                                                 reply_markup=reply_markup)
     else:
-        update.message.reply_text('Choose which event you want to receive notifications about:', reply_markup=reply_markup)
+        update.message.reply_text('Choose which event you want to receive notifications about:',
+                                  reply_markup=reply_markup)
 
 
 def subscribe_to_cercle_notifications(bot, update):
     keyboard = [
-        [InlineKeyboardButton("Subscribe", callback_data='sub_cercle'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_cercle')],
+        [InlineKeyboardButton("Subscribe", callback_data='sub_cercle'),
+         InlineKeyboardButton("Unsubscribe", callback_data='unsub_cercle')],
         [InlineKeyboardButton("Link to Facebook page of Cercle", callback_data='fblink_cercle')],
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
@@ -139,7 +165,8 @@ def subscribe_to_cercle_notifications(bot, update):
 
 def subscribe_to_thedreamers_notifications(bot, update):
     keyboard = [
-        [InlineKeyboardButton("Subscribe", callback_data='sub_thedreamers'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_thedreamers')],
+        [InlineKeyboardButton("Subscribe", callback_data='sub_thedreamers'),
+         InlineKeyboardButton("Unsubscribe", callback_data='unsub_thedreamers')],
         [InlineKeyboardButton("Link to Facebook page of TheDreamers", callback_data='fblink_thedreamers')],
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
@@ -149,7 +176,8 @@ def subscribe_to_thedreamers_notifications(bot, update):
 
 def subscribe_to_supermarket_notifications(bot, update):
     keyboard = [
-        [InlineKeyboardButton("Subscribe", callback_data='sub_super'), InlineKeyboardButton("Unsubscribe", callback_data='unsub_super')],
+        [InlineKeyboardButton("Subscribe", callback_data='sub_super'),
+         InlineKeyboardButton("Unsubscribe", callback_data='unsub_super')],
         [InlineKeyboardButton("Link to Facebook page of Supermarket", callback_data='fblink_super')],
         [InlineKeyboardButton("Back", callback_data='back_to_events_menu')]
     ]
@@ -167,7 +195,7 @@ def subscribe_to_webcam_notifications(bot, update):
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def webcam_menu(bot, update, use_callback : bool = False):
+def webcam_menu(bot, update, use_callback: bool = False):
     keyboard = [
         [InlineKeyboardButton("📷 Right Now", callback_data='webcam_now')],
         [InlineKeyboardButton("📽 Timelapse of yesterday", callback_data='webcam_timelapse')],
@@ -337,7 +365,7 @@ def button(bot_obj, context):
             query.edit_message_text(text=split_reply[0])
             send_split_msgs(bot.Bot(token), split_reply[1:])
         else:
-            query.message.delete() # TODO: should use query.edit_message_reply_markup() but "too many chat_ids were given"
+            query.message.delete()  # TODO: should use query.edit_message_reply_markup() but "too many chat_ids were given"
 
     except Exception as e:
         query.edit_message_text(text=str(e))
@@ -376,7 +404,8 @@ def check_for_new_events(bot, hour: int):
                         for id in ids.readlines():
                             for link, text in zip(links_list, text_list):
                                 try:
-                                    bot.send_message(chat_id=id, text="New "+event_name.capitalize()+" event:\n"+text+"\n"+link)
+                                    bot.send_message(chat_id=id,
+                                                     text="New " + event_name.capitalize() + " event:\n" + text + "\n" + link)
                                     print("Sent " + event_name + " " + link + " to " + id)
                                 except Exception as e:
                                     print(e, file=sys.stderr)
@@ -386,7 +415,8 @@ def check_for_new_events(bot, hour: int):
                         for id in ids.readlines():
                             for link in links_list:
                                 try:
-                                    bot.send_message(chat_id=id, text="New "+event_name.capitalize()+" event:\n"+link)
+                                    bot.send_message(chat_id=id,
+                                                     text="New " + event_name.capitalize() + " event:\n" + link)
                                     print("Sent " + event_name + " " + link + " to " + id)
                                 except Exception as e:
                                     print(e, file=sys.stderr)
@@ -433,22 +463,22 @@ def make_new_webcam_timelapse(hour: int, minute: int):
 def send_timelapse_notification(bot, hour: int, minute: int):
     while True:
         try:
-                time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
-                print("Waiting to send timelapse... " + str(time_to_sleep))
-                sleep(time_to_sleep)
+            time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
+            print("Waiting to send timelapse... " + str(time_to_sleep))
+            sleep(time_to_sleep)
 
-                if not DEBUG:
-                    os.chdir(raspi_wd)
-                # the video should have already been made by the function above, so it immediately returns yesterday
-                yesterday = webcam.get_yesterday_timelapse_video_name()
-                with open('webcam_chat_ids.txt', 'r') as ids:
-                    for id in ids.readlines():
-                        bot.send_video(chat_id=id,
-                                       video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
-                                       caption="Here's the timelapse of yesterday! - " + yesterday,
-                                       timeout=6000,
-                                       supports_streaming=True)
-                        print("Sent timelapse to " + id)
+            if not DEBUG:
+                os.chdir(raspi_wd)
+            # the video should have already been made by the function above, so it immediately returns yesterday
+            yesterday = webcam.get_yesterday_timelapse_video_name()
+            with open('webcam_chat_ids.txt', 'r') as ids:
+                for id in ids.readlines():
+                    bot.send_video(chat_id=id,
+                                   video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
+                                   caption="Here's the timelapse of yesterday! - " + yesterday,
+                                   timeout=6000,
+                                   supports_streaming=True)
+                    print("Sent timelapse to " + id)
 
         except Exception as e:
             print(e, file=sys.stderr)
