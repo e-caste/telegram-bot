@@ -1,6 +1,7 @@
 from robbamia import castes_chat_id
 from datetime import datetime, timedelta
 
+
 def split_msg_for_telegram(string: str):
     chars_per_msg = 4096
     return [string[i:i + chars_per_msg] for i in range(0, len(string), chars_per_msg)]
