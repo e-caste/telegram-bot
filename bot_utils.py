@@ -21,7 +21,7 @@ def send_split_msgs(bot, string_list):
         print(e)
 
 
-def calculate_time_to_sleep(hour: int, minute: int = 0):
+def calculate_time_to_sleep(hour: int, minute: int = 0) -> int:
     # hour is before given hour -> wait until today at given hour and minute
     if int(datetime.now().time().strftime('%k')) < hour:
         time_to_sleep = int(
@@ -84,7 +84,7 @@ def secs_per_picture() -> str:
     return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
 
 
-def webcam_sub(id: str):
+def webcam_sub(id: str) -> str:
     with open('webcam_chat_ids.txt', 'r+') as db:
         ids = db.read()
         if id in ids:
@@ -98,10 +98,10 @@ def webcam_sub(id: str):
                 db.truncate()
             reply = "You will now receive the timelapse of the day before every day at 8.30a.m."
             print("SUBBED webcam " + id)
-        return reply
+    return reply
 
 
-def webcam_unsub(id: str):
+def webcam_unsub(id: str) -> str:
     with open('webcam_chat_ids.txt', 'r+') as db:
         ids = db.read()
         if id not in ids:
@@ -114,9 +114,10 @@ def webcam_unsub(id: str):
             db.truncate()
             reply = "You  won't receive any more notifications."
             print("UNSUBBED webcam " + id)
+    return reply
 
 
-def events_sub(filenamestart: str, id: str):
+def events_sub(filenamestart: str, id: str) -> str:
     with open(filenamestart + '_chat_ids.txt', 'r+') as db:
         ids = db.read()
         if id in ids:
@@ -130,9 +131,10 @@ def events_sub(filenamestart: str, id: str):
                 db.truncate()
             reply = "You will now receive a notification when a new " + filenamestart.capitalize() + " event is available!"
             print("SUBBED " + filenamestart + " " + id)
+    return reply
 
 
-def events_unsub(filenamestart: str, id: str):
+def events_unsub(filenamestart: str, id: str) -> str:
     with open(filenamestart + '_chat_ids.txt', 'r+') as db:
         ids = db.read()
         if id not in ids:
@@ -145,3 +147,4 @@ def events_unsub(filenamestart: str, id: str):
             db.truncate()
             reply = "You  won't receive any more notifications."
             print("UNSUBBED " + filenamestart + " " + id)
+    return reply

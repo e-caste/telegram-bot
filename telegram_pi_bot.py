@@ -146,7 +146,7 @@ def button(bot_obj, update):
             else:
                 print("No corresponding chat_ids file found")
                 return
-            events_sub(filenamestart, id)
+            reply = events_sub(filenamestart, id)
 
         elif query.data.startswith("unsub"):
             if "cercle" in query.data:
@@ -158,7 +158,7 @@ def button(bot_obj, update):
             else:
                 print("No corresponding chat_ids file found")
                 return
-            events_unsub(filenamestart, id)
+            reply = events_unsub(filenamestart, id)
 
 
         elif query.data == 'fblink_cercle':
@@ -182,9 +182,9 @@ def button(bot_obj, update):
         elif query.data == 'back_to_webcam_menu':
             webcam_menu(bot_obj, update, use_callback=True)
         elif query.data == 'webcam_sub':
-            webcam_sub(id)
+            reply = webcam_sub(id)
         elif query.data == 'webcam_unsub':
-            webcam_unsub(id)
+            reply = webcam_unsub(id)
 
         elif query.data == 'time_per_pic':
             reply = secs_per_picture()
