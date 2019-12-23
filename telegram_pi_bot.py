@@ -21,7 +21,7 @@ from button_commands import subscribe_to_cercle_notifications, subscribe_to_supe
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
 from bot_utils import send_split_msgs, split_msg_for_telegram
 from bot_utils import get_webcam_img, get_webcam_timelapse, webcam_sub, webcam_unsub, events_sub, \
-    events_unsub, secs_per_picture, get_oldest_picture
+    events_unsub, secs_per_picture, get_oldest_picture, get_available_timelapses
 from periodic_jobs import check_for_new_events, make_new_webcam_timelapse, send_timelapse_notification
 
 
@@ -188,8 +188,12 @@ def button(bot_obj, update):
 
         elif query.data == 'pics_oldest':
             get_oldest_picture(bot_obj, update)
+        elif query.data == 'pics_script':
+            pass
         elif query.data == 'pics_avg':
             reply = secs_per_picture()
+        elif query.data == 'pics_timelapses':
+            reply = get_available_timelapses()
 
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
