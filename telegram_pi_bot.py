@@ -16,7 +16,7 @@ from nmt_chatbot.inference import inference
 from pi_status import *
 from parser import get_wiki_daily_quote
 from robbamia import *
-from button_commands import status, events_menu, webcam_menu, apt
+from button_commands import status, events_menu, webcam_menu, apt, pics_menu
 from button_commands import subscribe_to_cercle_notifications, subscribe_to_supermarket_notifications, \
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
 from bot_utils import send_split_msgs, split_msg_for_telegram
@@ -221,6 +221,7 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("status", status))
+    dp.add_handler(CommandHandler("pics", pics_menu))
     dp.add_handler(CommandHandler("events", events_menu))
     dp.add_handler(CommandHandler("rivoli", webcam_menu))
     dp.add_handler(CommandHandler("apt", apt))
