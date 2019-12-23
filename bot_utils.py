@@ -167,3 +167,26 @@ def get_oldest_picture(bot, update):
                            caption=img)
             break
 
+
+def get_available_timelapses() -> str:
+    webcam.check_NAS_mounted()
+
+    available_timelapses = []
+    reply = ""
+    dirs = [directory for directory in os.listdir(webcam_path)
+            if os.path.isdir(os.path.join(webcam_path, directory))]
+
+    for d in dirs:
+        content = os.listdir(os.path.join(webcam_path, d))
+        for item in content:
+            if "_for_tg.mp4" in item:
+                available_timelapses.append(d)
+
+    for i, tl in enumerate(available_timelapses):
+        reply += tl
+        if i % 2 == 0:
+            reply += "\t"
+        else:
+            reply += "\n"
+
+    return reply
