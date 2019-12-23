@@ -119,10 +119,10 @@ def pics_menu(bot, update):
             get_specific_timelapse(bot, update, command[1:])
         else:
             keyboard = [
-                [InlineKeyboardButton("Get oldest picture", callback_data="pics_oldest")],
-                [InlineKeyboardButton("Re-run script for past days", callback_data="pics_script")],
-                [InlineKeyboardButton("Get average time to take a picture", callback_data="pics_avg")],
-                [InlineKeyboardButton("Get available timelapses", callback_data="pics_timelapses")]
+                [InlineKeyboardButton("🕰 Get oldest picture", callback_data="pics_oldest")],
+                [InlineKeyboardButton("🗓 Re-run script for past days", callback_data="pics_script")],
+                [InlineKeyboardButton("⏱ Get average time to take a picture", callback_data="pics_avg")],
+                [InlineKeyboardButton("📽 Get available timelapses", callback_data="pics_timelapses")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             update.message.reply_text('Choose an option:', reply_markup=reply_markup)
