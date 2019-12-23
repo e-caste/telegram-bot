@@ -212,6 +212,8 @@ def get_specific_timelapse(bot, update, date):
     if isinstance(date, list) and date.__len__() == 1:
         date = date[0]
     parsed_date = __parse_date(date)
+    print(parsed_date)
+    print(timelapses)
     if parsed_date in timelapses:
         bot.send_video(chat_id=update.message.chat_id,
                        video=open(os.path.join(webcam_path, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
