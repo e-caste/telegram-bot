@@ -66,14 +66,14 @@ def make_new_webcam_timelapse(hour: int, minute: int):
             print(e, file=sys.stderr)
 
 
-def send_timelapse_notification(bot, hour: int, minute: int, DEBUG: bool):
+def send_timelapse_notification(bot, hour: int, minute: int, debug: bool):
     while True:
         try:
             time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
             print("Waiting to send timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
 
-            if not DEBUG:
+            if not debug:
                 os.chdir(raspi_wd)
             # the video should have already been made by the function above, so it immediately returns yesterday
             yesterday = webcam.get_yesterday_timelapse_video_name()
