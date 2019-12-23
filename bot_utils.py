@@ -196,7 +196,7 @@ def get_available_timelapses(format: bool = True) -> str:
     #     "month": available_timelapses[0][5:7],
     #     "day": available_timelapses[0][9:11]
     # }
-    for i, timelapse in enumerate(available_timelapses):
+    for i, timelapse in enumerate(sorted(available_timelapses)):
         reply += timelapse
         if format:
             if i % 2 == 0:
