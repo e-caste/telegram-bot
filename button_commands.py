@@ -116,7 +116,6 @@ def pics_menu(bot, update):
     if str(update.message.chat_id) == castes_chat_id:
         command = update.message.text.split()
         if command.__len__() > 1:
-            print(command)
             get_specific_timelapse(bot, update, command[1:])
         else:
             keyboard = [
