@@ -182,8 +182,8 @@ def get_available_timelapses() -> str:
             if "_for_tg.mp4" in item:
                 available_timelapses.append(d)
 
-    for i, tl in enumerate(available_timelapses):
-        reply += tl
+    for i, timelapse in enumerate(available_timelapses):
+        reply += timelapse
         if i % 2 == 0:
             reply += "\t"
         else:
