@@ -66,24 +66,6 @@ def get_webcam_timelapse(bot, update):
                    timeout=6000)
 
 
-def secs_per_picture() -> str:
-    """
-    Return the average of seconds per picture taken by Raspberry Pi Zero W
-    """
-    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")])
-    pics_times = [datetime(year=int(pic[0:4]),
-                           month=int(pic[5:7]),
-                           day=int(pic[8:10]),
-                           hour=int(pic[11:13]),
-                           minute=int(pic[13:15]),
-                           second=int(pic[15:17]))
-                  for pic in pics]
-    pics_timedeltas = [(pics_times[i + 1] - pics_times[i]).total_seconds()
-                       for i in range(pics_times[:-1].__len__())]
-    average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
-    return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
-
-
 def webcam_sub(id: str) -> str:
     with open('webcam_chat_ids.txt', 'r+') as db:
         ids = db.read()
@@ -148,3 +130,40 @@ def events_unsub(filenamestart: str, id: str) -> str:
             reply = "You  won't receive any more notifications."
             print("UNSUBBED " + filenamestart + " " + id)
     return reply
+
+
+def secs_per_picture() -> str:
+    """
+    Return the average of seconds per picture taken by Raspberry Pi Zero W
+    """
+    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")])
+    pics_times = [datetime(year=int(pic[0:4]),
+                           month=int(pic[5:7]),
+                           day=int(pic[8:10]),
+                           hour=int(pic[11:13]),
+                           minute=int(pic[13:15]),
+                           second=int(pic[15:17]))
+                  for pic in pics]
+    pics_timedeltas = [(pics_times[i + 1] - pics_times[i]).total_seconds()
+                       for i in range(pics_times[:-1].__len__())]
+    average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
+    return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
+
+
+def get_oldest_picture(bot, update):
+    webcam.check_NAS_mounted()
+
+    tmp = os.listdir(webcam_path)
+    tmp.sort(key=str.casefold)
+    # if there are only folders
+    if os.path.isdir(webcam_path + tmp[-1]):
+        tmp = os.listdir(webcam_path + folder)
+        tmp.sort(key=str.casefold)
+    # send first image that is completely saved
+    for img in sorted(tmp, key=str.casefold):
+        if img.endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
+            bot.send_photo(chat_id=update.callback_query.message.chat_id,
+                           photo=open(webcam_path + img, 'rb'),
+                           caption=img)
+            break
+
