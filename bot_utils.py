@@ -152,9 +152,13 @@ def get_oldest_picture(bot, update):
 
 
 def recover_past_days() -> str:
+    # needed since *.jpg expansion in bash only works in working directory
+    cwd = os.getcwd()
+    os.chdir(webcam_path)
     with Popen([os.path.join(webcam_path, 'recover_past_days.sh')], stdout=PIPE, stderr=PIPE) as p:
         out, err = p.communicate()
         # ret_code = p.returncode
+    os.chdir(cwd)
     return out.decode('utf-8')
 
 
