@@ -222,6 +222,7 @@ def get_specific_timelapse(bot, update, date):
                          text="No timelapse available for date " + parsed_date + " (YYYY-MM-DD).\n"
                               "Check available timelapses with /pics and tapping the 'Get available timelapses' button.")
 
+
 # expecting format YYYY[*]MM[*]DD
 #        or format DD[*]MM[*]YYYY
 def __parse_date(date) -> str:
