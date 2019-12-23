@@ -151,8 +151,8 @@ def get_oldest_picture(bot, update):
             break
 
 
-def recover_files() -> str:
-    with Popen([os.path.join(webcam_path, 'recover_files.sh')], stdout=PIPE, stderr=PIPE) as p:
+def recover_past_days() -> str:
+    with Popen([os.path.join(webcam_path, 'recover_past_days.sh')], stdout=PIPE, stderr=PIPE) as p:
         out, err = p.communicate()
         # ret_code = p.returncode
     return out.decode('utf-8')
