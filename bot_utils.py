@@ -209,6 +209,8 @@ def get_available_timelapses(format: bool = True) -> str:
 
 def get_specific_timelapse(bot, update, date):
     timelapses = get_available_timelapses(format=False).split()
+    if isinstance(date, list) and date.__len__() == 1:
+        date = date[0]
     parsed_date = __parse_date(date)
     if parsed_date in timelapses:
         bot.send_video(chat_id=update.message.chat_id,
