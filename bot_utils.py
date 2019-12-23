@@ -248,4 +248,7 @@ def __parse_date(date) -> str:
                 year = date[2]
                 month = date[1]
                 day = date[0]
-    return year + "-" + month + "-" + day
+    if year is not None and month is not None and day is not None:
+        return year + "-" + month + "-" + day
+    else:
+        return ""
