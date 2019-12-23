@@ -186,7 +186,7 @@ def button(bot_obj, update):
         elif query.data == 'webcam_unsub':
             reply = webcam_unsub(id)
 
-        elif query.data == 'time_per_pic':
+        elif query.data == 'pics_avg':
             reply = secs_per_picture()
 
         if reply != "":

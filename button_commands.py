@@ -14,7 +14,6 @@ def status(bot, update):
              InlineKeyboardButton("python3 pi_status.py", callback_data='full')],
             [InlineKeyboardButton("./check_cpu_gpu_temps.sh", callback_data="temps"),
              InlineKeyboardButton("df -h", callback_data="df_h")],
-            [InlineKeyboardButton("time per pic", callback_data="time_per_pic")],
             [InlineKeyboardButton("full tg bot log", callback_data='full_tg_log'),
              InlineKeyboardButton("tg bot log tail", callback_data="tail_log")]
         ]
