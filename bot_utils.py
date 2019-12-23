@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from subprocess import Popen, PIPE
 import webcam
 from robbamia import webcam_path, pics_nas_dir, castes_chat_id
 
@@ -190,3 +191,10 @@ def get_available_timelapses() -> str:
             reply += "\n"
 
     return reply
+
+
+def recover_files() -> str:
+    with Popen([os.path.join(webcam_path, 'recover_files.sh')], stdout=PIPE, stderr=PIPE) as p:
+        out, err = p.communicate()
+        # ret_code = p.returncode
+    return out
