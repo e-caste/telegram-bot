@@ -113,19 +113,16 @@ def apt(bot, update):
 
 
 def pics_menu(bot, update):
-    if str(update.message.chat_id) == castes_chat_id:
-        command = update.message.text.split()
-        if command.__len__() > 1:
-            get_specific_timelapse(bot, update, command[1:])
-        else:
-            keyboard = [
-                [InlineKeyboardButton("🕰 Get oldest picture", callback_data="pics_oldest")],
-                [InlineKeyboardButton("🗓 Re-run script for past days", callback_data="pics_script")],
-                [InlineKeyboardButton("⏱ Get average time to take a picture", callback_data="pics_avg")],
-                [InlineKeyboardButton("📽 Get available timelapses", callback_data="pics_timelapses")]
-            ]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+    command = update.message.text.split()
+    if command.__len__() > 1:
+        get_specific_timelapse(bot, update, command[1:])
     else:
-        bot.send_message(chat_id=update.message.chat_id,
-                         text="⚠️ You don't have permission to use the /pics command.")
+        keyboard = [
+            [InlineKeyboardButton("🕰 Get oldest picture", callback_data="pics_oldest")],
+            [InlineKeyboardButton("⏱ Get average time to take a picture", callback_data="pics_avg")],
+            [InlineKeyboardButton("📽 Get available timelapses", callback_data="pics_timelapses")]
+        ]
+        if str(update.message.chat_id) == castes_chat_id:
+            keyboard.append([InlineKeyboardButton("🗓 Re-run script for past days", callback_data="pics_script")],)
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text('Choose an option:', reply_markup=reply_markup)
