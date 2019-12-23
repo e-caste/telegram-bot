@@ -190,15 +190,19 @@ def get_available_timelapses(format: bool = True) -> str:
             if "_for_tg.mp4" in item:
                 available_timelapses.append(d)
 
+    # TODO: print in tree format using dict below
+    # previous = {
+    #     "year": available_timelapses[0][0:3],
+    #     "month": available_timelapses[0][5:7],
+    #     "day": available_timelapses[0][9:11]
+    # }
     for i, timelapse in enumerate(available_timelapses):
         reply += timelapse
         if format:
             if i % 2 == 0:
-                reply += "\t"
+                reply += "    "
             else:
                 reply += "\n"
-        else:
-            reply += " "
 
     return reply
 
