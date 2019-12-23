@@ -6,7 +6,7 @@ from sys import stderr
 from time import sleep
 
 
-def _check_NAS_mounted():
+def check_NAS_mounted():
     while True:
         if not os.path.isdir(webcam_path): # ismount()
             print("NAS folder not mounted. Mounting...", file=stderr)
@@ -17,7 +17,7 @@ def _check_NAS_mounted():
 
 
 def get_last_img_name():
-    _check_NAS_mounted()
+    check_NAS_mounted()
 
     folder = False
     tmp = os.listdir(webcam_path)
@@ -34,7 +34,7 @@ def get_last_img_name():
 
 
 def get_yesterday_timelapse_video_name():
-    _check_NAS_mounted()
+    check_NAS_mounted()
 
     yesterday = datetime.today() - timedelta(days=1)
     yesterday = str(yesterday)[:10]  # only take date part
