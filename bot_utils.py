@@ -133,24 +133,6 @@ def events_unsub(filenamestart: str, id: str) -> str:
     return reply
 
 
-def secs_per_picture() -> str:
-    """
-    Return the average of seconds per picture taken by Raspberry Pi Zero W
-    """
-    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")])
-    pics_times = [datetime(year=int(pic[0:4]),
-                           month=int(pic[5:7]),
-                           day=int(pic[8:10]),
-                           hour=int(pic[11:13]),
-                           minute=int(pic[13:15]),
-                           second=int(pic[15:17]))
-                  for pic in pics]
-    pics_timedeltas = [(pics_times[i + 1] - pics_times[i]).total_seconds()
-                       for i in range(pics_times[:-1].__len__())]
-    average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
-    return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
-
-
 def get_oldest_picture(bot, update):
     webcam.check_NAS_mounted()
 
@@ -167,6 +149,31 @@ def get_oldest_picture(bot, update):
                            photo=open(webcam_path + img, 'rb'),
                            caption=img)
             break
+
+
+def recover_files() -> str:
+    with Popen([os.path.join(webcam_path, 'recover_files.sh')], stdout=PIPE, stderr=PIPE) as p:
+        out, err = p.communicate()
+        # ret_code = p.returncode
+    return out.decode('utf-8')
+
+
+def secs_per_picture() -> str:
+    """
+    Return the average of seconds per picture taken by Raspberry Pi Zero W
+    """
+    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")])
+    pics_times = [datetime(year=int(pic[0:4]),
+                           month=int(pic[5:7]),
+                           day=int(pic[8:10]),
+                           hour=int(pic[11:13]),
+                           minute=int(pic[13:15]),
+                           second=int(pic[15:17]))
+                  for pic in pics]
+    pics_timedeltas = [(pics_times[i + 1] - pics_times[i]).total_seconds()
+                       for i in range(pics_times[:-1].__len__())]
+    average_time_per_pic = sum(pics_timedeltas) / pics_timedeltas.__len__()
+    return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
 
 
 def get_available_timelapses() -> str:
@@ -193,8 +200,7 @@ def get_available_timelapses() -> str:
     return reply
 
 
-def recover_files() -> str:
-    with Popen([os.path.join(webcam_path, 'recover_files.sh')], stdout=PIPE, stderr=PIPE) as p:
-        out, err = p.communicate()
-        # ret_code = p.returncode
-    return out
+
+
+
+
