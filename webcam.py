@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from sys import stderr
 from time import sleep
 
+
 def _check_NAS_mounted():
     while True:
         if not os.path.isdir(webcam_path): # ismount()
@@ -13,6 +14,7 @@ def _check_NAS_mounted():
                 mount_process.wait(10)
         else:
             break
+
 
 def get_last_img_name():
     _check_NAS_mounted()
@@ -94,6 +96,7 @@ def get_yesterday_timelapse_video_name():
     if not os.path.isfile(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4"):
         os.system(ssh_cmd)
     return yesterday
+
 
 if __name__ == '__main__':
     # get_last_img_name()
