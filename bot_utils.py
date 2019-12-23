@@ -176,7 +176,7 @@ def secs_per_picture() -> str:
     return "The average time taken per picture is " + str(round(average_time_per_pic, 2)) + " seconds."
 
 
-def get_available_timelapses() -> str:
+def get_available_timelapses(no_format: bool = False) -> str:
     webcam.check_NAS_mounted()
 
     available_timelapses = []
@@ -192,14 +192,19 @@ def get_available_timelapses() -> str:
 
     for i, timelapse in enumerate(available_timelapses):
         reply += timelapse
-        if i % 2 == 0:
-            reply += "\t"
+        if not no_format:
+            if i % 2 == 0:
+                reply += "\t"
+            else:
+                reply += "\n"
         else:
-            reply += "\n"
+            reply += " "
 
     return reply
 
 
+def get_specific_timelapse(bot, update, date):
+    timelapses = get_available_timelapses(no_format=True)
 
 
 
