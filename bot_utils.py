@@ -213,7 +213,7 @@ def get_available_timelapses(format: bool = True) -> str or list:
 
 
 def get_specific_timelapse(bot, update, date):
-    timelapses = get_available_timelapses(format=False).split()
+    timelapses = get_available_timelapses(format=False)
     if isinstance(date, list) and date.__len__() == 1:
         date = date[0]
     parsed_date = __parse_date(date)
