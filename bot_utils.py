@@ -204,8 +204,36 @@ def get_available_timelapses(format: bool = True) -> str:
 
 
 def get_specific_timelapse(bot, update, date):
-    timelapses = get_available_timelapses(format=False).split(" ")
+    timelapses = get_available_timelapses(format=False).split()
+    parsed_date = __parse_date(date)
 
 
-
-
+# expecting format YYYY[*]MM[*]DD
+#        or format DD[*]MM[*]YYYY
+def __parse_date(date) -> tuple:
+    year, month, day = (None, None, None)
+    if isinstance(date, str):
+        if date.__len__() == 8:
+            year = date[0:3]
+            month = date[4:6]
+            day = date[7:9]
+        elif date.__len__() == 10:
+            if not date[4].isdigit() and not date[7].isdigit():
+                year = date[0:3]
+                month = date[5:7]
+                day = date[9:11]
+            elif not date[2].isdigit() and not date[5].isdigit():
+                year = date[9:11]
+                month = date[5:7]
+                day = date[0:3]
+    elif isinstance(date, list):
+        if date.__len__() == 3:
+            if date[0].__len__() == 4 and date[1].__len__() == 2 and date[2].__len__() == 2:
+                year = date[0]
+                month = date[1]
+                day = date[2]
+            elif date[0].__len__() == 2 and date[1].__len__() == 2 and date[2].__len__() == 4:
+                year = date[2]
+                month = date[1]
+                day = date[0]
+    return year, month, day
