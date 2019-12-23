@@ -231,18 +231,18 @@ def __parse_date(date) -> str:
     year, month, day = (None, None, None)
     if isinstance(date, str):
         if date.__len__() == 8:
-            year = date[0:3]
+            year = date[0:4]
             month = date[4:6]
-            day = date[7:9]
+            day = date[6:8]
         elif date.__len__() == 10:
             if not date[4].isdigit() and not date[7].isdigit():
-                year = date[0:3]
+                year = date[0:4]
                 month = date[5:7]
-                day = date[9:11]
+                day = date[8:10]
             elif not date[2].isdigit() and not date[5].isdigit():
-                year = date[9:11]
+                year = date[8:10]
                 month = date[5:7]
-                day = date[0:3]
+                day = date[0:4]
     elif isinstance(date, list):
         if date.__len__() == 3:
             if date[0].__len__() == 4 and date[1].__len__() == 2 and date[2].__len__() == 2:
