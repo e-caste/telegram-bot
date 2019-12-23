@@ -206,11 +206,19 @@ def get_available_timelapses(format: bool = True) -> str:
 def get_specific_timelapse(bot, update, date):
     timelapses = get_available_timelapses(format=False).split()
     parsed_date = __parse_date(date)
-
+    if parsed_date in timelapses:
+        bot.send_video(chat_id=update.message.chat_id,
+                       video=open(os.path.join(webcam_path, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
+                       caption=parsed_date,
+                       timeout=6000)
+    else:
+        bot.send_message(chat_id=update.message.chat_id,
+                         text="No timelapse available for date " + parsed_date + " (YYYY-MM-DD).\n"
+                              "Check available timelapses with /pics and tapping the 'Get available timelapses' button.")
 
 # expecting format YYYY[*]MM[*]DD
 #        or format DD[*]MM[*]YYYY
-def __parse_date(date) -> tuple:
+def __parse_date(date) -> str:
     year, month, day = (None, None, None)
     if isinstance(date, str):
         if date.__len__() == 8:
@@ -236,4 +244,4 @@ def __parse_date(date) -> tuple:
                 year = date[2]
                 month = date[1]
                 day = date[0]
-    return year, month, day
+    return year + "-" + month + "-" + day
