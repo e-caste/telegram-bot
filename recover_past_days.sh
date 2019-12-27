@@ -59,8 +59,8 @@ if [ ${#DAYS[@]} -eq 0 ]; then
 fi
 
 # for debugging
-echo "${DAYS[@]}"
-exit 0
+#echo "${DAYS[@]}"
+#exit 0
 
 for DAY in "${DAYS[@]}"; do
     cd "$DAY"
