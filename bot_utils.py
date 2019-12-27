@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 import webcam
-from robbamia import webcam_path, pics_nas_dir, castes_chat_id
+from robbamia import webcam_path, pics_nas_dir, castes_chat_id, ssh_cmd_recover
 
 
 # GENERIC UTILS
@@ -256,11 +256,7 @@ def __parse_date(date) -> str:
 
 
 def recover_past_days() -> str:
-    # needed since *.jpg expansion in bash only works in working directory
-    cwd = os.getcwd()
-    os.chdir(webcam_path)
-    with Popen([os.path.join(webcam_path, 'recover_past_days.sh')], stdout=PIPE, stderr=PIPE) as p:
+    with Popen(ssh_cmd_recover, stdout=PIPE, stderr=PIPE) as p:
         out, err = p.communicate()
         # ret_code = p.returncode
-    os.chdir(cwd)
     return out.decode('utf-8')
