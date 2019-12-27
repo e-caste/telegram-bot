@@ -189,8 +189,9 @@ def button(bot_obj, update):
         elif query.data == 'pics_oldest':
             get_oldest_picture(bot_obj, update)
         elif query.data == 'pics_script':
-            query.edit_message_text(text="Running recover_files.sh...")
-            reply = recover_past_days()
+            reply = "Running recover_files.sh..."
+            ssh_recover = Process(target=recover_past_days, args=(bot_obj, update))
+            ssh_recover.start()
         elif query.data == 'pics_avg':
             reply = secs_per_picture()
         elif query.data == 'pics_timelapses':

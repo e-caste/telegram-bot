@@ -1,6 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
+from multiprocessing import Process
 import webcam
 from robbamia import webcam_path, pics_nas_dir, castes_chat_id, ssh_cmd_recover
 
@@ -255,8 +256,10 @@ def __parse_date(date) -> str:
         return ""
 
 
-def recover_past_days() -> str:
+def recover_past_days(bot, update):
     with Popen(ssh_cmd_recover, stdout=PIPE, stderr=PIPE) as p:
         out, err = p.communicate()
         # ret_code = p.returncode
-    return out.decode('utf-8')
+    split_reply = split_msg_for_telegram(out.decode('utf-8'))
+    update.callback_query.edit_message_text(text=split_reply[0])
+    send_split_msgs(bot.Bot(token), split_reply[1:])
