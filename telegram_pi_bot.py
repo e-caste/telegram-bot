@@ -8,6 +8,7 @@ import os
 import sys
 from time import time
 from multiprocessing import Process
+from threading import Thread
 
 from telegram import bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
@@ -190,7 +191,7 @@ def button(bot_obj, update):
             get_oldest_picture(bot_obj, update)
         elif query.data == 'pics_script':
             reply = "Running recover_files.sh..."
-            ssh_recover = Process(target=recover_past_days, args=(update,))
+            ssh_recover = Thread(target=recover_past_days, args=(update,))
             ssh_recover.start()
         elif query.data == 'pics_avg':
             reply = secs_per_picture()
