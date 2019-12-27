@@ -262,4 +262,4 @@ def recover_past_days(bot, update):
         # ret_code = p.returncode
     split_reply = split_msg_for_telegram(out.decode('utf-8'))
     update.callback_query.edit_message_text(text=split_reply[0])
-    send_split_msgs(bot.Bot(token), split_reply[1:])
+    send_split_msgs(bot, split_reply[1:])
