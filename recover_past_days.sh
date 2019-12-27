@@ -42,7 +42,10 @@ for dir in */ ; do
     dir=${dir%*/}
     cd "$dir"
     if [ ! -f "$dir"_for_tg.mp4 ]; then
-        DAYS+=("$dir")
+        pics=*.jpg
+        if [ ${#pics[@]} -gt 1 ]; then
+            DAYS+=("$dir")
+        fi
     fi
     cd ..
 done
