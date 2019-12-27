@@ -39,8 +39,9 @@ fi
 DAYS=()
 
 for dir in */ ; do
+    dir=${dir%*/}
     cd "$dir"
-    if [ ! -f "$dir_for_tg.mp4" ]; then
+    if [ ! -f "$dir"_for_tg.mp4 ]; then
         DAYS+=("$dir")
     fi
     cd ..
@@ -50,6 +51,10 @@ if [ ${#DAYS[@]} -eq 0 ]; then
     echo "Missing video for telegram: There are no past days to make the timelapse for."
     exit 42
 fi
+
+# for debugging
+echo "${DAYS[@]}"
+exit 0
 
 for DAY in "${DAYS[@]}"; do
     cd "$DAY"
