@@ -289,12 +289,12 @@ def cirulla_add(bot, update, command):
                 "second": str(now.second)
             }
         }
+        prev_points = [int(previous_data[-1]["points"].split()[0]), int(previous_data[-1]["points"].split()[-1])]
         # these are the total points
-        if result[0] > 40 or result[1] > 40:
+        if result[0] > prev_points[0] or result[1] > prev_points[1]:
             new_data["points"] = str(result[0]) + " - " + str(result[1])
         # these are the single match points
         else:
-            prev_points = [int(previous_data[-1]["points"].split()[0]), int(previous_data[-1]["points"].split()[-1])]
             cur_points = [int(result[0]), int(result[1])]
             total_points = [p + c for p, c in zip(prev_points, cur_points)]
             new_data["points"] = str(total_points[0]) + " - " + str(total_points[1])
