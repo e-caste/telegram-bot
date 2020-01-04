@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 from multiprocessing import Process
 import json
+import matplotlib.pyplot as plt
 from telegram import bot
 import webcam
 from robbamia import webcam_path, pics_nas_dir, castes_chat_id, ssh_cmd_recover, token
@@ -300,12 +301,23 @@ def cirulla_remove() -> str:
     return "The last result has been removed."
 
 
-def cirulla_plot():
+def cirulla_plot(bot):
     x = []
     y = []
     data = json.load(open("cirulla.json"))
     for dic in data:
-        x.append(dic["datetime"]["year"])
+        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"] + "-" + dic["datetime"]["day"])
+        y.append(dic["delta"])
+    plt.plot(x, y)
+    plt.xticks(x, rotation=90)
+    plt.tick_params(axis='x', which='major', labelsize=8)
+    plt.tight_layout()
+    plt.grid()
+    path_to_graph = os.path.join(os.getcwd(), "cirulla_graph.png")
+    if os.path.exists(path_to_graph):
+        Popen(["rm", path_to_graph])
+    plt.savefig(path_to_graph, dpi=300, bbox_inches='tight')
+    bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
 
 
 def __parse_cirulla_result(result: str):
