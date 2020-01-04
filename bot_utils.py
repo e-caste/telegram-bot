@@ -308,7 +308,8 @@ def cirulla_plot(bot, chat_id):
     y = []
     data = json.load(open("cirulla.json"))
     for dic in data:
-        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"] + "-" + dic["datetime"]["day"])
+        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"] + "-" + dic["datetime"]["day"] + "-" +
+                 dic["datetime"]["hour"] + "-" + dic["datetime"]["minute"] + "-" + dic["datetime"]["second"])
         y.append(dic["delta"])
     plt.plot(x, y)
     plt.xticks(x, rotation=90)
