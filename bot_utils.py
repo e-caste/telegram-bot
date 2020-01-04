@@ -268,10 +268,10 @@ def recover_past_days(update):
     send_split_msgs(bot.Bot(token), split_reply[1:])
 
 
-def cirulla_add(command) -> str:
+def cirulla_add(bot, update, command):
     result = __parse_cirulla_result(command)
     if result is None:
-        return "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between " \
+        reply = "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between " \
                "the numbers."
     else:
         now = datetime.now()
@@ -292,7 +292,9 @@ def cirulla_add(command) -> str:
         data.append(new_data)
         with open("cirulla.json", "w") as f:
             f.write(json.dumps(data, indent=2))
-        return "Result " + new_data["points"] + " added."
+        reply = "Result " + new_data["points"] + " added."
+    bot.send_message(chat_id=update.message.chat_id,
+                     text=reply)
 
 
 def cirulla_remove() -> str:
