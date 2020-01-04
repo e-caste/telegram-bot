@@ -270,8 +270,8 @@ def recover_past_days(update):
 def cirulla_add(update) -> str:
     result = __parse_cirulla_result(update.message.text)
     if result is None:
-        return "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between the " \
-               "numbers."
+        return "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between " \
+               "the numbers."
     else:
         data = {
             "points": str(result[0]) + " - " + str(result[1]),
