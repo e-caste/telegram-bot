@@ -204,7 +204,7 @@ def button(bot_obj, update):
         elif query.data == 'cirulla_remove':
             reply = cirulla_remove()
         elif query.data == 'cirulla_plot':
-            cirulla_plot(bot_obj, update)
+            cirulla_plot(bot_obj, id)
 
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
