@@ -278,12 +278,12 @@ def cirulla_add(update) -> str:
             "points": str(result[0]) + " - " + str(result[1]),
             "delta": result[0] - result[1],
             "datetime": {
-                "year": now.year,
-                "month": now.month,
-                "day": now.day,
-                "hour": now.hour,
-                "minute": now.minute,
-                "second": now.second
+                "year": str(now.year),
+                "month": str(now.month),
+                "day": str(now.day),
+                "hour": str(now.hour),
+                "minute": str(now.minute),
+                "second": str(now.second)
             }
         }
         previous_data = json.load(open("cirulla.json"))
@@ -301,7 +301,11 @@ def cirulla_remove() -> str:
 
 
 def cirulla_plot():
-
+    x = []
+    y = []
+    data = json.load(open("cirulla.json"))
+    for dic in data:
+        x.append(dic["datetime"]["year"])
 
 
 def __parse_cirulla_result(result: str):
