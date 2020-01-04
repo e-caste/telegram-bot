@@ -273,13 +273,22 @@ def cirulla_add(update) -> str:
         return "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between " \
                "the numbers."
     else:
+        now = datetime.now()
         new_data = {
             "points": str(result[0]) + " - " + str(result[1]),
             "delta": result[0] - result[1],
-            "datetime": str(datetime.now())
+            "datetime": {
+                "year": now.year,
+                "month": now.month,
+                "day": now.day,
+                "hour": now.hour,
+                "minute": now.minute,
+                "second": now.second
+            }
         }
         previous_data = json.load(open("cirulla.json"))
-        data =
+        data = [dic for dic in previous_data]
+        data.append(new_data)
         with open("cirulla.json", "w") as f:
             f.write(json.dumps(data, indent=2))
         return "Result " + new_data["points"] + " added."
@@ -289,6 +298,10 @@ def cirulla_remove() -> str:
     data = json.load(open("cirulla.json"))
     data.pop(len(data))
     return "The last result has been removed."
+
+
+def cirulla_plot():
+
 
 
 def __parse_cirulla_result(result: str):
