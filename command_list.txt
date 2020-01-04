@@ -2,6 +2,7 @@ start - starts the bot and greets you
 status - sends a detailed status report from the host machine
 rivoli - snaps a picture of Rivoli in real time
 pics - some pictures utilities
+cirulla - keeps track of cirulla points
 events - get/stop notifications about events
 epoch - shows your message's Unix epoch
 whoami - sends you details about yourself
