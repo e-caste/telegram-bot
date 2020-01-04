@@ -200,7 +200,7 @@ def button(bot_obj, update):
             reply = get_available_timelapses()
 
         elif query.data == 'cirulla_add':
-            reply = cirulla_add(update)
+            reply = "To add a result, text /cirulla <num1>[*]<num2>"
         elif query.data == 'cirulla_remove':
             reply = cirulla_remove()
         elif query.data == 'cirulla_plot':
