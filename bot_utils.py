@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timedelta
 from subprocess import Popen, PIPE
 from multiprocessing import Process
+import json
 from telegram import bot
 import webcam
 from robbamia import webcam_path, pics_nas_dir, castes_chat_id, ssh_cmd_recover, token
@@ -272,7 +273,13 @@ def cirulla_add(update) -> str:
         return "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between the " \
                "numbers."
     else:
-        with open("cirulla.txt", "a"):
+        data = {
+            "points": str(result[0]) + " - " + str(result[1]),
+            "delta": result[0] - result[1],
+            "datetime": datetime.now()
+        }
+        with open("cirulla.txt", "a") as f:
+            f.write(json.dumps(data, indent=2))
 
 
 def __parse_cirulla_result(result: str):
