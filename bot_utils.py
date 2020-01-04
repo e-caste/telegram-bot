@@ -321,8 +321,8 @@ def cirulla_plot(bot):
 
 
 def __parse_cirulla_result(result: str):
-    result = [result.split()[0], result.split()[1]]
-    if not result[0].isdigit() or not result[1].isdigit():
+    result = [result.split()[0], result.split()[-1]]
+    if not result[0].isdigit() or not result[-1].isdigit():
         return None
     else:
-        return [int(result[0]), int(result[1])]
+        return [int(result[0]), int(result[-1])]
