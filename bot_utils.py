@@ -309,6 +309,8 @@ def cirulla_add(bot, update, command):
 def cirulla_remove() -> str:
     data = json.load(open("cirulla.json"))
     data.pop(len(data) - 1)
+    with open("cirulla.json", "w") as f:
+        f.write(json.dumps(data, indent=2))
     return "The last result has been removed."
 
 
