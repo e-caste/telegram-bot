@@ -126,3 +126,18 @@ def pics_menu(bot, update):
             keyboard.append([InlineKeyboardButton("🗓 Re-run script for past days", callback_data="pics_script")],)
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
+
+def cirulla(bot, update):
+    if not str(update.message.chat_id) == castes_chat_id:
+        bot.send_message(chat_id=update.message.chat_id,
+                         text="⚠️ You don't have permission to use the /cirulla command.")
+        return
+    else:
+        keyboard = [
+            [InlineKeyboardButton("✚ Add latest result", callback_data="cirulla_add")],
+            [InlineKeyboardButton("− Remove last added result", callback_data="cirulla_remove")],
+            [InlineKeyboardButton("📈 plot delta trend (E-C)", callback_data="cirulla_plot")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text('Choose an option:', reply_markup=reply_markup)
