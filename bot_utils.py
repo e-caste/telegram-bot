@@ -316,6 +316,11 @@ def cirulla_remove() -> str:
     return "The last result has been removed."
 
 
+def cirulla_points() -> str:
+    data = json.load(open("cirulla.json"))
+    return "Points: " + data[-1]["points"] + "\nΔ: " + str(data[-1]["delta"])
+
+
 def cirulla_plot(bot, chat_id):
     x = []
     y = []

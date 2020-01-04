@@ -141,6 +141,7 @@ def cirulla_menu(bot, update):
             keyboard = [
                 [InlineKeyboardButton("✚ Add latest result", callback_data="cirulla_add")],
                 [InlineKeyboardButton("− Remove last added result", callback_data="cirulla_remove")],
+                [InlineKeyboardButton("🔢 Show current total points", callback_data="cirulla_points")],
                 [InlineKeyboardButton("📈 plot delta trend (E-C)", callback_data="cirulla_plot")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
