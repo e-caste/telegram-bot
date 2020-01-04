@@ -128,7 +128,7 @@ def pics_menu(bot, update):
         update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def cirulla(bot, update):
+def cirulla_menu(bot, update):
     if not str(update.message.chat_id) == castes_chat_id:
         bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /cirulla command.")
