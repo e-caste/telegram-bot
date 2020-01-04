@@ -198,6 +198,13 @@ def button(bot_obj, update):
         elif query.data == 'pics_timelapses':
             reply = get_available_timelapses()
 
+        elif query.data == 'cirulla_add':
+            pass
+        elif query.data == 'cirulla_remove':
+            pass
+        elif query.data == 'cirulla_plot':
+            pass
+
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
             query.edit_message_text(text=split_reply[0])
