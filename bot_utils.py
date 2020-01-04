@@ -303,7 +303,7 @@ def cirulla_remove() -> str:
     return "The last result has been removed."
 
 
-def cirulla_plot(bot):
+def cirulla_plot(bot, update):
     x = []
     y = []
     data = json.load(open("cirulla.json"))
@@ -319,7 +319,7 @@ def cirulla_plot(bot):
     if os.path.exists(path_to_graph):
         Popen(["rm", path_to_graph])
     plt.savefig(path_to_graph, dpi=300, bbox_inches='tight')
-    bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
+    bot.send_photo(chat_id=update.callback_query.chat_id, photo=open(path_to_graph, 'rb'))
 
 
 def __parse_cirulla_result(result: list):
