@@ -268,8 +268,8 @@ def recover_past_days(update):
     send_split_msgs(bot.Bot(token), split_reply[1:])
 
 
-def cirulla_add(update) -> str:
-    result = __parse_cirulla_result(update.message.text)
+def cirulla_add(command) -> str:
+    result = __parse_cirulla_result(command)
     if result is None:
         return "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between " \
                "the numbers."
@@ -320,8 +320,7 @@ def cirulla_plot(bot):
     bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
 
 
-def __parse_cirulla_result(result: str):
-    result = [result.split()[0], result.split()[-1]]
+def __parse_cirulla_result(result: list):
     if not result[0].isdigit() or not result[-1].isdigit():
         return None
     else:

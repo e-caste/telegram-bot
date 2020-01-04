@@ -1,6 +1,6 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from robbamia import castes_chat_id
-from bot_utils import get_specific_timelapse
+from bot_utils import get_specific_timelapse, cirulla_add
 
 
 def status(bot, update):
@@ -134,10 +134,14 @@ def cirulla_menu(bot, update):
                          text="⚠️ You don't have permission to use the /cirulla command.")
         return
     else:
-        keyboard = [
-            [InlineKeyboardButton("✚ Add latest result", callback_data="cirulla_add")],
-            [InlineKeyboardButton("− Remove last added result", callback_data="cirulla_remove")],
-            [InlineKeyboardButton("📈 plot delta trend (E-C)", callback_data="cirulla_plot")]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+        command = update.message.text.split()
+        if command.__len__() > 1:
+            cirulla_add(command[1:])
+        else:
+            keyboard = [
+                [InlineKeyboardButton("✚ Add latest result", callback_data="cirulla_add")],
+                [InlineKeyboardButton("− Remove last added result", callback_data="cirulla_remove")],
+                [InlineKeyboardButton("📈 plot delta trend (E-C)", callback_data="cirulla_plot")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            update.message.reply_text('Choose an option:', reply_markup=reply_markup)
