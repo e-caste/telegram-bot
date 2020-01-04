@@ -22,7 +22,8 @@ from button_commands import subscribe_to_cercle_notifications, subscribe_to_supe
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
 from bot_utils import send_split_msgs, split_msg_for_telegram
 from bot_utils import get_webcam_img, get_webcam_timelapse, webcam_sub, webcam_unsub, events_sub, \
-    events_unsub, secs_per_picture, get_oldest_picture, get_available_timelapses, recover_past_days
+    events_unsub, secs_per_picture, get_oldest_picture, get_available_timelapses, recover_past_days, cirulla_add, \
+    cirulla_remove, cirulla_plot
 from periodic_jobs import check_for_new_events, make_new_webcam_timelapse, send_timelapse_notification
 
 
@@ -199,11 +200,11 @@ def button(bot_obj, update):
             reply = get_available_timelapses()
 
         elif query.data == 'cirulla_add':
-            pass
+            reply = cirulla_add(update)
         elif query.data == 'cirulla_remove':
-            pass
+            reply = cirulla_remove()
         elif query.data == 'cirulla_plot':
-            pass
+            cirulla_plot(bot_obj)
 
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
