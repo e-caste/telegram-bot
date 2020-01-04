@@ -264,3 +264,20 @@ def recover_past_days(update):
     split_reply = split_msg_for_telegram(out.decode('utf-8'))
     update.callback_query.edit_message_text(text=split_reply[0])
     send_split_msgs(bot.Bot(token), split_reply[1:])
+
+
+def cirulla_add(update) -> str:
+    result = __parse_cirulla_result(update.message.text)
+    if result is None:
+        return "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between the " \
+               "numbers."
+    else:
+        with open("cirulla.txt", "a"):
+
+
+def __parse_cirulla_result(result: str):
+    result = [result.split()[0], result.split()[1]]
+    if not result[0].isdigit() or not result[1].isdigit():
+        return None
+    else:
+        return [int(result[0]), int(result[1])]
