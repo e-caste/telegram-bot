@@ -6,7 +6,7 @@ import json
 import matplotlib.pyplot as plt
 from telegram import bot
 import webcam
-from robbamia import webcam_path, pics_nas_dir, castes_chat_id, ssh_cmd_recover, token
+from robbamia import webcam_path, pics_nas_dir, castes_chat_id, token, ssh_cmd
 
 
 # GENERIC UTILS
@@ -260,7 +260,7 @@ def __parse_date(date) -> str:
 
 
 def recover_past_days(update):
-    with Popen(ssh_cmd_recover, stdout=PIPE, stderr=PIPE) as p:
+    with Popen(ssh_cmd.split(), stdout=PIPE, stderr=PIPE) as p:
         out, err = p.communicate()
         # ret_code = p.returncode
     split_reply = split_msg_for_telegram(out.decode('utf-8'))
@@ -327,7 +327,7 @@ def cirulla_plot(bot, chat_id):
     data = json.load(open("cirulla.json"))
     for dic in data:
         x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"] + "-" + dic["datetime"]["day"] + " " +
-                 dic["datetime"]["hour"] + ":" + dic["datetime"]["minute"] + "." + dic["datetime"]["second"])
+                 dic["datetime"]["hour"] + ":" + dic["datetime"]["minute"] + "." + dic["datetime"]["second"])  # TODO: zfill(2) seconds
         y.append(dic["delta"])
     plt.plot(x, y)
     plt.xticks(x, rotation=90)
