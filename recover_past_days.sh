@@ -27,7 +27,7 @@ else
         mv "$DAY"*.jpg $DAY
         echo "Moved all $DAY*.jpgs to $DAY directory, now running ffmpeg..."
         cd $DAY
-        ffmpeg -r 96 -f image2 -pattern_type glob -i '*.jpg' -c:v libx264 -b:v 31457280 -y "$DAY"_full_quality.mp4 && ffmpeg -i "$DAY"_full_quality.mp4 -r 60 -b:v 2500000 -c:v libx264 -profile:v high -pix_fmt yuv420p "$DAY"_for_tg.mp4
+        ffmpeg -r 96 -f image2 -pattern_type glob -i '*.jpg' -c:v libx264 -b:v 31457280 -y "$DAY"_full_quality.mp4 && ffmpeg -i "$DAY"_full_quality.mp4 -r 60 -b:v 2500000 -c:v libx264 -profile:v high -pix_fmt yuv420p -y "$DAY"_for_tg.mp4
         echo "ffmpeg has run, now removing .jpgs..."
         rm *.jpg
         echo "Removed all .jpgs for $DAY"
@@ -64,7 +64,7 @@ fi
 
 for DAY in "${DAYS[@]}"; do
     cd "$DAY"
-    ffmpeg -r 96 -f image2 -pattern_type glob -i '*.jpg' -c:v libx264 -b:v 31457280 -y "$DAY"_full_quality.mp4 && ffmpeg -i "$DAY"_full_quality.mp4 -r 60 -b:v 2500000 -c:v libx264 -profile:v high -pix_fmt yuv420p "$DAY"_for_tg.mp4
+    ffmpeg -r 96 -f image2 -pattern_type glob -i '*.jpg' -c:v libx264 -b:v 31457280 -y "$DAY"_full_quality.mp4 && ffmpeg -i "$DAY"_full_quality.mp4 -r 60 -b:v 2500000 -c:v libx264 -profile:v high -pix_fmt yuv420p -y "$DAY"_for_tg.mp4
     echo "ffmpeg has run, now removing .jpgs..."
     rm *.jpg
     echo "Removed all .jpgs for $DAY"
