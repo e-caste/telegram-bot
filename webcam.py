@@ -29,7 +29,7 @@ def get_last_img_name():
         tmp.sort(key=str.casefold)
     # send first image that is completely saved
     for img in sorted(tmp, key=str.casefold, reverse=True):
-        if img.endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
+        if img.endswith('.png'):  # prevents sending .png~ which are images being written to disk
             return img, folder
 
 
