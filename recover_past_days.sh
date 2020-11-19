@@ -32,9 +32,14 @@ else
         echo "Moved all $DAY*.jpgs to $DAY directory, now running ffmpeg..."
         cd $DAY
         run_ffmpeg
-        echo "ffmpeg has run, now removing .jpgs..."
-        rm *.jpg
-        echo "Removed all .jpgs for $DAY"
+        # check if video exists and has size greater than 0 bytes
+        if [ -f "$DAY"_full_quality.mp4 ] && [ $(wc -c "$DAY"_full_quality.mp4 | awk '{print $1}') -gt 0 ]; then
+          echo "ffmpeg has run, now removing .jpgs..."
+          rm *.jpg
+          echo "Removed all .jpgs for $DAY"
+        else
+          echo "There have been some errors in creating the video, skipping picture removal..."
+        fi
         cd ..
     done
 fi
@@ -69,9 +74,14 @@ fi
 for DAY in "${DAYS[@]}"; do
     cd "$DAY"
     run_ffmpeg
-    echo "ffmpeg has run, now removing .jpgs..."
-    rm *.jpg
-    echo "Removed all .jpgs for $DAY"
+    # check if video exists and has size greater than 0 bytes
+        if [ -f "$DAY"_full_quality.mp4 ] && [ $(wc -c "$DAY"_full_quality.mp4 | awk '{print $1}') -gt 0 ]; then
+          echo "ffmpeg has run, now removing .jpgs..."
+          rm *.jpg
+          echo "Removed all .jpgs for $DAY"
+        else
+          echo "There have been some errors in creating the video, skipping picture removal..."
+        fi
     cd ..
 done
 
