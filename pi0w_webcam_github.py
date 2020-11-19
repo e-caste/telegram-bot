@@ -38,7 +38,8 @@ def get_picture():
             output_folder = local_folder
             to_copy = True
 
-        os.system('raspistill --timeout 5000 --verbose --awb auto --exposure auto '
+        # see raspistill --help
+        os.system('sudo raspistill --timeout 5000 --verbose --awb auto --exposure auto --encoding jpg '
                   '--output ' + output_folder + '$(date +"%Y-%m-%d_%H%M%S").jpg')  # timeout is in ms
 
         sleep(sleep_time)
