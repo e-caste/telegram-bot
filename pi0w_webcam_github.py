@@ -4,7 +4,11 @@
 import os
 from subprocess import Popen
 from time import sleep
-from pi0w_webcam import webcam_path, local_folder
+
+webcam_path = ""
+local_folder = ""
+# TODO: uncomment this line in case of NAS offline for multiple hours
+# webcam_path = local_folder
 
 
 def get_picture():
