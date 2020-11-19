@@ -148,7 +148,7 @@ def get_oldest_picture(bot, update):
         tmp.sort(key=str.casefold)
     # send first image that is completely saved
     for img in sorted(tmp, key=str.casefold):
-        if img.endswith('.png'):  # prevents sending .png~ which are images being written to disk
+        if img.endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
             bot.send_photo(chat_id=update.callback_query.message.chat_id,
                            photo=open(webcam_path + img, 'rb'),
                            caption=img)
@@ -159,7 +159,7 @@ def secs_per_picture() -> str:
     """
     Return the average of seconds per picture taken by Raspberry Pi Zero W
     """
-    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".png")])
+    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")])
     pics_times = [datetime(year=int(pic[0:4]),
                            month=int(pic[5:7]),
                            day=int(pic[8:10]),
@@ -334,7 +334,7 @@ def cirulla_plot(bot, chat_id):
     plt.tick_params(axis='x', which='major', labelsize=8)
     plt.tight_layout()
     plt.grid()
-    path_to_graph = os.path.join(os.getcwd(), "cirulla_graph.png")
+    path_to_graph = os.path.join(os.getcwd(), "cirulla_graph.jpg")
     if os.path.exists(path_to_graph):
         Popen(["rm", path_to_graph])
     plt.savefig(path_to_graph, dpi=300, bbox_inches='tight')
