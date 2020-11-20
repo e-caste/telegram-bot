@@ -25,7 +25,7 @@ TODAY=$(date +%Y-%m-%d)
 # add only days before today to array
 for item in *.jpg ; do
     DAY="${item:0:10}"
-    if [ $DAY != $TODAY ]; then
+    if [[ $DAY != $TODAY ]]; then
         if [[ ! " ${DAYS[*]} " == *"$DAY"* ]]; then
             DAYS+=("$DAY")
         fi
