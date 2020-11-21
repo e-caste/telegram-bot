@@ -1,9 +1,9 @@
 #!/bin/bash
 
 function run_ffmpeg() {
-  # see http://www.ffmpeg.org/ffmpeg-formats.html#Format-Options for discard option
+  # see this SO answer https://video.stackexchange.com/a/7913 and these docs http://ffmpeg.org/faq.html#How-do-I-encode-single-pictures-into-movies_003f
   # generate high quality video from pictures
-  ffmpeg -r 96 -f image2 -fflags discardcorrupt -pattern_type glob -i '*.jpg' -c:v libx264 -b:v 31457280 -y "$DAY"_full_quality.mp4
+  cat *.jpg | ffmpeg -r 96 -f image2pipe -c:v mjpeg -i - -y "$DAY"_full_quality.mp4
   # generate lower quality (<10MB) video from high quality video
   ffmpeg -i "$DAY"_full_quality.mp4 -r 60 -b:v 2500000 -c:v libx264 -profile:v high -pix_fmt yuv420p -y "$DAY"_for_tg.mp4
 }
