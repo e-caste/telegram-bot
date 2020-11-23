@@ -330,7 +330,8 @@ def cirulla_plot(bot, chat_id):
                  dic["datetime"]["hour"] + ":" + dic["datetime"]["minute"] + "." + dic["datetime"]["second"])  # TODO: zfill(2) seconds
         y.append(dic["delta"])
     plt.plot(x, y)
-    plt.xticks(x, rotation=90)
+    step = int(len(x) / 50) + 1
+    plt.xticks(range(0, len(x), step), rotation=90)
     plt.tick_params(axis='x', which='major', labelsize=8)
     plt.tight_layout()
     plt.grid()
