@@ -326,8 +326,8 @@ def cirulla_plot(bot, chat_id):
     y = []
     data = json.load(open("cirulla.json"))
     for dic in data:
-        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"] + "-" + dic["datetime"]["day"] + " " +
-                 dic["datetime"]["hour"] + ":" + dic["datetime"]["minute"] + "." + dic["datetime"]["second"])  # TODO: zfill(2) seconds
+        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"].zfill(2) + "-" + dic["datetime"]["day"].zfill(2) + " " +
+                 dic["datetime"]["hour"].zfill(2) + ":" + dic["datetime"]["minute"].zfill(2) + "." + dic["datetime"]["second"].zfill(2))
         y.append(dic["delta"])
     plt.plot(x, y)
     step = int(len(x) / 50) + 1
