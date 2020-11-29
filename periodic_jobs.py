@@ -69,6 +69,9 @@ def make_new_webcam_timelapse(hour: int, minute: int):
 def send_timelapse_notification(bot, hour: int, minute: int, debug: bool):
     while True:
         try:
+            # first sleep until 5am
+            sleep(calculate_time_to_sleep(hour=5, minute=0))
+            # then sleep until the given hour - this prevents issues on the days the hour changes
             time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
             print("Waiting to send timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
