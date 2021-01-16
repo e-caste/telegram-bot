@@ -19,6 +19,20 @@ function remove_jpgs_if_video_exists() {
   fi
 }
 
+function log_info() {
+  LOG_FILE="$DAY"_info.txt
+  NUM_PICS=$(ls -1 *.jpg | wc -l)
+  echo "Writing log file to $LOG_FILE"
+  echo "Number of pictures: $NUM_PICS" >> $LOG_FILE
+  echo "List of pictures:\n$(ls -1 *.jpg)" >> $LOG_FILE
+}
+
+function make_timelapse() {
+  run_ffmpeg
+  remove_jpgs_if_video_exists
+  log_info
+}
+
 DAYS=()
 TODAY=$(date +%Y-%m-%d)
 
@@ -46,8 +60,7 @@ else
         mv "$DAY"*.jpg $DAY
         echo "Moved all $DAY*.jpgs to $DAY directory, now running ffmpeg..."
         cd $DAY
-        run_ffmpeg
-        remove_jpgs_if_video_exists
+		    make_timelapse
         cd ..
     done
 fi
@@ -81,8 +94,7 @@ fi
 
 for DAY in "${DAYS[@]}"; do
     cd "$DAY"
-    run_ffmpeg
-    remove_jpgs_if_video_exists
+    make_timelapse
     cd ..
 done
 
