@@ -29,8 +29,8 @@ function log_info() {
 
 function make_timelapse() {
   run_ffmpeg
-  remove_jpgs_if_video_exists
   log_info
+  remove_jpgs_if_video_exists
 }
 
 DAYS=()
