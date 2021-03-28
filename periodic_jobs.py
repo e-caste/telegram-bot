@@ -53,7 +53,7 @@ def check_for_new_events(bot, hour: int):
 def make_new_webcam_timelapse(hour: int, minute: int):
     while True:
         try:
-            sleep(calculate_time_to_sleep(hour=hour-3))  # account for days when the hour changes
+            sleep(calculate_time_to_sleep(hour=(hour-3) % 24))  # account for days when the hour changes
             time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
 
             print("Waiting to make timelapse... " + str(time_to_sleep))
