@@ -71,6 +71,7 @@ def send_timelapse_notification(bot, hour: int, minute: int, debug: bool):
     while True:
         try:
             # first sleep until 5am
+            print("Sleeping util " + str(hour) + "a.m. (timelapse)...")
             sleep(calculate_time_to_sleep(hour=5, minute=0))
             # then sleep until the given hour - this prevents issues on the days the hour changes
             time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
