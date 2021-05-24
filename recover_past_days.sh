@@ -5,7 +5,7 @@ function run_ffmpeg() {
   # generate high quality video from pictures
   cat *.jpg | ffmpeg -r 96 -f image2pipe -c:v mjpeg -i - -y "$DAY"_full_quality.mp4
   # generate lower quality (<10MB) video from high quality video
-  ffmpeg -i "$DAY"_full_quality.mp4 -r 60 -b:v 2500000 -c:v libx264 -profile:v high -pix_fmt yuv420p -y "$DAY"_for_tg.mp4
+  ffmpeg -i "$DAY"_full_quality.mp4 -r 45 -b:v 2500000 -c:v libx264 -profile:v high -pix_fmt yuv420p -y "$DAY"_for_tg.mp4
 }
 
 function remove_jpgs_if_video_exists() {
