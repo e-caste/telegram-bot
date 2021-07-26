@@ -293,7 +293,7 @@ def cirulla_add(bot, update, command):
         prev_avgs = [p / len(data) for p in prev_points]
         cur_avgs = None
         sym_avgs = ["~", "~"]
-        avg_fmt = '.3f'
+        avg_fmt = '%.3f'
         # these are the total points
         if result[0] > prev_points[0] or result[1] > prev_points[1]:
             new_data["points"] = str(result[0]) + " - " + str(result[1])
@@ -318,8 +318,8 @@ def cirulla_add(bot, update, command):
         reply = "\n".join([
             "Result " + new_data["points"] + " added.",
             "Match #" + str(len(data)),
-            "Averages per match: " + format(str(int(cur_avgs[0])), avg_fmt) + sym_avgs[0] + " - " +
-                format(str(int(cur_avgs[1])), avg_fmt) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
+            "Averages per match: " + str(avg_fmt % cur_avgs[0]) + sym_avgs[0] + " - " +
+                str(avg_fmt % cur_avgs[1]) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
             "Δ: " + str(new_data["delta"]),
         ])
     bot.send_message(chat_id=update.message.chat_id,
@@ -338,11 +338,11 @@ def cirulla_points() -> str:
     data = json.load(open("cirulla.json"))
     matches = len(data)
     prev_points = [int(data[-1]["points"].split()[0]), int(data[-1]["points"].split()[-1])]
-    avg_fmt = '.3f'
+    avg_fmt = '%.3f'
     return "\n".join([
         "Points: " + data[-1]["points"],
         "Matches: " + str(matches),
-        "Averages per match: " + format(str(prev_points[0] / matches), avg_fmt) + " - " + format(str(prev_points[1] / matches), avg_fmt),
+        "Averages per match: " + str(avg_fmt % (prev_points[0] / matches)) + " - " + str(avg_fmt % (prev_points[1] / matches)),
         "Δ: " + str(data[-1]["delta"]),
     ])
 
