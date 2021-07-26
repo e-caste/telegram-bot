@@ -320,7 +320,9 @@ def cirulla_remove() -> str:
 
 def cirulla_points() -> str:
     data = json.load(open("cirulla.json"))
-    return "Points: " + data[-1]["points"] + "\nΔ: " + str(data[-1]["delta"])
+    return "Points: " + data[-1]["points"] + "\n" \
+           "Matches: " + str(len(data)) + "\n" \
+           "Δ: " + str(data[-1]["delta"])
 
 
 def cirulla_plot(bot, chat_id):
