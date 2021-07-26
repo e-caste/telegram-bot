@@ -290,6 +290,9 @@ def cirulla_add(bot, update, command):
             }
         }
         prev_points = [int(previous_data[-1]["points"].split()[0]), int(previous_data[-1]["points"].split()[-1])]
+        prev_avgs = [p / len(data) for p in prev_points]
+        cur_avgs = None
+        sym_avgs = ["~", "~"]
         # these are the total points
         if result[0] > prev_points[0] or result[1] > prev_points[1]:
             new_data["points"] = str(result[0]) + " - " + str(result[1])
@@ -297,15 +300,24 @@ def cirulla_add(bot, update, command):
         # these are the single match points
         else:
             cur_points = [int(result[0]), int(result[1])]
+            cur_avgs = [p / (len(data) + 1) for p in cur_points]
             total_points = [p + c for p, c in zip(prev_points, cur_points)]
             new_data["points"] = str(total_points[0]) + " - " + str(total_points[1])
             new_data["delta"] = total_points[0] - total_points[1]
         data.append(new_data)
         with open("cirulla.json", "w") as f:
             f.write(json.dumps(data, indent=2))
+        if cur_avgs:
+            deadzone_factor = 0.15
+            for i in range(len(sym_avgs)):
+                if cur_avgs[i] > (prev_avgs[i] + deadzone_factor):
+                    sym_avgs[i] = "📈"
+                elif cur_avgs[i] < (prev_avgs[i] - deadzone_factor):
+                    sym_avgs[i] = "📉"
         reply = "\n".join([
             "Result " + new_data["points"] + " added.",
             "Match #" + str(len(data)),
+            "Averages per match: " + str(int(cur_avgs[0])) + sym_avgs[0] + " - " + str(int(cur_avgs[1])) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
             "Δ: " + str(new_data["delta"]),
         ])
     bot.send_message(chat_id=update.message.chat_id,
@@ -327,8 +339,8 @@ def cirulla_points() -> str:
     return "\n".join([
         "Points: " + data[-1]["points"],
         "Matches: " + str(matches),
-        "Δ: " + str(data[-1]["delta"]),
         "Averages per match: " + str(prev_points[0] // matches) + " - " + str(prev_points[1] // matches),
+        "Δ: " + str(data[-1]["delta"]),
     ])
 
 
