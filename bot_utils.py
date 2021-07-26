@@ -300,8 +300,8 @@ def cirulla_add(bot, update, command):
         # these are the single match points
         else:
             cur_points = [int(result[0]), int(result[1])]
-            cur_avgs = [p / (len(data) + 1) for p in cur_points]
             total_points = [p + c for p, c in zip(prev_points, cur_points)]
+            cur_avgs = [p / (len(data) + 1) for p in total_points]
             new_data["points"] = str(total_points[0]) + " - " + str(total_points[1])
             new_data["delta"] = total_points[0] - total_points[1]
         data.append(new_data)
