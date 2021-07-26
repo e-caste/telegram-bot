@@ -322,10 +322,13 @@ def cirulla_remove() -> str:
 
 def cirulla_points() -> str:
     data = json.load(open("cirulla.json"))
+    matches = len(data)
+    prev_points = [int(data[-1]["points"].split()[0]), int(data[-1]["points"].split()[-1])]
     return "\n".join([
         "Points: " + data[-1]["points"],
-        "Matches: " + str(len(data)),
+        "Matches: " + str(matches),
         "Δ: " + str(data[-1]["delta"]),
+        "Averages per match: " + str(prev_points[0] // matches) + " - " + str(prev_points[1] // matches),
     ])
 
 
