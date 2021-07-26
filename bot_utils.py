@@ -303,9 +303,11 @@ def cirulla_add(bot, update, command):
         data.append(new_data)
         with open("cirulla.json", "w") as f:
             f.write(json.dumps(data, indent=2))
-        reply = "Result " + new_data["points"] + " added.\n" \
-                "Match #" + str(len(data)) + "\n" \
-                "Δ: " + str(new_data["delta"])
+        reply = "\n".join([
+            "Result " + new_data["points"] + " added.",
+            "Match #" + str(len(data)),
+            "Δ: " + str(new_data["delta"]),
+        ])
     bot.send_message(chat_id=update.message.chat_id,
                      text=reply)
 
@@ -320,9 +322,11 @@ def cirulla_remove() -> str:
 
 def cirulla_points() -> str:
     data = json.load(open("cirulla.json"))
-    return "Points: " + data[-1]["points"] + "\n" \
-           "Matches: " + str(len(data)) + "\n" \
-           "Δ: " + str(data[-1]["delta"])
+    return "\n".join([
+        "Points: " + data[-1]["points"],
+        "Matches: " + str(len(data)),
+        "Δ: " + str(data[-1]["delta"]),
+    ])
 
 
 def cirulla_plot(bot, chat_id):
