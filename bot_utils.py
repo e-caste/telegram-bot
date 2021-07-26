@@ -309,7 +309,7 @@ def cirulla_add(bot, update, command):
         with open("cirulla.json", "w") as f:
             f.write(json.dumps(data, indent=2))
         if cur_avgs:
-            deadzone_factor = 0.15
+            deadzone_factor = 0.002
             for i in range(len(sym_avgs)):
                 if cur_avgs[i] > (prev_avgs[i] + deadzone_factor):
                     sym_avgs[i] = "📈"
