@@ -304,6 +304,7 @@ def cirulla_add(bot, update, command):
         with open("cirulla.json", "w") as f:
             f.write(json.dumps(data, indent=2))
         reply = "Result " + new_data["points"] + " added.\n" \
+                "Match #" + str(len(data)) + "\n" \
                 "Δ: " + str(new_data["delta"])
     bot.send_message(chat_id=update.message.chat_id,
                      text=reply)
