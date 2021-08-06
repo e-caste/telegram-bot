@@ -375,6 +375,10 @@ def _parse_cirulla_result(result: list):
         return [int(result[0]), int(result[-1])]
 
 
+qt_file = "quadris_tridimensionale.json"
+
+
+# should probably use SQLite and not concatenate results, but this was faster to code
 def quadris_tridimensionale_add(bot, update, command):
     result = _parse_quadris_tridimensionale_result(command)
     if result is None:
@@ -383,7 +387,8 @@ def quadris_tridimensionale_add(bot, update, command):
     else:
         winner, points = result
         now = datetime.now()
-        previous_data = json.load(open("quadris_tridimensionale.json"))
+        _check_qt_file_exists()
+        previous_data = json.load(open(qt_file))
         data = [dic for dic in previous_data]
         new_data = {
             "points": "",
@@ -409,13 +414,12 @@ def quadris_tridimensionale_add(bot, update, command):
         total_points = [p + c for p, c in zip(prev_points, cur_points)]
         cur_avgs = [p / (len(data) + 1) for p in total_points]
         if winner == "e":
-            new_data["points"] = str(points) + " - 0"
-            new_data["delta"] = points
+            new_data["points"] = str(total_points[0]) + " - 0"
         elif winner == "c":
-            new_data["points"] = "0 - " + str(points)
-            new_data["delta"] = -points
+            new_data["points"] = "0 - " + str(total_points[1])
+        new_data["delta"] = total_points[0] - total_points[1]
         data.append(new_data)
-        with open("quadris_tridimensionale.json", "w") as f:
+        with open(qt_file, "w") as f:
             f.write(json.dumps(data, indent=2))
         deadzone_factor = 0.1
         for i in range(len(sym_avgs)):
@@ -435,15 +439,17 @@ def quadris_tridimensionale_add(bot, update, command):
 
 
 def quadris_tridimensionale_remove() -> str:
-    data = json.load(open("quadris_tridimensionale.json"))
+    _check_qt_file_exists()
+    data = json.load(open(qt_file))
     data.pop(len(data) - 1)
-    with open("quadris_tridimensionale.json", "w") as f:
+    with open(qt_file, "w") as f:
         f.write(json.dumps(data, indent=2))
     return "The last result has been removed."
 
 
 def quadris_tridimensionale_points() -> str:
-    data = json.load(open("quadris_tridimensionale.json"))
+    _check_qt_file_exists()
+    data = json.load(open(qt_file))
     matches = len(data)
     prev_points = [int(data[-1]["points"].split()[0]), int(data[-1]["points"].split()[-1])]
     avg_fmt = '%.3f'
@@ -456,9 +462,10 @@ def quadris_tridimensionale_points() -> str:
 
 
 def quadris_tridimensionale_plot(bot, chat_id):
+    _check_qt_file_exists()
     x = []
     y = []
-    data = json.load(open("quadris_tridimensionale.json"))
+    data = json.load(open(qt_file))
     for dic in data:
         x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"].zfill(2) + "-" + dic["datetime"]["day"].zfill(2) + " " +
                  dic["datetime"]["hour"].zfill(2) + ":" + dic["datetime"]["minute"].zfill(2) + "." + dic["datetime"]["second"].zfill(2))
@@ -481,3 +488,9 @@ def _parse_quadris_tridimensionale_result(result: list):
         return None
     else:
         return result[0], int(result[-1])
+
+
+def _check_qt_file_exists():
+    if not os.path.exists(qt_file):
+        with open(qt_file, "w") as f:
+            f.write("[]")
