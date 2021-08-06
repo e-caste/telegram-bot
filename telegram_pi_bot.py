@@ -17,13 +17,14 @@ from nmt_chatbot.inference import inference
 from pi_status import *
 from parser import get_wiki_daily_quote
 from robbamia import *
-from button_commands import status, events_menu, webcam_menu, apt, pics_menu, cirulla_menu
+from button_commands import status, events_menu, webcam_menu, apt, pics_menu, cirulla_menu, quadris_tridimensionale_menu
 from button_commands import subscribe_to_cercle_notifications, subscribe_to_supermarket_notifications, \
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
 from bot_utils import send_split_msgs, split_msg_for_telegram
 from bot_utils import get_webcam_img, get_webcam_timelapse, webcam_sub, webcam_unsub, events_sub, \
     events_unsub, secs_per_picture, get_oldest_picture, get_available_timelapses, recover_past_days, cirulla_add, \
-    cirulla_remove, cirulla_points, cirulla_plot
+    cirulla_remove, cirulla_points, cirulla_plot, quadris_tridimensionale_add, quadris_tridimensionale_remove, \
+    quadris_tridimensionale_points, quadris_tridimensionale_plot
 from periodic_jobs import check_for_new_events, make_new_webcam_timelapse, send_timelapse_notification
 
 
@@ -208,6 +209,23 @@ def button(bot_obj, update):
         elif query.data == 'cirulla_plot':
             cirulla_plot(bot_obj, id)
 
+        elif query.data == 'qt_add':
+            reply = "To add a result, text /qt (e|c) <pts>"
+        elif query.data == 'qt_rules':
+            reply = "\n - ".join([
+                "Vittoria base: 100 punti",
+                "sulla base: +50",
+                "colonna: +50",
+                "te lo deve dire l'altro: -50",
+                "N vittorie contemporanee: *N",
+            ])
+        elif query.data == 'qt_remove':
+            reply = quadris_tridimensionale_remove()
+        elif query.data == 'qt_points':
+            reply = quadris_tridimensionale_points()
+        elif query.data == 'qt_plot':
+            quadris_tridimensionale_plot(bot_obj, id)
+
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
             query.edit_message_text(text=split_reply[0])
@@ -244,6 +262,7 @@ def main():
     dp.add_handler(CommandHandler("events", events_menu))
     dp.add_handler(CommandHandler("rivoli", webcam_menu))
     dp.add_handler(CommandHandler("cirulla", cirulla_menu))
+    dp.add_handler(CommandHandler("qt", quadris_tridimensionale_menu))
     dp.add_handler(CommandHandler("apt", apt))
     dp.add_handler(CommandHandler("epoch", epoch))
     dp.add_handler(CommandHandler("whoami", whoyouare))
