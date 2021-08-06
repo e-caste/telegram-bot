@@ -413,10 +413,7 @@ def quadris_tridimensionale_add(bot, update, command):
         cur_points = [points, 0] if winner == "e" else [0, points]
         total_points = [p + c for p, c in zip(prev_points, cur_points)]
         cur_avgs = [p / (len(data) + 1) for p in total_points]
-        if winner == "e":
-            new_data["points"] = str(total_points[0]) + " - 0"
-        elif winner == "c":
-            new_data["points"] = "0 - " + str(total_points[1])
+        new_data["points"] = str(total_points[0]) + " - " + str(total_points[1])
         new_data["delta"] = total_points[0] - total_points[1]
         data.append(new_data)
         with open(qt_file, "w") as f:
