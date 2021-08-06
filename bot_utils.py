@@ -400,7 +400,7 @@ def quadris_tridimensionale_add(bot, update, command):
         try:
             prev_points = [int(previous_data[-1]["points"].split()[0]), int(previous_data[-1]["points"].split()[-1])]
             prev_avgs = [p / len(data) for p in prev_points]
-        except IndexError:
+        except (KeyError, IndexError):
             prev_points = [0, 0]
             prev_avgs = prev_points
         cur_avgs = None
