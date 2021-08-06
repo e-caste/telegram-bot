@@ -269,7 +269,7 @@ def recover_past_days(update):
 
 
 def cirulla_add(bot, update, command):
-    result = __parse_cirulla_result(command)
+    result = _parse_cirulla_result(command)
     if result is None:
         reply = "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between " \
                "the numbers."
@@ -368,8 +368,128 @@ def cirulla_plot(bot, chat_id):
     bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
 
 
-def __parse_cirulla_result(result: list):
+def _parse_cirulla_result(result: list):
     if not result[0].isdigit() or not result[-1].isdigit():
         return None
     else:
         return [int(result[0]), int(result[-1])]
+
+
+def quadris_tridimensionale_add(bot, update, command):
+    result = _parse_quadris_tridimensionale_result(command)
+    if result is None:
+        reply = "Format not recognized.\nThe correct format is: (e|c)[*]<number>, with at least one space between " \
+               "e/c and the number."
+    else:
+        winner, points = result
+        now = datetime.now()
+        previous_data = json.load(open("quadris_tridimensionale.json"))
+        data = [dic for dic in previous_data]
+        new_data = {
+            "points": "",
+            "delta": 0,
+            "datetime": {
+                "year": str(now.year),
+                "month": str(now.month),
+                "day": str(now.day),
+                "hour": str(now.hour),
+                "minute": str(now.minute),
+                "second": str(now.second)
+            }
+        }
+        try:
+            prev_points = [int(previous_data[-1]["points"].split()[0]), int(previous_data[-1]["points"].split()[-1])]
+            prev_avgs = [p / len(data) for p in prev_points]
+        except IndexError:
+            prev_points = [0, 0]
+            prev_avgs = prev_points
+        cur_avgs = None
+        sym_avgs = ["~", "~"]
+        avg_fmt = '%.3f'
+        # these are the total points
+        if (winner == "e" and points > prev_points[0]) or (winner == "c" and points > prev_points[1]):
+            if winner == "e":
+                new_data["points"] = str(points) + " - 0"
+                new_data["delta"] = points
+            elif winner == "c":
+                new_data["points"] = "0 - " + str(points)
+                new_data["delta"] = -points
+        # these are the single match points
+        else:
+            cur_points = [points, 0] if winner == "e" else [0, points]
+            total_points = [p + c for p, c in zip(prev_points, cur_points)]
+            cur_avgs = [p / (len(data) + 1) for p in total_points]
+            if winner == "e":
+                new_data["points"] = str(points) + " - 0"
+                new_data["delta"] = points
+            elif winner == "c":
+                new_data["points"] = "0 - " + str(points)
+                new_data["delta"] = -points
+        data.append(new_data)
+        with open("quadris_tridimensionale.json", "w") as f:
+            f.write(json.dumps(data, indent=2))
+        if cur_avgs:
+            deadzone_factor = 0.1
+            for i in range(len(sym_avgs)):
+                if cur_avgs[i] > (prev_avgs[i] + deadzone_factor):
+                    sym_avgs[i] = "📈"
+                elif cur_avgs[i] < (prev_avgs[i] - deadzone_factor):
+                    sym_avgs[i] = "📉"
+        reply = "\n".join([
+            "Result " + new_data["points"] + " added.",
+            "Match #" + str(len(data)),
+            "Averages per match: " + str(avg_fmt % cur_avgs[0]) + sym_avgs[0] + " - " +
+                str(avg_fmt % cur_avgs[1]) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
+            "Δ: " + str(new_data["delta"]),
+        ])
+    bot.send_message(chat_id=update.message.chat_id,
+                     text=reply)
+
+
+def quadris_tridimensionale_remove() -> str:
+    data = json.load(open("quadris_tridimensionale.json"))
+    data.pop(len(data) - 1)
+    with open("quadris_tridimensionale.json", "w") as f:
+        f.write(json.dumps(data, indent=2))
+    return "The last result has been removed."
+
+
+def quadris_tridimensionale_points() -> str:
+    data = json.load(open("quadris_tridimensionale.json"))
+    matches = len(data)
+    prev_points = [int(data[-1]["points"].split()[0]), int(data[-1]["points"].split()[-1])]
+    avg_fmt = '%.3f'
+    return "\n".join([
+        "Points: " + data[-1]["points"],
+        "Matches: " + str(matches),
+        "Averages per match: " + str(avg_fmt % (prev_points[0] / matches)) + " - " + str(avg_fmt % (prev_points[1] / matches)),
+        "Δ: " + str(data[-1]["delta"]),
+    ])
+
+
+def quadris_tridimensionale_plot(bot, chat_id):
+    x = []
+    y = []
+    data = json.load(open("quadris_tridimensionale.json"))
+    for dic in data:
+        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"].zfill(2) + "-" + dic["datetime"]["day"].zfill(2) + " " +
+                 dic["datetime"]["hour"].zfill(2) + ":" + dic["datetime"]["minute"].zfill(2) + "." + dic["datetime"]["second"].zfill(2))
+        y.append(dic["delta"])
+    plt.plot(x, y)
+    step = int(len(x) / 50) + 1
+    plt.xticks(range(0, len(x), step), rotation=90)
+    plt.tick_params(axis='x', which='major', labelsize=8)
+    plt.tight_layout()
+    plt.grid()
+    path_to_graph = os.path.join(os.getcwd(), "quadris_tridimensionale_graph.jpg")
+    if os.path.exists(path_to_graph):
+        Popen(["rm", path_to_graph])
+    plt.savefig(path_to_graph, dpi=300, bbox_inches='tight')
+    bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
+
+
+def _parse_quadris_tridimensionale_result(result: list):
+    if result[0].lower() not in ("e", "c") or not result[-1].isdigit():
+        return None
+    else:
+        return result[0], int(result[-1])
