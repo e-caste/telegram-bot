@@ -135,14 +135,35 @@ def cirulla_menu(bot, update):
         return
     else:
         command = update.message.text.split()
-        if command.__len__() > 1:
+        if len(command) > 1:
             cirulla_add(bot, update, command[1:])
         else:
             keyboard = [
                 [InlineKeyboardButton("✚ Add latest result", callback_data="cirulla_add")],
                 [InlineKeyboardButton("− Remove last added result", callback_data="cirulla_remove")],
                 [InlineKeyboardButton("🔢 Show current total points", callback_data="cirulla_points")],
-                [InlineKeyboardButton("📈 plot delta trend (E-C)", callback_data="cirulla_plot")]
+                [InlineKeyboardButton("📈 Plot delta trend (E-C)", callback_data="cirulla_plot")],
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            update.message.reply_text('Choose an option:', reply_markup=reply_markup)
+
+
+def quadris_tridimensionale_menu(bot, update):
+    if not str(update.message.chat_id) == castes_chat_id:
+        bot.send_message(chat_id=update.message.chat_id,
+                         text="⚠️ You don't have permission to use the /qt command.")
+        return
+    else:
+        command = update.message.text.split()
+        if len(command) > 1:
+            quadris_tridimensionale_add(bot, update, command[1:])
+        else:
+            keyboard = [
+                [InlineKeyboardButton("✚ Add latest result", callback_data="qt_add")],
+                [InlineKeyboardButton("− Remove last added result", callback_data="qt_remove")],
+                [InlineKeyboardButton("🔢 Show current total points", callback_data="qt_points")],
+                [InlineKeyboardButton("📈 Plot delta trend (E-C)", callback_data="qt_plot")],
+                [InlineKeyboardButton("📜 Show rules", callback_data="qt_rules")],
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             update.message.reply_text('Choose an option:', reply_markup=reply_markup)
