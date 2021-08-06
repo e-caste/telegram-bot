@@ -403,38 +403,26 @@ def quadris_tridimensionale_add(bot, update, command):
         except (KeyError, IndexError):
             prev_points = [0, 0]
             prev_avgs = prev_points
-        cur_avgs = None
         sym_avgs = ["~", "~"]
         avg_fmt = '%.3f'
-        # these are the total points
-        if (winner == "e" and points > prev_points[0]) or (winner == "c" and points > prev_points[1]):
-            if winner == "e":
-                new_data["points"] = str(points) + " - 0"
-                new_data["delta"] = points
-            elif winner == "c":
-                new_data["points"] = "0 - " + str(points)
-                new_data["delta"] = -points
-        # these are the single match points
-        else:
-            cur_points = [points, 0] if winner == "e" else [0, points]
-            total_points = [p + c for p, c in zip(prev_points, cur_points)]
-            cur_avgs = [p / (len(data) + 1) for p in total_points]
-            if winner == "e":
-                new_data["points"] = str(points) + " - 0"
-                new_data["delta"] = points
-            elif winner == "c":
-                new_data["points"] = "0 - " + str(points)
-                new_data["delta"] = -points
+        cur_points = [points, 0] if winner == "e" else [0, points]
+        total_points = [p + c for p, c in zip(prev_points, cur_points)]
+        cur_avgs = [p / (len(data) + 1) for p in total_points]
+        if winner == "e":
+            new_data["points"] = str(points) + " - 0"
+            new_data["delta"] = points
+        elif winner == "c":
+            new_data["points"] = "0 - " + str(points)
+            new_data["delta"] = -points
         data.append(new_data)
         with open("quadris_tridimensionale.json", "w") as f:
             f.write(json.dumps(data, indent=2))
-        if cur_avgs:
-            deadzone_factor = 0.1
-            for i in range(len(sym_avgs)):
-                if cur_avgs[i] > (prev_avgs[i] + deadzone_factor):
-                    sym_avgs[i] = "📈"
-                elif cur_avgs[i] < (prev_avgs[i] - deadzone_factor):
-                    sym_avgs[i] = "📉"
+        deadzone_factor = 0.1
+        for i in range(len(sym_avgs)):
+            if cur_avgs[i] > (prev_avgs[i] + deadzone_factor):
+                sym_avgs[i] = "📈"
+            elif cur_avgs[i] < (prev_avgs[i] - deadzone_factor):
+                sym_avgs[i] = "📉"
         reply = "\n".join([
             "Result " + new_data["points"] + " added.",
             "Match #" + str(len(data)),
