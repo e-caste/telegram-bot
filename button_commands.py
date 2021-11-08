@@ -1,6 +1,8 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from robbamia import castes_chat_id
 from bot_utils import get_specific_timelapse, cirulla_add, quadris_tridimensionale_add
+
+# import Docker environment variables
+castes_chat_id = os.environ["CST_CID"]
 
 
 def status(bot, update):
