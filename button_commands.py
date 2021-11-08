@@ -1,3 +1,5 @@
+import os
+
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from bot_utils import get_specific_timelapse, cirulla_add, quadris_tridimensionale_add
 
