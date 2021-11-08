@@ -12,7 +12,7 @@ from threading import Thread
 
 from telegram import bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
-from nmt_chatbot.inference import inference
+# from nmt_chatbot.inference import inference
 
 from pi_status import *
 from parser import get_wiki_daily_quote
@@ -53,10 +53,11 @@ def help(bot, update):
 
 
 def chatbot(bot, update):
+    ...
     # to reduce CPU strain and limit usage to known people
-    if update.message.chat_id == int(castes_chat_id) or update.message.chat_id == int(gabbias_chat_id):
-        nmt_result = inference(update.message.text)
-        bot.send_message(chat_id=update.message.chat_id, text=nmt_result['answers'][nmt_result['best_index']])
+    # if update.message.chat_id == int(castes_chat_id) or update.message.chat_id == int(gabbias_chat_id):
+    #     nmt_result = inference(update.message.text)
+    #     bot.send_message(chat_id=update.message.chat_id, text=nmt_result['answers'][nmt_result['best_index']])
 
 
 def epoch(bot, update):
@@ -292,7 +293,7 @@ def main():
     # using multiprocessing
     processes = [
         Process(target=updater.idle),
-        Process(target=check_for_new_events, args=(bot.Bot(token), 21)),  # hour
+        # Process(target=check_for_new_events, args=(bot.Bot(token), 21)),  # hour
         Process(target=make_new_webcam_timelapse, args=(0, 1)),  # hour, minute
         Process(target=send_timelapse_notification, args=(bot.Bot(token), 8, 30, DEBUG))  # hour, minute
     ]
