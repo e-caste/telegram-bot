@@ -28,7 +28,7 @@ def get_last_img_name():
     tmp = os.listdir(pics_dir)
     tmp.sort(key=str.casefold)
     # if there are only folders
-    if os.path.isdir(pics_dir + tmp[-1]):
+    if all((os.path.isdir(pics_dir + t) for t in tmp)):
         folder = tmp[-1]
         tmp = os.listdir(pics_dir + folder)
         tmp.sort(key=str.casefold)
