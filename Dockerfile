@@ -5,8 +5,8 @@ WORKDIR /bot
 COPY requirements.txt ./
 RUN pip3 install -r requirements.txt
 
-ENV LOG_PATH="/bot/logs"
-ENV PICS_DIR="/bot/pics"
+ENV LOG_PATH="/bot/logs/"
+ENV PICS_DIR="/bot/pics/"
 
 COPY *.py ./
 
