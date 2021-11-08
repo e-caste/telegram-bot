@@ -63,14 +63,14 @@ def get_webcam_img(bot, update):
     else:
         path_name = img_name
     bot.send_photo(chat_id=update.callback_query.message.chat_id,
-                   photo=open(pics_nas_dir + path_name, 'rb'),
+                   photo=open(pics_dir + path_name, 'rb'),
                    caption=img_name)
 
 
 def get_webcam_timelapse(bot, update):
     yesterday = webcam.get_yesterday_timelapse_video_name()
     bot.send_video(chat_id=update.callback_query.message.chat_id,
-                   video=open(pics_nas_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
+                   video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
                    caption=yesterday,
                    timeout=6000)
 
@@ -144,17 +144,17 @@ def events_unsub(filenamestart: str, id: str) -> str:
 def get_oldest_picture(bot, update):
     webcam.check_NAS_mounted()
 
-    tmp = os.listdir(pics_nas_dir)
+    tmp = os.listdir(pics_dir)
     tmp.sort(key=str.casefold)
     # if there are only folders
-    if os.path.isdir(pics_nas_dir + tmp[-1]):
-        tmp = os.listdir(pics_nas_dir + folder)
+    if os.path.isdir(pics_dir + tmp[-1]):
+        tmp = os.listdir(pics_dir + folder)
         tmp.sort(key=str.casefold)
     # send first image that is completely saved
     for img in sorted(tmp, key=str.casefold):
         if img.endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
             bot.send_photo(chat_id=update.callback_query.message.chat_id,
-                           photo=open(pics_nas_dir + img, 'rb'),
+                           photo=open(pics_dir + img, 'rb'),
                            caption=img)
             break
 
@@ -163,7 +163,7 @@ def secs_per_picture() -> str:
     """
     Return the average of seconds per picture taken by Raspberry Pi Zero W
     """
-    pics = sorted([pic for pic in os.listdir(pics_nas_dir) if pic.endswith(".jpg")])
+    pics = sorted([pic for pic in os.listdir(pics_dir) if pic.endswith(".jpg")])
     pics_times = [datetime(year=int(pic[0:4]),
                            month=int(pic[5:7]),
                            day=int(pic[8:10]),
@@ -182,11 +182,11 @@ def get_available_timelapses(format: bool = True) -> str or list:
 
     available_timelapses = []
     reply = ""
-    dirs = [directory for directory in os.listdir(pics_nas_dir)
-            if os.path.isdir(os.path.join(pics_nas_dir, directory))]
+    dirs = [directory for directory in os.listdir(pics_dir)
+            if os.path.isdir(os.path.join(pics_dir, directory))]
 
     for d in dirs:
-        content = os.listdir(os.path.join(pics_nas_dir, d))
+        content = os.listdir(os.path.join(pics_dir, d))
         for item in content:
             if "_for_tg.mp4" in item:
                 available_timelapses.append(d)
@@ -220,7 +220,7 @@ def get_specific_timelapse(bot, update, date):
     parsed_date = __parse_date(date)
     if parsed_date in timelapses:
         bot.send_video(chat_id=update.message.chat_id,
-                       video=open(os.path.join(pics_nas_dir, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
+                       video=open(os.path.join(pics_dir, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
                        caption=parsed_date,
                        timeout=6000)
     else:
