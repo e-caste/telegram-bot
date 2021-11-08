@@ -8,7 +8,12 @@ from time import sleep
 from subprocess import Popen
 from sys import stderr, platform
 import os
-from robbamia import *
+
+# import Docker environment variables
+token = os.environ["TOKEN"]
+castes_chat_id = os.environ["CST_CID"]
+log_path = os.environ["LOG_PATH"]
+pics_dir = os.environ["PICS_DIR"]
 
 # macOS is DEBUG, Linux is not DEBUG
 DEBUG = platform.startswith('darwin')
