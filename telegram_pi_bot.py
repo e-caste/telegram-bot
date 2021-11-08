@@ -243,9 +243,7 @@ def button(bot_obj, update):
 
 
 def main():
-    if not DEBUG:
-        # if on Raspberry Pi:
-        os.chdir(raspi_wd)
+    os.chdir("data")
 
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
