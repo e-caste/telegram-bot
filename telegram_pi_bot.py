@@ -241,7 +241,7 @@ def button(bot_obj, update):
 
     except Exception as e:
         query.edit_message_text(text=str(e))
-        print(e)
+        logger.error(e, exc_info=True)
 
 
 # END BUTTON HANDLER w/ FUNCTIONS
