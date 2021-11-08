@@ -1,6 +1,8 @@
 import subprocess
 import os
-from robbamia import raspi_script_dir
+
+raspi_script_dir = "/dev/null"
+
 
 def run_shell_cmd(cmd: str) -> str:
     cmd = cmd.strip().replace('  ', ' ').split(' ')  # is now a list of strings
