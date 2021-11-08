@@ -15,7 +15,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 # from nmt_chatbot.inference import inference
 
 from pi_status import *
-from parser import get_wiki_daily_quote
+# from parser import get_wiki_daily_quote
 from button_commands import status, events_menu, webcam_menu, apt, pics_menu, cirulla_menu, quadris_tridimensionale_menu
 from button_commands import subscribe_to_cercle_notifications, subscribe_to_supermarket_notifications, \
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
@@ -77,7 +77,8 @@ def quote(bot, update):
 
 
 def wiki_quote(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=get_wiki_daily_quote())
+    ...
+    # bot.send_message(chat_id=update.message.chat_id, text=get_wiki_daily_quote())
 
 
 def error(bot, update):
