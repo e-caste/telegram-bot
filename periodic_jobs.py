@@ -1,10 +1,15 @@
 import os
 import sys
 from time import sleep
-from robbamia import *
 from bot_utils import calculate_time_to_sleep
 import evnt_ntfr
 import webcam
+
+# import Docker environment variables
+token = os.environ["TOKEN"]
+castes_chat_id = os.environ["CST_CID"]
+log_path = os.environ["LOG_PATH"]
+pics_dir = os.environ["PICS_DIR"]
 
 
 def check_for_new_events(bot, hour: int):
@@ -85,7 +90,7 @@ def send_timelapse_notification(bot, hour: int, minute: int, debug: bool):
             with open('webcam_chat_ids.txt', 'r') as ids:
                 for id in ids.readlines():
                     bot.send_video(chat_id=id,
-                                   video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
+                                   video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
                                    caption="Here's the timelapse of yesterday! - " + yesterday,
                                    timeout=6000,
                                    supports_streaming=True)

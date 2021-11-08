@@ -16,7 +16,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 
 from pi_status import *
 from parser import get_wiki_daily_quote
-from robbamia import *
 from button_commands import status, events_menu, webcam_menu, apt, pics_menu, cirulla_menu, quadris_tridimensionale_menu
 from button_commands import subscribe_to_cercle_notifications, subscribe_to_supermarket_notifications, \
     subscribe_to_thedreamers_notifications, subscribe_to_webcam_notifications
@@ -27,6 +26,11 @@ from bot_utils import get_webcam_img, get_webcam_timelapse, webcam_sub, webcam_u
     quadris_tridimensionale_points, quadris_tridimensionale_plot
 from periodic_jobs import check_for_new_events, make_new_webcam_timelapse, send_timelapse_notification
 
+# import Docker environment variables
+token = os.environ["TOKEN"]
+castes_chat_id = os.environ["CST_CID"]
+log_path = os.environ["LOG_PATH"]
+pics_dir = os.environ["PICS_DIR"]
 
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 # Enable logging
@@ -121,10 +125,10 @@ def button(bot_obj, update):
         elif query.data == "df_h":
             reply = get_disk_usage()
         elif query.data == 'full_tg_log':
-            tmp = os.listdir(tg_log_path)
+            tmp = os.listdir(log_path)
             tmp.sort(key=str.casefold)
-            log_path = tg_log_path + tmp[-1]
-            bot_obj.send_document(chat_id=int(id), document=open(log_path, 'rb'))
+            lp = log_path + tmp[-1]
+            bot_obj.send_document(chat_id=int(id), document=open(lp, 'rb'))
         elif query.data == 'tail_log':
             reply = get_log_tail()
 

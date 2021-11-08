@@ -6,8 +6,12 @@ import json
 import matplotlib.pyplot as plt
 from telegram import bot
 import webcam
-from robbamia import webcam_path, pics_nas_dir, castes_chat_id, token, ssh_cmd
 
+# import Docker environment variables
+token = os.environ["TOKEN"]
+castes_chat_id = os.environ["CST_CID"]
+log_path = os.environ["LOG_PATH"]
+pics_dir = os.environ["PICS_DIR"]
 
 # GENERIC UTILS
 
@@ -59,14 +63,14 @@ def get_webcam_img(bot, update):
     else:
         path_name = img_name
     bot.send_photo(chat_id=update.callback_query.message.chat_id,
-                   photo=open(webcam_path + path_name, 'rb'),
+                   photo=open(pics_nas_dir + path_name, 'rb'),
                    caption=img_name)
 
 
 def get_webcam_timelapse(bot, update):
     yesterday = webcam.get_yesterday_timelapse_video_name()
     bot.send_video(chat_id=update.callback_query.message.chat_id,
-                   video=open(webcam_path + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
+                   video=open(pics_nas_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
                    caption=yesterday,
                    timeout=6000)
 
@@ -140,17 +144,17 @@ def events_unsub(filenamestart: str, id: str) -> str:
 def get_oldest_picture(bot, update):
     webcam.check_NAS_mounted()
 
-    tmp = os.listdir(webcam_path)
+    tmp = os.listdir(pics_nas_dir)
     tmp.sort(key=str.casefold)
     # if there are only folders
-    if os.path.isdir(webcam_path + tmp[-1]):
-        tmp = os.listdir(webcam_path + folder)
+    if os.path.isdir(pics_nas_dir + tmp[-1]):
+        tmp = os.listdir(pics_nas_dir + folder)
         tmp.sort(key=str.casefold)
     # send first image that is completely saved
     for img in sorted(tmp, key=str.casefold):
         if img.endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
             bot.send_photo(chat_id=update.callback_query.message.chat_id,
-                           photo=open(webcam_path + img, 'rb'),
+                           photo=open(pics_nas_dir + img, 'rb'),
                            caption=img)
             break
 
@@ -178,11 +182,11 @@ def get_available_timelapses(format: bool = True) -> str or list:
 
     available_timelapses = []
     reply = ""
-    dirs = [directory for directory in os.listdir(webcam_path)
-            if os.path.isdir(os.path.join(webcam_path, directory))]
+    dirs = [directory for directory in os.listdir(pics_nas_dir)
+            if os.path.isdir(os.path.join(pics_nas_dir, directory))]
 
     for d in dirs:
-        content = os.listdir(os.path.join(webcam_path, d))
+        content = os.listdir(os.path.join(pics_nas_dir, d))
         for item in content:
             if "_for_tg.mp4" in item:
                 available_timelapses.append(d)
@@ -216,7 +220,7 @@ def get_specific_timelapse(bot, update, date):
     parsed_date = __parse_date(date)
     if parsed_date in timelapses:
         bot.send_video(chat_id=update.message.chat_id,
-                       video=open(os.path.join(webcam_path, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
+                       video=open(os.path.join(pics_nas_dir, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
                        caption=parsed_date,
                        timeout=6000)
     else:
