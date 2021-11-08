@@ -35,7 +35,7 @@ pics_dir = os.environ["PICS_DIR"]
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
