@@ -26,7 +26,7 @@ def check_for_new_events(bot, hour: int):
                 'cercle_chat_ids.txt',
                 'thedreamers_chat_ids.txt'
             ]
-            os.chdir(raspi_wd)
+            # os.chdir(raspi_wd)
             links, texts, event_names = evnt_ntfr.main()
             if links is not None and texts is not None:
                 for links_list, text_list, chat_ids, event_name in zip(links, texts, chat_ids_list, event_names):
@@ -83,8 +83,8 @@ def send_timelapse_notification(bot, hour: int, minute: int, debug: bool):
             print("Waiting to send timelapse... " + str(time_to_sleep))
             sleep(time_to_sleep)
 
-            if not debug:
-                os.chdir(raspi_wd)
+            # if not debug:
+            #     os.chdir(raspi_wd)
             # the video should have already been made by the function above, so it immediately returns yesterday
             yesterday = webcam.get_yesterday_timelapse_video_name()
             with open('webcam_chat_ids.txt', 'r') as ids:

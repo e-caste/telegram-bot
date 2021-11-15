@@ -26,7 +26,7 @@ else:
 
 def main():
     # print("Current wd: " + os.getcwd())
-    os.chdir(raspi_wd)
+    # os.chdir(raspi_wd)
     # print("Current wd: " + os.getcwd())
     link_result = []
     text_result = []
