@@ -44,9 +44,10 @@ def get_yesterday_timelapse_video_name():
     yesterday = datetime.today() - timedelta(days=1)
     yesterday = str(yesterday)[:10]  # only take date part
 
-    # check if the video is available, otherwise delegate another machine to make it
+    # the timelapse is now made by a cronjob, so it should be there
     if not os.path.isfile(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4"):
-        os.system(ssh_cmd)
+        # os.system(ssh_cmd)
+        return None
 
     return yesterday
 

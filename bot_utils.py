@@ -69,10 +69,14 @@ def get_webcam_img(bot, update):
 
 def get_webcam_timelapse(bot, update):
     yesterday = webcam.get_yesterday_timelapse_video_name()
-    bot.send_video(chat_id=update.callback_query.message.chat_id,
-                   video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
-                   caption=yesterday,
-                   timeout=6000)
+    if yesterday:
+        bot.send_video(chat_id=update.callback_query.message.chat_id,
+                       video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
+                       caption=yesterday,
+                       timeout=6000)
+    else:
+        bot.send_message(chat_id=update.callback_query.message.chat_id,
+                         text="There is no timelapse for yesterday, Please check the NAS is online.")
 
 
 def webcam_sub(id: str) -> str:
