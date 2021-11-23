@@ -22,7 +22,7 @@ def check_NAS_mounted():
 
 
 def get_last_img_name():
-    check_NAS_mounted()
+    # check_NAS_mounted()
 
     folder = False
     tmp = os.listdir(pics_dir)
