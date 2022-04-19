@@ -30,7 +30,7 @@ def status(update: Update, context: CallbackContext) -> None:
                          text="⚠️ You don't have permission to use the /status command.")
 
 
-def events_menu(bot, update, use_callback: bool = False):
+def events_menu(update: Update, context: CallbackContext, use_callback: bool = False):
     keyboard = [
         [InlineKeyboardButton("Cercle", callback_data='cercle')],
         [InlineKeyboardButton("TheDreamers", callback_data='thedreamers')],
@@ -89,7 +89,7 @@ def subscribe_to_webcam_notifications(update: Update, context: CallbackContext) 
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def webcam_menu(bot, update, use_callback: bool = False):
+def webcam_menu(update: Update, context: CallbackContext, use_callback: bool = False):
     keyboard = [
         [InlineKeyboardButton("📷 Right Now", callback_data='webcam_now')],
         [InlineKeyboardButton("📽 Timelapse of yesterday", callback_data='webcam_timelapse')],
