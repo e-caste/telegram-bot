@@ -14,6 +14,14 @@ from telegram import bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 # from nmt_chatbot.inference import inference
 
+DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Linux
+if DEBUG:
+    from robbamia import debug_token as token, castes_chat_id
+    os.environ["TOKEN"] = token
+    os.environ["CST_CID"] = castes_chat_id
+    os.environ["LOG_PATH"] = "logs"
+    os.environ["PICS_DIR"] = "pics"
+
 from pi_status import *
 # from parser import get_wiki_daily_quote
 from button_commands import status, events_menu, webcam_menu, apt, pics_menu, cirulla_menu, quadris_tridimensionale_menu
@@ -32,7 +40,6 @@ castes_chat_id = os.environ["CST_CID"]
 log_path = os.environ["LOG_PATH"]
 pics_dir = os.environ["PICS_DIR"]
 
-DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Raspbian
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
