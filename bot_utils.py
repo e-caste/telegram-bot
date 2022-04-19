@@ -14,6 +14,7 @@ castes_chat_id = os.environ["CST_CID"]
 log_path = os.environ["LOG_PATH"]
 pics_dir = os.environ["PICS_DIR"]
 
+
 # GENERIC UTILS
 
 def split_msg_for_telegram(string: str):
@@ -24,7 +25,7 @@ def split_msg_for_telegram(string: str):
 def send_split_msgs(bot, string_list):
     try:
         for string in string_list:
-            context.bot.send_message(chat_id=castes_chat_id, text=string)
+            bot.send_message(chat_id=castes_chat_id, text=string)
 
     except Exception as e:
         print("send_split_msgs")
@@ -64,20 +65,20 @@ def get_webcam_img(update: Update, context: CallbackContext) -> None:
     else:
         path_name = img_name
     context.bot.send_photo(chat_id=update.callback_query.message.chat_id,
-                   photo=open(pics_dir + path_name, 'rb'),
-                   caption=img_name)
+                           photo=open(pics_dir + path_name, 'rb'),
+                           caption=img_name)
 
 
 def get_webcam_timelapse(update: Update, context: CallbackContext) -> None:
     yesterday = webcam.get_yesterday_timelapse_video_name()
     if yesterday:
         context.bot.send_video(chat_id=update.callback_query.message.chat_id,
-                       video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
-                       caption=yesterday,
-                       timeout=6000)
+                               video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
+                               caption=yesterday,
+                               timeout=6000)
     else:
         context.bot.send_message(chat_id=update.callback_query.message.chat_id,
-                         text="There is no timelapse for yesterday, Please check the NAS is online.")
+                                 text="There is no timelapse for yesterday, Please check the NAS is online.")
 
 
 def webcam_sub(id: str) -> str:
@@ -159,8 +160,8 @@ def get_oldest_picture(update: Update, context: CallbackContext) -> None:
     for img in sorted(tmp, key=str.casefold):
         if img.endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
             context.bot.send_photo(chat_id=update.callback_query.message.chat_id,
-                           photo=open(pics_dir + img, 'rb'),
-                           caption=img)
+                                   photo=open(pics_dir + img, 'rb'),
+                                   caption=img)
             break
 
 
@@ -225,13 +226,13 @@ def get_specific_timelapse(bot, update, date):
     parsed_date = __parse_date(date)
     if parsed_date in timelapses:
         context.bot.send_video(chat_id=update.message.chat_id,
-                       video=open(os.path.join(pics_dir, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
-                       caption=parsed_date,
-                       timeout=6000)
+                               video=open(os.path.join(pics_dir, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
+                               caption=parsed_date,
+                               timeout=6000)
     else:
         context.bot.send_message(chat_id=update.message.chat_id,
-                         text="No timelapse available for date " + parsed_date + " (YYYY-MM-DD).\n"
-                              "Check available timelapses with /pics and tapping the 'Get available timelapses' button.")
+                                 text="No timelapse available for date " + parsed_date + " (YYYY-MM-DD).\n"
+                                                                                         "Check available timelapses with /pics and tapping the 'Get available timelapses' button.")
 
 
 # expecting format YYYY[*]MM[*]DD
@@ -281,7 +282,7 @@ def cirulla_add(bot, update, command):
     result = _parse_cirulla_result(command)
     if result is None:
         reply = "Format not recognized.\nThe correct format is: <number>[*]<number>, with at least one space between " \
-               "the numbers."
+                "the numbers."
     else:
         now = datetime.now()
         previous_data = json.load(open("cirulla.json"))
@@ -328,11 +329,11 @@ def cirulla_add(bot, update, command):
             "Result " + new_data["points"] + " added.",
             "Match #" + str(len(data)),
             "Averages per match: " + str(avg_fmt % cur_avgs[0]) + sym_avgs[0] + " - " +
-                str(avg_fmt % cur_avgs[1]) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
+            str(avg_fmt % cur_avgs[1]) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
             "Δ: " + str(new_data["delta"]),
         ])
     context.bot.send_message(chat_id=update.message.chat_id,
-                     text=reply)
+                             text=reply)
 
 
 def cirulla_remove() -> str:
@@ -351,18 +352,21 @@ def cirulla_points() -> str:
     return "\n".join([
         "Points: " + data[-1]["points"],
         "Matches: " + str(matches),
-        "Averages per match: " + str(avg_fmt % (prev_points[0] / matches)) + " - " + str(avg_fmt % (prev_points[1] / matches)),
+        "Averages per match: " + str(avg_fmt % (prev_points[0] / matches)) + " - " + str(
+            avg_fmt % (prev_points[1] / matches)),
         "Δ: " + str(data[-1]["delta"]),
     ])
 
 
-def cirulla_plot(bot, chat_id):
+def cirulla_plot(context: CallbackContext, chat_id):
     x = []
     y = []
     data = json.load(open("cirulla.json"))
     for dic in data:
-        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"].zfill(2) + "-" + dic["datetime"]["day"].zfill(2) + " " +
-                 dic["datetime"]["hour"].zfill(2) + ":" + dic["datetime"]["minute"].zfill(2) + "." + dic["datetime"]["second"].zfill(2))
+        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"].zfill(2) + "-" + dic["datetime"]["day"].zfill(
+            2) + " " +
+                 dic["datetime"]["hour"].zfill(2) + ":" + dic["datetime"]["minute"].zfill(2) + "." + dic["datetime"][
+                     "second"].zfill(2))
         y.append(dic["delta"])
     plt.plot(x, y)
     step = int(len(x) / 50) + 1
@@ -392,7 +396,7 @@ def quadris_tridimensionale_add(bot, update, command):
     result = _parse_quadris_tridimensionale_result(command)
     if result is None:
         reply = "Format not recognized.\nThe correct format is: (e|c)[*]<number>, with at least one space between " \
-               "e/c and the number."
+                "e/c and the number."
     else:
         winner, points = result
         now = datetime.now()
@@ -437,11 +441,11 @@ def quadris_tridimensionale_add(bot, update, command):
             "Result " + new_data["points"] + " added.",
             "Match #" + str(len(data)),
             "Averages per match: " + str(avg_fmt % cur_avgs[0]) + sym_avgs[0] + " - " +
-                str(avg_fmt % cur_avgs[1]) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
+            str(avg_fmt % cur_avgs[1]) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
             "Δ: " + str(new_data["delta"]),
         ])
     context.bot.send_message(chat_id=update.message.chat_id,
-                     text=reply)
+                             text=reply)
 
 
 def quadris_tridimensionale_remove() -> str:
@@ -462,19 +466,22 @@ def quadris_tridimensionale_points() -> str:
     return "\n".join([
         "Points: " + data[-1]["points"],
         "Matches: " + str(matches),
-        "Averages per match: " + str(avg_fmt % (prev_points[0] / matches)) + " - " + str(avg_fmt % (prev_points[1] / matches)),
+        "Averages per match: " + str(avg_fmt % (prev_points[0] / matches)) + " - " + str(
+            avg_fmt % (prev_points[1] / matches)),
         "Δ: " + str(data[-1]["delta"]),
     ])
 
 
-def quadris_tridimensionale_plot(bot, chat_id):
+def quadris_tridimensionale_plot(context: CallbackContext, chat_id):
     _check_qt_file_exists()
     x = []
     y = []
     data = json.load(open(qt_file))
     for dic in data:
-        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"].zfill(2) + "-" + dic["datetime"]["day"].zfill(2) + " " +
-                 dic["datetime"]["hour"].zfill(2) + ":" + dic["datetime"]["minute"].zfill(2) + "." + dic["datetime"]["second"].zfill(2))
+        x.append(dic["datetime"]["year"] + "-" + dic["datetime"]["month"].zfill(2) + "-" + dic["datetime"]["day"].zfill(
+            2) + " " +
+                 dic["datetime"]["hour"].zfill(2) + ":" + dic["datetime"]["minute"].zfill(2) + "." + dic["datetime"][
+                     "second"].zfill(2))
         y.append(dic["delta"])
     plt.plot(x, y)
     step = int(len(x) / 50) + 1

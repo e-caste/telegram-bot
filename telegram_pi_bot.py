@@ -104,8 +104,8 @@ def button(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     # id = context.callback_query.chat_instance
     id = str(update.callback_query.from_user.id)
-    # print(id)
     reply = ""
+
     try:
         if query.data == 'uptime':
             reply = get_uptime()
@@ -137,19 +137,19 @@ def button(update: Update, context: CallbackContext) -> None:
             tmp = os.listdir(log_path)
             tmp.sort(key=str.casefold)
             lp = log_path + tmp[-1]
-            bot_obj.send_document(chat_id=int(id), document=open(lp, 'rb'))
+            context.bot.send_document(chat_id=int(id), document=open(lp, 'rb'))
         elif query.data == 'tail_log':
             reply = get_log_tail()
 
 
         elif query.data == 'cercle':
-            subscribe_to_cercle_notifications(bot_obj, update)
+            subscribe_to_cercle_notifications(update, context)
         elif query.data == 'thedreamers':
-            subscribe_to_thedreamers_notifications(bot_obj, update)
+            subscribe_to_thedreamers_notifications(update, context)
         elif query.data == 'supermarket':
-            subscribe_to_supermarket_notifications(bot_obj, update)
+            subscribe_to_supermarket_notifications(update, context)
         elif query.data == 'back_to_events_menu':
-            events_menu(bot_obj, update, use_callback=True)
+            events_menu(update, context, use_callback=True)
         elif query.data == 'close_menu':
             reply = "Closed. ☠️"
 
@@ -189,22 +189,22 @@ def button(update: Update, context: CallbackContext) -> None:
 
 
         elif query.data == 'webcam_now':
-            get_webcam_img(bot_obj, update)
+            get_webcam_img(update, context)
 
         elif query.data == 'webcam_timelapse':
-            get_webcam_timelapse(bot_obj, update)
+            get_webcam_timelapse(update, context)
 
         elif query.data == 'webcam_notification':
-            subscribe_to_webcam_notifications(bot_obj, update)
+            subscribe_to_webcam_notifications(update, context)
         elif query.data == 'back_to_webcam_menu':
-            webcam_menu(bot_obj, update, use_callback=True)
+            webcam_menu(update, context, use_callback=True)
         elif query.data == 'webcam_sub':
             reply = webcam_sub(id)
         elif query.data == 'webcam_unsub':
             reply = webcam_unsub(id)
 
         elif query.data == 'pics_oldest':
-            get_oldest_picture(bot_obj, update)
+            get_oldest_picture(update, context)
         elif query.data == 'pics_script':
             reply = "Trust the system."
             # ssh_recover = Thread(target=recover_past_days, args=(update,))
@@ -221,7 +221,7 @@ def button(update: Update, context: CallbackContext) -> None:
         elif query.data == 'cirulla_points':
             reply = cirulla_points()
         elif query.data == 'cirulla_plot':
-            cirulla_plot(bot_obj, id)
+            cirulla_plot(context, id)
 
         elif query.data == 'qt_add':
             reply = "To add a result, text /qt (e|c) <pts>"
@@ -238,7 +238,7 @@ def button(update: Update, context: CallbackContext) -> None:
         elif query.data == 'qt_points':
             reply = quadris_tridimensionale_points()
         elif query.data == 'qt_plot':
-            quadris_tridimensionale_plot(bot_obj, id)
+            quadris_tridimensionale_plot(context, id)
 
         if reply != "":
             split_reply = split_msg_for_telegram(reply)
