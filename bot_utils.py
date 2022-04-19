@@ -4,7 +4,8 @@ from subprocess import Popen, PIPE
 from multiprocessing import Process
 import json
 import matplotlib.pyplot as plt
-from telegram import bot
+from telegram import bot, Update
+from telegram.ext import CallbackContext
 import webcam
 
 # import Docker environment variables
@@ -23,7 +24,7 @@ def split_msg_for_telegram(string: str):
 def send_split_msgs(bot, string_list):
     try:
         for string in string_list:
-            bot.send_message(chat_id=castes_chat_id, text=string)
+            context.bot.send_message(chat_id=castes_chat_id, text=string)
 
     except Exception as e:
         print("send_split_msgs")
@@ -56,26 +57,26 @@ def calculate_time_to_sleep(hour: int, minute: int = 0) -> int:
 
 # BUTTON HANDLER UTILS
 
-def get_webcam_img(bot, update):
+def get_webcam_img(update: Update, context: CallbackContext) -> None:
     img_name, folder = webcam.get_last_img_name()
     if folder:
         path_name = folder + "/" + img_name
     else:
         path_name = img_name
-    bot.send_photo(chat_id=update.callback_query.message.chat_id,
+    context.bot.send_photo(chat_id=update.callback_query.message.chat_id,
                    photo=open(pics_dir + path_name, 'rb'),
                    caption=img_name)
 
 
-def get_webcam_timelapse(bot, update):
+def get_webcam_timelapse(update: Update, context: CallbackContext) -> None:
     yesterday = webcam.get_yesterday_timelapse_video_name()
     if yesterday:
-        bot.send_video(chat_id=update.callback_query.message.chat_id,
+        context.bot.send_video(chat_id=update.callback_query.message.chat_id,
                        video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
                        caption=yesterday,
                        timeout=6000)
     else:
-        bot.send_message(chat_id=update.callback_query.message.chat_id,
+        context.bot.send_message(chat_id=update.callback_query.message.chat_id,
                          text="There is no timelapse for yesterday, Please check the NAS is online.")
 
 
@@ -145,7 +146,7 @@ def events_unsub(filenamestart: str, id: str) -> str:
     return reply
 
 
-def get_oldest_picture(bot, update):
+def get_oldest_picture(update: Update, context: CallbackContext) -> None:
     webcam.check_NAS_mounted()
 
     tmp = os.listdir(pics_dir)
@@ -157,7 +158,7 @@ def get_oldest_picture(bot, update):
     # send first image that is completely saved
     for img in sorted(tmp, key=str.casefold):
         if img.endswith('.jpg'):  # prevents sending .jpg~ which are images being written to disk
-            bot.send_photo(chat_id=update.callback_query.message.chat_id,
+            context.bot.send_photo(chat_id=update.callback_query.message.chat_id,
                            photo=open(pics_dir + img, 'rb'),
                            caption=img)
             break
@@ -223,12 +224,12 @@ def get_specific_timelapse(bot, update, date):
         date = date[0]
     parsed_date = __parse_date(date)
     if parsed_date in timelapses:
-        bot.send_video(chat_id=update.message.chat_id,
+        context.bot.send_video(chat_id=update.message.chat_id,
                        video=open(os.path.join(pics_dir, parsed_date, parsed_date + "_for_tg.mp4"), 'rb'),
                        caption=parsed_date,
                        timeout=6000)
     else:
-        bot.send_message(chat_id=update.message.chat_id,
+        context.bot.send_message(chat_id=update.message.chat_id,
                          text="No timelapse available for date " + parsed_date + " (YYYY-MM-DD).\n"
                               "Check available timelapses with /pics and tapping the 'Get available timelapses' button.")
 
@@ -330,7 +331,7 @@ def cirulla_add(bot, update, command):
                 str(avg_fmt % cur_avgs[1]) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
             "Δ: " + str(new_data["delta"]),
         ])
-    bot.send_message(chat_id=update.message.chat_id,
+    context.bot.send_message(chat_id=update.message.chat_id,
                      text=reply)
 
 
@@ -373,7 +374,7 @@ def cirulla_plot(bot, chat_id):
     if os.path.exists(path_to_graph):
         Popen(["rm", path_to_graph])
     plt.savefig(path_to_graph, dpi=300, bbox_inches='tight')
-    bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
+    context.bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
 
 
 def _parse_cirulla_result(result: list):
@@ -439,7 +440,7 @@ def quadris_tridimensionale_add(bot, update, command):
                 str(avg_fmt % cur_avgs[1]) + sym_avgs[1] if cur_avgs else "Averages per match: N/A",
             "Δ: " + str(new_data["delta"]),
         ])
-    bot.send_message(chat_id=update.message.chat_id,
+    context.bot.send_message(chat_id=update.message.chat_id,
                      text=reply)
 
 
@@ -485,7 +486,7 @@ def quadris_tridimensionale_plot(bot, chat_id):
     if os.path.exists(path_to_graph):
         Popen(["rm", path_to_graph])
     plt.savefig(path_to_graph, dpi=300, bbox_inches='tight')
-    bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
+    context.bot.send_photo(chat_id=chat_id, photo=open(path_to_graph, 'rb'))
 
 
 def _parse_quadris_tridimensionale_result(result: list):

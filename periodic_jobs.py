@@ -34,7 +34,7 @@ def check_for_new_events(bot, hour: int):
                         for id in ids.readlines():
                             for link, text in zip(links_list, text_list):
                                 try:
-                                    bot.send_message(chat_id=id,
+                                    context.bot.send_message(chat_id=id,
                                                      text="New " + event_name.capitalize() + " event:\n" + text + "\n" + link)
                                     print("Sent " + event_name + " " + link + " to " + id)
                                 except Exception as e:
@@ -45,7 +45,7 @@ def check_for_new_events(bot, hour: int):
                         for id in ids.readlines():
                             for link in links_list:
                                 try:
-                                    bot.send_message(chat_id=id,
+                                    context.bot.send_message(chat_id=id,
                                                      text="New " + event_name.capitalize() + " event:\n" + link)
                                     print("Sent " + event_name + " " + link + " to " + id)
                                 except Exception as e:
@@ -89,7 +89,7 @@ def send_timelapse_notification(bot, hour: int, minute: int, debug: bool):
             yesterday = webcam.get_yesterday_timelapse_video_name()
             with open('webcam_chat_ids.txt', 'r') as ids:
                 for id in ids.readlines():
-                    bot.send_video(chat_id=id,
+                    context.bot.send_video(chat_id=id,
                                    video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
                                    caption="Here's the timelapse of yesterday! - " + yesterday,
                                    timeout=6000,

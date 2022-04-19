@@ -1,13 +1,14 @@
 import os
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import CallbackContext
 from bot_utils import get_specific_timelapse, cirulla_add, quadris_tridimensionale_add
 
 # import Docker environment variables
 castes_chat_id = os.environ["CST_CID"]
 
 
-def status(bot, update):
+def status(update: Update, context: CallbackContext) -> None:
     # only accept input if user is caste
     if str(update.message.chat_id) == castes_chat_id:
         # each [] is a line
@@ -25,7 +26,7 @@ def status(bot, update):
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
     else:
-        bot.send_message(chat_id=update.message.chat_id,
+        context.bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /status command.")
 
 
@@ -45,7 +46,7 @@ def events_menu(bot, update, use_callback: bool = False):
                                   reply_markup=reply_markup)
 
 
-def subscribe_to_cercle_notifications(bot, update):
+def subscribe_to_cercle_notifications(update: Update, context: CallbackContext) -> None:
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='sub_cercle'),
          InlineKeyboardButton("Unsubscribe", callback_data='unsub_cercle')],
@@ -56,7 +57,7 @@ def subscribe_to_cercle_notifications(bot, update):
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def subscribe_to_thedreamers_notifications(bot, update):
+def subscribe_to_thedreamers_notifications(update: Update, context: CallbackContext) -> None:
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='sub_thedreamers'),
          InlineKeyboardButton("Unsubscribe", callback_data='unsub_thedreamers')],
@@ -67,7 +68,7 @@ def subscribe_to_thedreamers_notifications(bot, update):
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def subscribe_to_supermarket_notifications(bot, update):
+def subscribe_to_supermarket_notifications(update: Update, context: CallbackContext) -> None:
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='sub_super'),
          InlineKeyboardButton("Unsubscribe", callback_data='unsub_super')],
@@ -78,7 +79,7 @@ def subscribe_to_supermarket_notifications(bot, update):
     update.callback_query.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def subscribe_to_webcam_notifications(bot, update):
+def subscribe_to_webcam_notifications(update: Update, context: CallbackContext) -> None:
     keyboard = [
         [InlineKeyboardButton("Subscribe", callback_data='webcam_sub')],
         [InlineKeyboardButton("Unsubscribe", callback_data='webcam_unsub')],
@@ -102,7 +103,7 @@ def webcam_menu(bot, update, use_callback: bool = False):
         update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def apt(bot, update):
+def apt(update: Update, context: CallbackContext) -> None:
     if str(update.message.chat_id) == castes_chat_id:
         keyboard = [
             [InlineKeyboardButton("sudo apt update", callback_data="apt_update")],
@@ -112,11 +113,11 @@ def apt(bot, update):
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('pi@raspberrypi ~ $', reply_markup=reply_markup)
     else:
-        bot.send_message(chat_id=update.message.chat_id,
+        context.bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /apt command.")
 
 
-def pics_menu(bot, update):
+def pics_menu(update: Update, context: CallbackContext) -> None:
     command = update.message.text.split()
     if command.__len__() > 1:
         get_specific_timelapse(bot, update, command[1:])
@@ -132,9 +133,9 @@ def pics_menu(bot, update):
         update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def cirulla_menu(bot, update):
+def cirulla_menu(update: Update, context: CallbackContext) -> None:
     if not str(update.message.chat_id) == castes_chat_id:
-        bot.send_message(chat_id=update.message.chat_id,
+        context.bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /cirulla command.")
         return
     else:
@@ -152,9 +153,9 @@ def cirulla_menu(bot, update):
             update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 
-def quadris_tridimensionale_menu(bot, update):
+def quadris_tridimensionale_menu(update: Update, context: CallbackContext) -> None:
     if not str(update.message.chat_id) == castes_chat_id:
-        bot.send_message(chat_id=update.message.chat_id,
+        context.bot.send_message(chat_id=update.message.chat_id,
                          text="⚠️ You don't have permission to use the /qt command.")
         return
     else:

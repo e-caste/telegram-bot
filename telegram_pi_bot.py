@@ -10,8 +10,8 @@ from time import time
 from multiprocessing import Process
 from threading import Thread
 
-from telegram import bot
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram import bot, Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext
 # from nmt_chatbot.inference import inference
 
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Linux
@@ -51,44 +51,44 @@ logger = logging.getLogger(__name__)
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
-def start(bot, update):
+def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text='Hi ' + update.message.from_user.first_name +
+    context.bot.send_message(chat_id=update.message.chat_id, text='Hi ' + update.message.from_user.first_name +
                                                           ', welcome to SuperUselessBot 2.0, now '
                                                           'based on the python-telegram-bot API!')
 
 
-def help(bot, update):
+def help(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    bot.send_message(chat_id=update.message.chat_id, text='https://youtu.be/cueulBxn1Fw')
+    context.bot.send_message(chat_id=update.message.chat_id, text='https://youtu.be/cueulBxn1Fw')
 
 
-def chatbot(bot, update):
+def chatbot(update: Update, context: CallbackContext) -> None:
     ...
     # to reduce CPU strain and limit usage to known people
     # if update.message.chat_id == int(castes_chat_id) or update.message.chat_id == int(gabbias_chat_id):
     #     nmt_result = inference(update.message.text)
-    #     bot.send_message(chat_id=update.message.chat_id, text=nmt_result['answers'][nmt_result['best_index']])
+    #     context.bot.send_message(chat_id=update.message.chat_id, text=nmt_result['answers'][nmt_result['best_index']])
 
 
-def epoch(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
+def epoch(update: Update, context: CallbackContext) -> None:
+    context.bot.send_message(chat_id=update.message.chat_id, text=str(int(time())))
 
 
-def whoyouare(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=str(update.message.from_user))
+def whoyouare(update: Update, context: CallbackContext) -> None:
+    context.bot.send_message(chat_id=update.message.chat_id, text=str(update.message.from_user))
 
 
-def quote(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=fortune())
+def quote(update: Update, context: CallbackContext) -> None:
+    context.bot.send_message(chat_id=update.message.chat_id, text=fortune())
 
 
-def wiki_quote(bot, update):
+def wiki_quote(update: Update, context: CallbackContext) -> None:
     ...
-    # bot.send_message(chat_id=update.message.chat_id, text=get_wiki_daily_quote())
+    # context.bot.send_message(chat_id=update.message.chat_id, text=get_wiki_daily_quote())
 
 
-def error(bot, update):
+def error(update: Update, context: CallbackContext) -> None:
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', bot, update.error)
 
@@ -99,7 +99,7 @@ def error(bot, update):
 # BEGIN BUTTON HANDLER w/ FUNCTIONS
 
 
-def button(bot_obj, update):
+def button(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     # id = context.callback_query.chat_instance
     id = str(update.callback_query.from_user.id)
