@@ -1,4 +1,4 @@
-FROM python:3.10-alpine
+FROM python:3.10-slim-buster
 
 RUN mkdir -p /bot/{data,logs,pics}
 WORKDIR /bot
