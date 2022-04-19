@@ -7,11 +7,12 @@ import logging
 import os
 import sys
 from time import time
-from multiprocessing import Process
-from threading import Thread
+from datetime import time as dayhour
+import pytz
 
 from telegram import bot, Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext, \
+    JobQueue
 # from nmt_chatbot.inference import inference
 
 DEBUG = sys.platform.startswith('darwin')  # True on macOS, False on Linux
@@ -262,6 +263,7 @@ def main():
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
     updater = Updater(token)
+    job_queue: JobQueue = updater.job_queue
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
@@ -299,18 +301,16 @@ def main():
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
 
-    # threading limits the number of concurrent threads to 2
-    # using multiprocessing
-    processes = [
-        Process(target=updater.idle),
-        # Process(target=check_for_new_events, args=(bot.Bot(token), 21)),  # hour
-        # Process(target=make_new_webcam_timelapse, args=(0, 1)),  # hour, minute
-        Process(target=send_timelapse_notification, args=(bot.Bot(token), 8, 30, DEBUG))  # hour, minute
-    ]
-    for p in processes:
-        p.start()
-    for p in processes:
-        p.join()
+    # processes = [
+    #     Process(target=updater.idle),
+    #     # Process(target=check_for_new_events, args=(bot.Bot(token), 21)),  # hour
+    #     # Process(target=make_new_webcam_timelapse, args=(0, 1)),  # hour, minute
+    #     Process(target=send_timelapse_notification, args=(bot.Bot(token), 8, 30, DEBUG))  # hour, minute
+    # ]
+    job_queue.run_daily(send_timelapse_notification,
+                        time=dayhour(hour=8, minute=30, tzinfo=pytz.timezone("Europe/Rome")))
+
+    updater.idle()
 
 
 if __name__ == '__main__':

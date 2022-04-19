@@ -4,6 +4,7 @@ from time import sleep
 from bot_utils import calculate_time_to_sleep
 import evnt_ntfr
 import webcam
+from telegram.ext import CallbackContext
 
 # import Docker environment variables
 token = os.environ["TOKEN"]
@@ -35,7 +36,7 @@ def check_for_new_events(bot, hour: int):
                             for link, text in zip(links_list, text_list):
                                 try:
                                     context.bot.send_message(chat_id=id,
-                                                     text="New " + event_name.capitalize() + " event:\n" + text + "\n" + link)
+                                                             text="New " + event_name.capitalize() + " event:\n" + text + "\n" + link)
                                     print("Sent " + event_name + " " + link + " to " + id)
                                 except Exception as e:
                                     print(e, file=sys.stderr)
@@ -46,7 +47,7 @@ def check_for_new_events(bot, hour: int):
                             for link in links_list:
                                 try:
                                     context.bot.send_message(chat_id=id,
-                                                     text="New " + event_name.capitalize() + " event:\n" + link)
+                                                             text="New " + event_name.capitalize() + " event:\n" + link)
                                     print("Sent " + event_name + " " + link + " to " + id)
                                 except Exception as e:
                                     print(e, file=sys.stderr)
@@ -58,7 +59,7 @@ def check_for_new_events(bot, hour: int):
 def make_new_webcam_timelapse(hour: int, minute: int):
     while True:
         try:
-            sleep(calculate_time_to_sleep(hour=(hour-3) % 24))  # account for days when the hour changes
+            sleep(calculate_time_to_sleep(hour=(hour - 3) % 24))  # account for days when the hour changes
             time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
 
             print("Waiting to make timelapse... " + str(time_to_sleep))
@@ -72,31 +73,18 @@ def make_new_webcam_timelapse(hour: int, minute: int):
             print(e, file=sys.stderr)
 
 
-def send_timelapse_notification(bot, hour: int, minute: int, debug: bool):
-    while True:
-        try:
-            # first sleep until 5am
-            print("Sleeping util " + str(hour) + "a.m. (timelapse)...")
-            sleep(calculate_time_to_sleep(hour=5, minute=0))
-            # then sleep until the given hour - this prevents issues on the days the hour changes
-            time_to_sleep = calculate_time_to_sleep(hour=hour, minute=minute)
-            print("Waiting to send timelapse... " + str(time_to_sleep))
-            sleep(time_to_sleep)
+def send_timelapse_notification(context: CallbackContext) -> None:
+    try:
+        # the video should have already been made by the function above, so it immediately returns yesterday
+        yesterday = webcam.get_yesterday_timelapse_video_name()
+        with open('webcam_chat_ids.txt', 'r') as ids:
+            for id in ids.readlines():
+                context.bot.send_video(chat_id=id,
+                                       video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
+                                       caption="Here's the timelapse of yesterday! - " + yesterday,
+                                       timeout=6000,
+                                       supports_streaming=True)
+                print("Sent timelapse to " + id)
 
-            # if not debug:
-            #     os.chdir(raspi_wd)
-            # the video should have already been made by the function above, so it immediately returns yesterday
-            yesterday = webcam.get_yesterday_timelapse_video_name()
-            with open('webcam_chat_ids.txt', 'r') as ids:
-                for id in ids.readlines():
-                    context.bot.send_video(chat_id=id,
-                                   video=open(pics_dir + yesterday + "/" + yesterday + "_for_tg.mp4", 'rb'),
-                                   caption="Here's the timelapse of yesterday! - " + yesterday,
-                                   timeout=6000,
-                                   supports_streaming=True)
-                    print("Sent timelapse to " + id)
-
-        except Exception as e:
-            print(e, file=sys.stderr)
-
-
+    except Exception as e:
+        print(e, file=sys.stderr)
